@@ -1,310 +1,213 @@
-export type Json =
-  | string
-  | number
-  | boolean
-  | null
-  | { [key: string]: Json | undefined }
-  | Json[]
+/**
+ * @fileoverview Supabase database types
+ * @module lib/supabase/types
+ * 
+ * Type definitions for the TAC Cargo database schema.
+ * These types should match your Supabase database structure.
+ * 
+ * @note Generate these types automatically using:
+ * npx supabase gen types typescript --project-id YOUR_PROJECT_ID > lib/supabase/types.ts
+ */
 
-export type Database = {
+/**
+ * Database schema definition
+ */
+export interface Database {
   public: {
     Tables: {
-      barcodes: {
-        Row: {
-          barcode_number: string
-          barcode_type: string | null
-          created_at: string | null
-          id: string
-          shipment_id: string | null
-          status: string | null
-        }
-        Insert: {
-          barcode_number: string
-          barcode_type?: string | null
-          created_at?: string | null
-          id?: string
-          shipment_id?: string | null
-          status?: string | null
-        }
-        Update: {
-          barcode_number?: string
-          barcode_type?: string | null
-          created_at?: string | null
-          id?: string
-          shipment_id?: string | null
-          status?: string | null
-        }
-      }
       customers: {
-        Row: {
-          address: string | null
-          city: string | null
-          created_at: string | null
-          created_by: string | null
-          credit_limit: number | null
-          customer_type: Database["public"]["Enums"]["customer_type"] | null
-          email: string | null
-          gst_number: string | null
-          id: string
-          name: string
-          phone: string
-          pincode: string | null
-          state: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          address?: string | null
-          city?: string | null
-          created_at?: string | null
-          created_by?: string | null
-          credit_limit?: number | null
-          customer_type?: Database["public"]["Enums"]["customer_type"] | null
-          email?: string | null
-          gst_number?: string | null
-          id?: string
-          name: string
-          phone: string
-          pincode?: string | null
-          state?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          address?: string | null
-          city?: string | null
-          created_at?: string | null
-          created_by?: string | null
-          credit_limit?: number | null
-          customer_type?: Database["public"]["Enums"]["customer_type"] | null
-          email?: string | null
-          gst_number?: string | null
-          id?: string
-          name?: string
-          phone?: string
-          pincode?: string | null
-          state?: string | null
-          updated_at?: string | null
-        }
-      }
-      profiles: {
-        Row: {
-          avatar_url: string | null
-          created_at: string | null
-          email: string
-          full_name: string | null
-          id: string
-          phone: string | null
-          role: Database["public"]["Enums"]["user_role"] | null
-          updated_at: string | null
-          warehouse_id: string | null
-        }
-        Insert: {
-          avatar_url?: string | null
-          created_at?: string | null
-          email: string
-          full_name?: string | null
-          id: string
-          phone?: string | null
-          role?: Database["public"]["Enums"]["user_role"] | null
-          updated_at?: string | null
-          warehouse_id?: string | null
-        }
-        Update: {
-          avatar_url?: string | null
-          created_at?: string | null
-          email?: string
-          full_name?: string | null
-          id?: string
-          phone?: string | null
-          role?: Database["public"]["Enums"]["user_role"] | null
-          updated_at?: string | null
-          warehouse_id?: string | null
-        }
-      }
-      scan_events: {
-        Row: {
-          created_at: string | null
-          id: string
-          location: string
-          notes: string | null
-          barcode_id: string | null
-          scanned_at: string | null
-          scanned_by: string | null
-          shipment_id: string | null
-          status: string
-          warehouse_id: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          id?: string
-          location: string
-          notes?: string | null
-          barcode_id?: string | null
-          scanned_at?: string | null
-          scanned_by?: string | null
-          shipment_id?: string | null
-          status: string
-          warehouse_id?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          id?: string
-          location?: string
-          notes?: string | null
-          barcode_id?: string | null
-          scanned_at?: string | null
-          scanned_by?: string | null
-          shipment_id?: string | null
-          status?: string
-          warehouse_id?: string | null
-        }
-      }
-      shipments: {
-        Row: {
-          chargeable_weight: number | null
-          consignee_address: string | null
-          consignee_name: string | null
-          consignee_phone: string | null
-          created_at: string | null
-          created_by: string | null
-          customer_id: string
-          delivered_at: string | null
-          description: string | null
-          destination_warehouse_id: string
-          eta: string | null
-          height_cm: number | null
-          id: string
-          length_cm: number | null
-          origin_warehouse_id: string
-          pieces: number | null
-          reference: string
-          special_instructions: string | null
-          status: Database["public"]["Enums"]["shipment_status"] | null
-          transport_mode: Database["public"]["Enums"]["transport_mode"] | null
-          updated_at: string | null
-          volumetric_weight: number | null
-          weight: number
-          width_cm: number | null
-        }
-        Insert: {
-          chargeable_weight?: number | null
-          consignee_address?: string | null
-          consignee_name?: string | null
-          consignee_phone?: string | null
-          created_at?: string | null
-          created_by?: string | null
-          customer_id: string
-          delivered_at?: string | null
-          description?: string | null
-          destination_warehouse_id: string
-          eta?: string | null
-          height_cm?: number | null
-          id?: string
-          length_cm?: number | null
-          origin_warehouse_id: string
-          pieces?: number | null
-          reference: string
-          special_instructions?: string | null
-          status?: Database["public"]["Enums"]["shipment_status"] | null
-          transport_mode?: Database["public"]["Enums"]["transport_mode"] | null
-          updated_at?: string | null
-          volumetric_weight?: number | null
-          weight: number
-          width_cm?: number | null
-        }
-        Update: {
-          chargeable_weight?: number | null
-          consignee_address?: string | null
-          consignee_name?: string | null
-          consignee_phone?: string | null
-          created_at?: string | null
-          created_by?: string | null
-          customer_id?: string
-          delivered_at?: string | null
-          description?: string | null
-          destination_warehouse_id?: string
-          eta?: string | null
-          height_cm?: number | null
-          id?: string
-          length_cm?: number | null
-          origin_warehouse_id?: string
-          pieces?: number | null
-          reference?: string
-          special_instructions?: string | null
-          status?: Database["public"]["Enums"]["shipment_status"] | null
-          transport_mode?: Database["public"]["Enums"]["transport_mode"] | null
-          updated_at?: string | null
-          volumetric_weight?: number | null
-          weight?: number
-          width_cm?: number | null
-        }
+        Row: Customer
+        Insert: CustomerInsert
+        Update: CustomerUpdate
       }
       warehouses: {
-        Row: {
-          address: string | null
-          city: string | null
-          code: string
-          created_at: string | null
-          id: string
-          is_active: boolean | null
-          name: string
-          phone: string | null
-          pincode: string | null
-          state: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          address?: string | null
-          city?: string | null
-          code: string
-          created_at?: string | null
-          id?: string
-          is_active?: boolean | null
-          name: string
-          phone?: string | null
-          pincode?: string | null
-          state?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          address?: string | null
-          city?: string | null
-          code?: string
-          created_at?: string | null
-          id?: string
-          is_active?: boolean | null
-          name?: string
-          phone?: string | null
-          pincode?: string | null
-          state?: string | null
-          updated_at?: string | null
-        }
+        Row: Warehouse
+        Insert: WarehouseInsert
+        Update: WarehouseUpdate
+      }
+      shipments: {
+        Row: Shipment
+        Insert: ShipmentInsert
+        Update: ShipmentUpdate
+      }
+      scan_events: {
+        Row: ScanEvent
+        Insert: ScanEventInsert
+        Update: ScanEventUpdate
       }
     }
-    Views: {
-      [_ in never]: never
-    }
-    Functions: {
-      [_ in never]: never
-    }
+    Views: Record<string, never>
+    Functions: Record<string, never>
     Enums: {
-      customer_type: "regular" | "corporate" | "vip"
-      invoice_status: "pending" | "paid" | "overdue" | "cancelled"
-      manifest_status: "draft" | "finalized" | "dispatched" | "received"
-      payment_mode: "cash" | "upi" | "neft" | "cheque" | "credit"
-      shipment_status:
-        | "pending"
-        | "picked_up"
-        | "in_transit"
-        | "at_hub"
-        | "out_for_delivery"
-        | "delivered"
-        | "cancelled"
-        | "exception"
-      transport_mode: "air" | "surface" | "express"
-      user_role: "admin" | "manager" | "operator" | "viewer"
+      shipment_status: ShipmentStatus
+      transport_mode: TransportMode
+      scan_type: ScanType
     }
   }
 }
 
-export type Tables<T extends keyof Database["public"]["Tables"]> = Database["public"]["Tables"][T]["Row"]
-export type Enums<T extends keyof Database["public"]["Enums"]> = Database["public"]["Enums"][T]
+/**
+ * Shipment status enum
+ */
+export type ShipmentStatus =
+  | 'pending'
+  | 'picked_up'
+  | 'in_transit'
+  | 'at_hub'
+  | 'out_for_delivery'
+  | 'delivered'
+  | 'cancelled'
+  | 'exception'
+
+/**
+ * Transport mode enum
+ */
+export type TransportMode = 'air' | 'surface' | 'express' | 'economy'
+
+/**
+ * Scan event type enum
+ */
+export type ScanType =
+  | 'pickup'
+  | 'arrival'
+  | 'departure'
+  | 'in_transit'
+  | 'out_for_delivery'
+  | 'delivered'
+  | 'exception'
+  | 'return'
+
+/**
+ * Customer table row type
+ */
+export interface Customer {
+  id: string
+  name: string
+  email: string | null
+  phone: string | null
+  address: string | null
+  city: string | null
+  state: string | null
+  pincode: string | null
+  gst_number: string | null
+  created_at: string
+  updated_at: string
+}
+
+export type CustomerInsert = Omit<Customer, 'id' | 'created_at' | 'updated_at'>
+export type CustomerUpdate = Partial<CustomerInsert>
+
+/**
+ * Warehouse table row type
+ */
+export interface Warehouse {
+  id: string
+  code: string
+  name: string
+  address: string | null
+  city: string
+  state: string
+  pincode: string | null
+  phone: string | null
+  email: string | null
+  is_active: boolean
+  created_at: string
+  updated_at: string
+}
+
+export type WarehouseInsert = Omit<Warehouse, 'id' | 'created_at' | 'updated_at'>
+export type WarehouseUpdate = Partial<WarehouseInsert>
+
+/**
+ * Shipment table row type
+ */
+export interface Shipment {
+  id: string
+  reference: string
+  customer_id: string | null
+  origin_warehouse_id: string | null
+  destination_warehouse_id: string | null
+  status: ShipmentStatus
+  transport_mode: TransportMode
+  weight: number | null
+  pieces: number | null
+  description: string | null
+  consignee_name: string | null
+  consignee_address: string | null
+  consignee_phone: string | null
+  consignee_email: string | null
+  eta: string | null
+  delivered_at: string | null
+  created_at: string
+  updated_at: string
+}
+
+export type ShipmentInsert = Omit<Shipment, 'id' | 'created_at' | 'updated_at'>
+export type ShipmentUpdate = Partial<ShipmentInsert>
+
+/**
+ * Scan event table row type
+ */
+export interface ScanEvent {
+  id: string
+  shipment_id: string
+  warehouse_id: string | null
+  scan_type: ScanType
+  location: string | null
+  remarks: string | null
+  scanned_by: string | null
+  scanned_at: string
+  created_at: string
+}
+
+export type ScanEventInsert = Omit<ScanEvent, 'id' | 'created_at'>
+export type ScanEventUpdate = Partial<ScanEventInsert>
+
+/**
+ * Shipment with related data (for API responses)
+ */
+export interface ShipmentWithRelations extends Shipment {
+  customer: Pick<Customer, 'name' | 'phone' | 'email'> | null
+  origin_warehouse: Pick<Warehouse, 'code' | 'name' | 'city' | 'state'> | null
+  destination_warehouse: Pick<Warehouse, 'code' | 'name' | 'city' | 'state'> | null
+}
+
+/**
+ * Scan event with warehouse data
+ */
+export interface ScanEventWithWarehouse extends ScanEvent {
+  warehouse: Pick<Warehouse, 'code' | 'name' | 'city'> | null
+}
+
+/**
+ * Tracking API response type
+ */
+export interface TrackingResponse {
+  shipment: {
+    reference: string
+    status: ShipmentStatus
+    transport_mode: TransportMode
+    weight: number | null
+    pieces: number | null
+    description: string | null
+    eta: string | null
+    delivered_at: string | null
+    created_at: string
+    consignee_name: string | null
+    consignee_address: string | null
+    consignee_phone: string | null
+    origin: Pick<Warehouse, 'code' | 'name' | 'city' | 'state'> | null
+    destination: Pick<Warehouse, 'code' | 'name' | 'city' | 'state'> | null
+    customer: Pick<Customer, 'name' | 'phone' | 'email'> | null
+  }
+  events: ScanEventWithWarehouse[]
+}
+
+/**
+ * API error response type
+ */
+export interface ApiError {
+  error: string
+  code: string
+  details?: unknown
+}
