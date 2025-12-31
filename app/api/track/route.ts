@@ -4,10 +4,16 @@
  * 
  * Provides real-time shipment tracking by AWB (Air Waybill) number.
  * Fetches shipment details and scan events from Supabase.
+ * 
+ * @security
+ * - Input validation and sanitization
+ * - Rate limiting (60 requests/minute per IP)
+ * - RLS policies for data access control
  */
 
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { checkRateLimit, getClientIp, getRateLimitHeaders, RATE_LIMITS } from '@/lib/rate-limit'
 
 /**
  * AWB validation regex pattern
@@ -61,10 +67,28 @@ function sanitizeAwb(awb: string): string {
  * 
  * @security
  * - Input validation prevents SQL injection
+ * - Rate limited to 60 requests/minute per IP
  * - RLS policies restrict data access
- * - Rate limiting should be applied at edge/middleware
  */
 export async function GET(request: Request) {
+  // Rate limiting check
+  const clientIp = getClientIp(request)
+  const rateLimitResult = checkRateLimit(`track:${clientIp}`, RATE_LIMITS.api)
+  
+  if (!rateLimitResult.success) {
+    return NextResponse.json(
+      {
+        error: 'Too many requests. Please try again later.',
+        code: 'RATE_LIMIT_EXCEEDED',
+        retryAfter: Math.ceil(rateLimitResult.resetIn / 1000),
+      },
+      { 
+        status: 429,
+        headers: getRateLimitHeaders(rateLimitResult),
+      }
+    )
+  }
+
   const { searchParams } = new URL(request.url)
   const rawAwb = searchParams.get('awb')
 
@@ -75,7 +99,10 @@ export async function GET(request: Request) {
         error: 'AWB number is required',
         code: 'MISSING_AWB',
       },
-      { status: 400 }
+      { 
+        status: 400,
+        headers: getRateLimitHeaders(rateLimitResult),
+      }
     )
   }
 
@@ -88,7 +115,10 @@ export async function GET(request: Request) {
         error: 'Invalid AWB format. Must be 3-20 alphanumeric characters.',
         code: 'INVALID_AWB_FORMAT',
       },
-      { status: 400 }
+      { 
+        status: 400,
+        headers: getRateLimitHeaders(rateLimitResult),
+      }
     )
   }
 
@@ -114,7 +144,10 @@ export async function GET(request: Request) {
           code: 'SHIPMENT_NOT_FOUND',
           awb,
         },
-        { status: 404 }
+        { 
+          status: 404,
+          headers: getRateLimitHeaders(rateLimitResult),
+        }
       )
     }
 
@@ -133,27 +166,32 @@ export async function GET(request: Request) {
       // Continue without events rather than failing completely
     }
 
-    // Return structured response
-    return NextResponse.json({
-      shipment: {
-        reference: shipment.reference,
-        status: shipment.status,
-        transport_mode: shipment.transport_mode,
-        weight: shipment.weight,
-        pieces: shipment.pieces,
-        description: shipment.description,
-        eta: shipment.eta,
-        delivered_at: shipment.delivered_at,
-        created_at: shipment.created_at,
-        consignee_name: shipment.consignee_name,
-        consignee_address: shipment.consignee_address,
-        consignee_phone: shipment.consignee_phone,
-        origin: shipment.origin_warehouse,
-        destination: shipment.destination_warehouse,
-        customer: shipment.customer,
+    // Return structured response with rate limit headers
+    return NextResponse.json(
+      {
+        shipment: {
+          reference: shipment.reference,
+          status: shipment.status,
+          transport_mode: shipment.transport_mode,
+          weight: shipment.weight,
+          pieces: shipment.pieces,
+          description: shipment.description,
+          eta: shipment.eta,
+          delivered_at: shipment.delivered_at,
+          created_at: shipment.created_at,
+          consignee_name: shipment.consignee_name,
+          consignee_address: shipment.consignee_address,
+          consignee_phone: shipment.consignee_phone,
+          origin: shipment.origin_warehouse,
+          destination: shipment.destination_warehouse,
+          customer: shipment.customer,
+        },
+        events: events || [],
       },
-      events: events || [],
-    })
+      {
+        headers: getRateLimitHeaders(rateLimitResult),
+      }
+    )
   } catch (error) {
     console.error('[Track API] Unexpected error:', error)
     return NextResponse.json(
@@ -161,7 +199,10 @@ export async function GET(request: Request) {
         error: 'Internal server error',
         code: 'INTERNAL_ERROR',
       },
-      { status: 500 }
+      { 
+        status: 500,
+        headers: getRateLimitHeaders(rateLimitResult),
+      }
     )
   }
 }
