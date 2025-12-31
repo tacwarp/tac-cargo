@@ -113,7 +113,10 @@ export function isValidEmail(email: string): boolean {
 }
 
 /**
- * Generates a random ID string.
+ * Generates a cryptographically secure random ID string.
+ * 
+ * Uses Web Crypto API for secure random generation.
+ * Suitable for tokens, session IDs, and security-sensitive contexts.
  * 
  * @param {number} length - Length of the ID (default: 8)
  * @returns {string} Random alphanumeric ID
@@ -123,9 +126,28 @@ export function isValidEmail(email: string): boolean {
  * generateId() // Returns something like "a1b2c3d4"
  * generateId(12) // Returns 12-character ID
  * ```
+ * 
+ * @security Uses crypto.getRandomValues for cryptographically secure randomness
  */
 export function generateId(length: number = 8): string {
-  return Math.random().toString(36).substring(2, 2 + length)
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+  const array = new Uint8Array(length)
+  crypto.getRandomValues(array)
+  return Array.from(array, (byte) => chars[byte % chars.length]).join('')
+}
+
+/**
+ * Generates a UUID v4 using Web Crypto API.
+ * 
+ * @returns {string} UUID v4 string
+ * 
+ * @example
+ * ```tsx
+ * generateUUID() // Returns "550e8400-e29b-41d4-a716-446655440000"
+ * ```
+ */
+export function generateUUID(): string {
+  return crypto.randomUUID()
 }
 
 /**
@@ -152,4 +174,88 @@ export function debounce<T extends (...args: unknown[]) => unknown>(
     if (timeoutId) clearTimeout(timeoutId)
     timeoutId = setTimeout(() => func(...args), wait)
   }
+}
+
+/**
+ * Throttles a function call.
+ * 
+ * @param {T} func - Function to throttle
+ * @param {number} limit - Minimum milliseconds between calls
+ * @returns {(...args: Parameters<T>) => void} Throttled function
+ * 
+ * @example
+ * ```tsx
+ * const throttledScroll = throttle(() => {
+ *   // Scroll handler logic
+ * }, 100)
+ * ```
+ */
+export function throttle<T extends (...args: unknown[]) => unknown>(
+  func: T,
+  limit: number
+): (...args: Parameters<T>) => void {
+  let inThrottle = false
+
+  return (...args: Parameters<T>) => {
+    if (!inThrottle) {
+      func(...args)
+      inThrottle = true
+      setTimeout(() => (inThrottle = false), limit)
+    }
+  }
+}
+
+/**
+ * Safely parses JSON with error handling.
+ * 
+ * @param {string} json - JSON string to parse
+ * @param {T} fallback - Fallback value if parsing fails
+ * @returns {T} Parsed value or fallback
+ * 
+ * @example
+ * ```tsx
+ * safeJsonParse('{"name":"test"}', {}) // Returns { name: "test" }
+ * safeJsonParse('invalid', {}) // Returns {}
+ * ```
+ */
+export function safeJsonParse<T>(json: string, fallback: T): T {
+  try {
+    return JSON.parse(json) as T
+  } catch {
+    return fallback
+  }
+}
+
+/**
+ * Sleep for a specified duration.
+ * 
+ * @param {number} ms - Milliseconds to sleep
+ * @returns {Promise<void>} Promise that resolves after delay
+ * 
+ * @example
+ * ```tsx
+ * await sleep(1000) // Wait 1 second
+ * ```
+ */
+export function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+/**
+ * Clamps a number between min and max values.
+ * 
+ * @param {number} value - Value to clamp
+ * @param {number} min - Minimum value
+ * @param {number} max - Maximum value
+ * @returns {number} Clamped value
+ * 
+ * @example
+ * ```tsx
+ * clamp(150, 0, 100) // Returns 100
+ * clamp(-10, 0, 100) // Returns 0
+ * clamp(50, 0, 100) // Returns 50
+ * ```
+ */
+export function clamp(value: number, min: number, max: number): number {
+  return Math.min(Math.max(value, min), max)
 }
