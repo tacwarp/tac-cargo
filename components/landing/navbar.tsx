@@ -1,5 +1,6 @@
 'use client'
 
+import * as React from "react"
 import Link from "next/link"
 import { Menu, Package } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -7,6 +8,11 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { ThemeToggle } from "@/components/ui/theme-toggle"
 
 export function Navbar() {
+  const [mounted, setMounted] = React.useState(false)
+
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
   const navLinks = [
     { name: "Network", href: "#network" },
     { name: "Solutions", href: "#services" },
@@ -58,42 +64,49 @@ export function Navbar() {
             <Link href="#tracking">Start Shipping</Link>
           </Button>
 
-          {/* Mobile Menu */}
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8 md:hidden">
-                <Menu className="h-4 w-4" />
-                <span className="sr-only">Toggle menu</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent id="mobile-nav" side="right" title="Navigation Menu" className="w-[300px] border-l border-border bg-background/95 backdrop-blur-xl">
-              <div className="flex flex-col gap-6 mt-8">
-                <nav className="flex flex-col gap-4" aria-label="Mobile Navigation">
-                  {navLinks.map((link) => (
-                    <Link
-                      key={link.name}
-                      href={link.href}
-                      className="rounded-sm py-2 text-lg font-medium text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          {/* Mobile Menu - Client-only to prevent hydration mismatch */}
+          {mounted ? (
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-8 w-8 md:hidden">
+                  <Menu className="h-4 w-4" />
+                  <span className="sr-only">Toggle menu</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" title="Navigation Menu" className="w-[300px] border-l border-border bg-background/95 backdrop-blur-xl">
+                <div className="flex flex-col gap-6 mt-8">
+                  <nav className="flex flex-col gap-4" aria-label="Mobile Navigation">
+                    {navLinks.map((link) => (
+                      <Link
+                        key={link.name}
+                        href={link.href}
+                        className="rounded-sm py-2 text-lg font-medium text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                      >
+                        {link.name}
+                      </Link>
+                    ))}
+                  </nav>
+                  <div className="h-px bg-border/50" />
+                  <div className="flex flex-col gap-4">
+                    <Link 
+                      href="/dashboard" 
+                      className="rounded-sm py-2 text-sm font-mono uppercase tracking-wider text-muted-foreground hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                     >
-                      {link.name}
+                      Portal Login
                     </Link>
-                  ))}
-                </nav>
-                <div className="h-px bg-border/50" />
-                <div className="flex flex-col gap-4">
-                  <Link 
-                    href="/dashboard" 
-                    className="rounded-sm py-2 text-sm font-mono uppercase tracking-wider text-muted-foreground hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-                  >
-                    Portal Login
-                  </Link>
-                  <Button className="w-full uppercase tracking-wider" asChild>
-                    <Link href="#tracking">Start Shipping</Link>
-                  </Button>
+                    <Button className="w-full uppercase tracking-wider" asChild>
+                      <Link href="#tracking">Start Shipping</Link>
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            </SheetContent>
-          </Sheet>
+              </SheetContent>
+            </Sheet>
+          ) : (
+            <Button variant="ghost" size="icon" className="h-8 w-8 md:hidden" disabled>
+              <Menu className="h-4 w-4" />
+              <span className="sr-only">Toggle menu</span>
+            </Button>
+          )}
         </div>
       </div>
     </nav>
