@@ -9,18 +9,27 @@
 import { createBrowserClient } from '@supabase/ssr'
 
 /**
- * Environment variable validation
- * @throws {Error} If required environment variables are missing
+ * Gets and validates Supabase URL from environment
+ * @throws {Error} If NEXT_PUBLIC_SUPABASE_URL is missing
  */
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
-const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-
-if (!SUPABASE_URL) {
-  throw new Error('Missing NEXT_PUBLIC_SUPABASE_URL environment variable')
+function getSupabaseUrl(): string {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  if (!url) {
+    throw new Error('Missing NEXT_PUBLIC_SUPABASE_URL environment variable')
+  }
+  return url
 }
 
-if (!SUPABASE_ANON_KEY) {
-  throw new Error('Missing NEXT_PUBLIC_SUPABASE_ANON_KEY environment variable')
+/**
+ * Gets and validates Supabase anon key from environment
+ * @throws {Error} If NEXT_PUBLIC_SUPABASE_ANON_KEY is missing
+ */
+function getSupabaseAnonKey(): string {
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  if (!key) {
+    throw new Error('Missing NEXT_PUBLIC_SUPABASE_ANON_KEY environment variable')
+  }
+  return key
 }
 
 /**
@@ -47,5 +56,5 @@ if (!SUPABASE_ANON_KEY) {
  * - Do not expose service role key in browser
  */
 export function createClient() {
-  return createBrowserClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+  return createBrowserClient(getSupabaseUrl(), getSupabaseAnonKey())
 }

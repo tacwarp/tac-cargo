@@ -10,17 +10,27 @@ import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 
 /**
- * Environment variable validation
+ * Gets and validates Supabase URL from environment
+ * @throws {Error} If NEXT_PUBLIC_SUPABASE_URL is missing
  */
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
-const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-
-if (!SUPABASE_URL) {
-  throw new Error('Missing NEXT_PUBLIC_SUPABASE_URL environment variable')
+function getSupabaseUrl(): string {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  if (!url) {
+    throw new Error('Missing NEXT_PUBLIC_SUPABASE_URL environment variable')
+  }
+  return url
 }
 
-if (!SUPABASE_ANON_KEY) {
-  throw new Error('Missing NEXT_PUBLIC_SUPABASE_ANON_KEY environment variable')
+/**
+ * Gets and validates Supabase anon key from environment
+ * @throws {Error} If NEXT_PUBLIC_SUPABASE_ANON_KEY is missing
+ */
+function getSupabaseAnonKey(): string {
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  if (!key) {
+    throw new Error('Missing NEXT_PUBLIC_SUPABASE_ANON_KEY environment variable')
+  }
+  return key
 }
 
 /**
@@ -53,7 +63,7 @@ if (!SUPABASE_ANON_KEY) {
 export async function createClient() {
   const cookieStore = await cookies()
 
-  return createServerClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  return createServerClient(getSupabaseUrl(), getSupabaseAnonKey(), {
     cookies: {
       /**
        * Retrieves all cookies from the request
@@ -64,9 +74,9 @@ export async function createClient() {
       },
       /**
        * Sets multiple cookies in the response
-       * @param {Array<{name: string, value: string, options?: object}>} cookiesToSet - Cookies to set
+       * @param cookiesToSet - Array of cookies to set
        */
-      setAll(cookiesToSet) {
+      setAll(cookiesToSet: { name: string; value: string; options?: Record<string, unknown> }[]) {
         try {
           cookiesToSet.forEach(({ name, value, options }) =>
             cookieStore.set(name, value, options)

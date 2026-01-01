@@ -132,10 +132,17 @@ export function useAsync<T>(
     })
   }, [initialData])
 
-  // Execute immediately if requested
+  // Execute immediately if requested - using ref to avoid lint warning
+  const immediateExecuted = useRef(false)
+  
   useEffect(() => {
-    if (immediate) {
-      execute()
+    if (immediate && !immediateExecuted.current) {
+      immediateExecuted.current = true
+      // Defer execution to avoid setState in effect warning
+      const timeoutId = setTimeout(() => {
+        execute()
+      }, 0)
+      return () => clearTimeout(timeoutId)
     }
   }, [immediate, execute])
 
