@@ -66,7 +66,7 @@ export function Navbar() {
                 <span className="sr-only">Toggle menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-[300px] border-l border-border bg-background/95 backdrop-blur-xl">
+            <SheetContent id="mobile-nav" side="right" title="Navigation Menu" className="w-[300px] border-l border-border bg-background/95 backdrop-blur-xl">
               <div className="flex flex-col gap-6 mt-8">
                 <nav className="flex flex-col gap-4" aria-label="Mobile Navigation">
                   {navLinks.map((link) => (

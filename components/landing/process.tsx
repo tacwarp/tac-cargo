@@ -4,7 +4,7 @@ import { Package, Truck, CheckCircle2 } from "lucide-react"
 
 export function Process() {
   return (
-    <section id="network" className="border-b border-border bg-background py-24">
+    <section id="network" className="relative overflow-hidden border-b border-border bg-background py-24">
       <div className="container mx-auto max-w-[1400px] px-6">
         <div className="mb-20 flex flex-col items-start justify-between gap-8 md:flex-row md:items-end">
           <div className="max-w-xl">
@@ -23,8 +23,8 @@ export function Process() {
           <div className="absolute left-0 top-12 hidden h-px w-full bg-border md:block" />
 
           {/* Step 1 */}
-          <div className="group relative bg-background pt-12 md:pt-0">
-            <div className="absolute left-0 top-0 mb-6 flex h-8 w-8 items-center justify-center border border-border bg-background font-mono text-xs font-medium text-muted-foreground transition-colors group-hover:border-primary group-hover:text-primary md:relative md:top-auto md:mb-8">
+          <div className="group relative bg-background pt-12">
+            <div className="absolute left-0 top-0 mb-6 flex h-8 w-8 items-center justify-center border border-border bg-background font-mono text-xs font-medium text-muted-foreground transition-colors group-hover:border-primary group-hover:text-primary">
               01
             </div>
             <div className="mb-6 flex items-center gap-4">
@@ -37,8 +37,8 @@ export function Process() {
           </div>
 
           {/* Step 2 */}
-          <div className="group relative bg-background pt-12 md:pt-0">
-            <div className="absolute left-0 top-0 mb-6 flex h-8 w-8 items-center justify-center border border-border bg-background font-mono text-xs font-medium text-muted-foreground transition-colors group-hover:border-primary group-hover:text-primary md:relative md:top-auto md:mb-8">
+          <div className="group relative bg-background pt-12">
+            <div className="absolute left-0 top-0 mb-6 flex h-8 w-8 items-center justify-center border border-border bg-background font-mono text-xs font-medium text-muted-foreground transition-colors group-hover:border-primary group-hover:text-primary">
               02
             </div>
             <div className="mb-6 flex items-center gap-4">
@@ -51,8 +51,8 @@ export function Process() {
           </div>
 
           {/* Step 3 */}
-          <div className="group relative bg-background pt-12 md:pt-0">
-            <div className="absolute left-0 top-0 mb-6 flex h-8 w-8 items-center justify-center border border-border bg-background font-mono text-xs font-medium text-muted-foreground transition-colors group-hover:border-primary group-hover:text-primary md:relative md:top-auto md:mb-8">
+          <div className="group relative bg-background pt-12">
+            <div className="absolute left-0 top-0 mb-6 flex h-8 w-8 items-center justify-center border border-border bg-background font-mono text-xs font-medium text-muted-foreground transition-colors group-hover:border-primary group-hover:text-primary">
               03
             </div>
             <div className="mb-6 flex items-center gap-4">

@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { useRouter } from "next/navigation"
 import {
   BadgeCheck,
   Bell,
@@ -9,6 +10,7 @@ import {
   LogOut,
   Sparkles,
 } from "lucide-react"
+import { createClient } from "@/lib/supabase/client"
 
 import {
   Avatar,
@@ -43,10 +45,22 @@ export function NavUser({
 }) {
   const { isMobile } = useSidebar()
   const [mounted, setMounted] = React.useState(false)
+  const router = useRouter()
 
   React.useEffect(() => {
     setMounted(true)
   }, [])
+
+  const handleSignOut = async () => {
+    try {
+      const supabase = createClient()
+      const { error } = await supabase.auth.signOut()
+      if (error) throw error
+      router.push('/login')
+    } catch (error) {
+      console.error('Sign out failed:', error)
+    }
+  }
 
   if (!mounted) {
     return (
@@ -125,7 +139,7 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleSignOut}>
               <LogOut />
               Log out
             </DropdownMenuItem>

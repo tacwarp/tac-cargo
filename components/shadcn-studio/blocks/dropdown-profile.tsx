@@ -1,4 +1,7 @@
+'use client'
+
 import type { ReactNode } from 'react'
+import { useRouter } from 'next/navigation'
 
 import {
   UserIcon,
@@ -9,6 +12,7 @@ import {
   CirclePlusIcon,
   LogOutIcon
 } from 'lucide-react'
+import { createClient } from '@/lib/supabase/client'
 
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import {
@@ -25,9 +29,32 @@ type Props = {
   trigger: ReactNode
   defaultOpen?: boolean
   align?: 'start' | 'center' | 'end'
+  user?: {
+    name: string
+    email: string
+    avatar: string
+  }
 }
 
-const ProfileDropdown = ({ trigger, defaultOpen, align = 'end' }: Props) => {
+const ProfileDropdown = ({ trigger, defaultOpen, align = 'end', user }: Props) => {
+  const router = useRouter()
+
+  const handleSignOut = async () => {
+    try {
+      const supabase = createClient()
+      const { error } = await supabase.auth.signOut()
+      if (error) throw error
+      router.push('/login')
+    } catch (error) {
+      console.error('Sign out failed:', error)
+    }
+  }
+
+  const displayName = user?.name || 'John Doe'
+  const displayEmail = user?.email || 'john.doe@example.com'
+  const displayAvatar = user?.avatar || 'https://cdn.shadcnstudio.com/ss-assets/avatar/avatar-1.png'
+  const initials = displayName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
+
   return (
     <DropdownMenu defaultOpen={defaultOpen}>
       <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
@@ -35,14 +62,14 @@ const ProfileDropdown = ({ trigger, defaultOpen, align = 'end' }: Props) => {
         <DropdownMenuLabel className='flex items-center gap-4 px-4 py-2.5 font-normal'>
           <div className='relative'>
             <Avatar className='size-10'>
-              <AvatarImage src='https://cdn.shadcnstudio.com/ss-assets/avatar/avatar-1.png' alt='John Doe' />
-              <AvatarFallback>JD</AvatarFallback>
+              <AvatarImage src={displayAvatar} alt={displayName} />
+              <AvatarFallback>{initials}</AvatarFallback>
             </Avatar>
             <span className='ring-card absolute right-0 bottom-0 block size-2 rounded-full bg-green-600 ring-2' />
           </div>
           <div className='flex flex-1 flex-col items-start'>
-            <span className='text-foreground text-lg font-semibold'>John Doe</span>
-            <span className='text-muted-foreground text-base'>john.doe@example.com</span>
+            <span className='text-foreground text-lg font-semibold'>{displayName}</span>
+            <span className='text-muted-foreground text-base'>{displayEmail}</span>
           </div>
         </DropdownMenuLabel>
 
@@ -82,7 +109,7 @@ const ProfileDropdown = ({ trigger, defaultOpen, align = 'end' }: Props) => {
 
         <DropdownMenuSeparator />
 
-        <DropdownMenuItem className='px-4 py-2.5 text-base text-destructive focus:text-destructive'>
+        <DropdownMenuItem onClick={handleSignOut} className='px-4 py-2.5 text-base text-destructive focus:text-destructive'>
           <LogOutIcon className='size-5' />
           <span>Logout</span>
         </DropdownMenuItem>

@@ -3,7 +3,7 @@ import { LottieContainer } from "@/components/ui/lottie-container"
 
 export function Services() {
   return (
-    <section id="services" className="border-b border-border bg-background py-16 lg:py-24">
+    <section id="services" className="relative overflow-hidden border-b border-border bg-background py-16 lg:py-24">
       <div className="container mx-auto max-w-[1400px] px-4 md:px-6">
         <div className="mb-12 lg:mb-16">
           <span className="mb-4 block font-mono text-[10px] uppercase tracking-widest text-muted-foreground">Core Competencies</span>
@@ -32,16 +32,15 @@ export function Services() {
           </div>
 
           {/* Card 3: Automated Sorting (Lottie Feature) - Spans 2 cols on large screens */}
-          <div className="group relative col-span-1 flex min-h-[280px] flex-col bg-card transition-colors hover:bg-muted/20 md:col-span-2 lg:col-span-1 xl:col-span-2">
-             <div className="relative h-[240px] w-full border-b border-border bg-background/50 sm:h-[300px]">
-                 <div className="h-full w-full p-0">
-                     <LottieContainer 
-                        src="/lottie/Automated-Sorting.json" 
-                        className="h-full w-full"
-                     />
-                 </div>
+          <div className="group relative col-span-1 flex min-h-[280px] flex-col justify-end overflow-hidden bg-card transition-colors hover:bg-muted/20 md:col-span-2 lg:col-span-1 xl:col-span-2">
+             <div className="absolute inset-0 z-0">
+                 <LottieContainer 
+                    src="/lottie/Automated-Sorting.json" 
+                    containerClassName="h-full w-full"
+                    className="h-[110%] w-[110%] -translate-x-[5%]"
+                 />
              </div>
-             <div className="mt-auto p-6 lg:p-8">
+             <div className="relative z-10 p-6 lg:p-8">
                  <h3 className="mb-2 text-base font-medium text-foreground">Automated Sorting</h3>
                  <p className="text-sm leading-relaxed text-muted-foreground">AI-driven warehousing reduces handling time by 40%. Smart categorization.</p>
              </div>
