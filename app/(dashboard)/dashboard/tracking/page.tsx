@@ -94,7 +94,7 @@ function TrackingContent() {
         setShipment(data.shipment)
         setEvents(data.events || [])
       }
-    } catch (err) {
+    } catch {
       setError('Failed to fetch tracking data')
       setShipment(null)
       setEvents([])
@@ -107,7 +107,8 @@ function TrackingContent() {
     if (initialAwb) {
       handleTrack()
     }
-  }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialAwb])
 
   const formatDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleString('en-IN', {
