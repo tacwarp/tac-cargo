@@ -3,16 +3,16 @@
 import { SidebarTrigger } from '@/components/ui/sidebar'
 import {
   Breadcrumb,
-  BreadcrumbList,
   BreadcrumbItem,
   BreadcrumbLink,
+  BreadcrumbList,
   BreadcrumbPage,
-  BreadcrumbSeparator
+  BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Separator } from '@/components/ui/separator'
-import { ThemeToggle } from '@/components/ui/theme-toggle'
+import { ThemeToggle } from '@/components/dashboard/theme-toggle'
 import { BellIcon, SearchIcon, LanguagesIcon } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 import React from 'react'
@@ -25,7 +25,7 @@ export function AppHeader() {
   const pathSegments = pathname.split('/').filter(Boolean)
 
   return (
-    <header className='sticky top-0 z-50 flex h-16 items-center gap-4 border-b border-border bg-card px-6'>
+    <header className='sticky top-0 z-40 flex h-16 shrink-0 items-center gap-4 border-b border-border/50 bg-background/95 backdrop-blur-sm px-6'>
       <SidebarTrigger className='[&_svg]:!size-5' />
       <Separator orientation='vertical' className='!h-4' />
 

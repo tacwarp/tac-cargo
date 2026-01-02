@@ -131,9 +131,21 @@ export function isValidEmail(email: string): boolean {
  */
 export function generateId(length: number = 8): string {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-  const array = new Uint8Array(length)
-  crypto.getRandomValues(array)
-  return Array.from(array, (byte) => chars[byte % chars.length]).join('')
+  const charsLength = chars.length // 62 characters
+  const maxValid = Math.floor(256 / charsLength) * charsLength // 248 for 62 chars - avoids modulo bias
+  const result: string[] = []
+  
+  while (result.length < length) {
+    const array = new Uint8Array(length - result.length)
+    crypto.getRandomValues(array)
+    for (const byte of array) {
+      if (byte < maxValid && result.length < length) {
+        result.push(chars[byte % charsLength])
+      }
+    }
+  }
+  
+  return result.join('')
 }
 
 /**
@@ -258,4 +270,46 @@ export function sleep(ms: number): Promise<void> {
  */
 export function clamp(value: number, min: number, max: number): number {
   return Math.min(Math.max(value, min), max)
+}
+
+/**
+ * Tremor-style focus input classes for form elements.
+ * Provides consistent focus styling across the application.
+ */
+export const focusInput = [
+  "focus:ring-2",
+  "focus:ring-primary/20",
+  "focus:border-primary",
+]
+
+/**
+ * Tremor-style focus ring classes for interactive elements.
+ * Provides accessible focus indicators.
+ */
+export const focusRing = [
+  "outline outline-offset-2 outline-0 focus-visible:outline-2",
+  "outline-primary",
+]
+
+/**
+ * Error state input classes for form validation.
+ */
+export const hasErrorInput = [
+  "ring-2",
+  "border-destructive",
+  "ring-destructive/20",
+]
+
+/**
+ * Combines focus classes into a single string.
+ */
+export function getFocusClasses(type: 'input' | 'ring' | 'error' = 'ring'): string {
+  switch (type) {
+    case 'input':
+      return focusInput.join(' ')
+    case 'error':
+      return hasErrorInput.join(' ')
+    default:
+      return focusRing.join(' ')
+  }
 }

@@ -37,11 +37,11 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
 
   return (
     <html lang="en">
-      <body className="bg-zinc-950 text-zinc-100">
+      <body className="bg-background text-foreground">
         <div className="flex min-h-screen flex-col items-center justify-center gap-8 p-8">
           {/* Error icon */}
-          <div className="flex h-24 w-24 items-center justify-center rounded-full bg-red-500/10">
-            <AlertTriangle className="h-12 w-12 text-red-500" />
+          <div className="flex h-24 w-24 items-center justify-center rounded-full bg-destructive/10">
+            <AlertTriangle className="h-12 w-12 text-destructive" />
           </div>
 
           {/* Error message */}
@@ -49,7 +49,7 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
             <h1 className="mb-3 text-3xl font-bold tracking-tight">
               Critical Error
             </h1>
-            <p className="text-zinc-400">
+            <p className="text-muted-foreground">
               A critical error occurred and the application couldn&apos;t recover. 
               Please try refreshing the page.
             </p>
@@ -57,15 +57,15 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
 
           {/* Error details (development only) */}
           {process.env.NODE_ENV === 'development' && (
-            <div className="w-full max-w-lg rounded-lg border border-red-500/20 bg-red-500/5 p-4">
-              <p className="mb-2 font-mono text-xs font-medium text-red-400">
+            <div className="w-full max-w-lg rounded-lg border border-destructive/20 bg-destructive/5 p-4">
+              <p className="mb-2 font-mono text-xs font-medium text-destructive">
                 Error Details:
               </p>
-              <pre className="overflow-auto whitespace-pre-wrap font-mono text-xs text-zinc-400">
+              <pre className="overflow-auto whitespace-pre-wrap font-mono text-xs text-muted-foreground">
                 {error.message}
               </pre>
               {error.digest && (
-                <p className="mt-2 font-mono text-xs text-zinc-500">
+                <p className="mt-2 font-mono text-xs text-muted-foreground/60">
                   Digest: {error.digest}
                 </p>
               )}
@@ -75,18 +75,18 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
           {/* Reset button */}
           <button
             onClick={reset}
-            className="inline-flex items-center gap-2 rounded-lg bg-zinc-100 px-6 py-3 font-medium text-zinc-900 transition-colors hover:bg-zinc-200"
+            className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
             <RefreshCw className="h-4 w-4" />
             Try Again
           </button>
 
           {/* Support info */}
-          <p className="text-sm text-zinc-500">
+          <p className="text-sm text-muted-foreground">
             If this problem persists, please contact{' '}
             <a 
               href="mailto:support@taccargo.com" 
-              className="text-zinc-300 underline-offset-4 hover:underline"
+              className="text-foreground underline-offset-4 hover:underline"
             >
               support@taccargo.com
             </a>

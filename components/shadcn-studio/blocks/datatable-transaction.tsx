@@ -29,6 +29,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 
 import { usePagination } from '@/hooks/use-pagination'
 
+import { cn } from '@/lib/utils'
+
 export type Item = {
   id: string
   avatar: string
@@ -45,14 +47,20 @@ export const columns: ColumnDef<Item>[] = [
     accessorKey: 'name',
     header: 'Customer',
     cell: ({ row }) => (
-      <div className='flex items-center gap-2'>
-        <Avatar className='size-9'>
-          <AvatarImage src={row.original.avatar} alt='Hallie Richards' />
-          <AvatarFallback className='text-xs'>{row.original.avatarFallback}</AvatarFallback>
-        </Avatar>
-        <div className='flex flex-col text-sm'>
-          <span className='text-card-foreground font-medium'>{row.getValue('name')}</span>
-          <span className='text-muted-foreground'>{row.original.email}</span>
+      <div className='flex items-center gap-3'>
+        <div className="relative">
+          <Avatar className='size-9 border border-white/10'>
+            <AvatarImage src={row.original.avatar} alt={row.original.name} />
+            <AvatarFallback className='text-[10px] bg-secondary'>{row.original.name.substring(0, 2).toUpperCase()}</AvatarFallback>
+          </Avatar>
+          <div className={cn(
+            "absolute -bottom-0.5 -right-0.5 size-2.5 rounded-full border-2 border-background",
+            row.original.status === 'paid' ? "bg-success" : "bg-warning"
+          )} />
+        </div>
+        <div className='flex flex-col'>
+          <span className='text-xs font-bold text-foreground tracking-tight'>{row.getValue('name')}</span>
+          <span className='text-[10px] text-muted-foreground uppercase tracking-widest opacity-60'>{row.original.email}</span>
         </div>
       </div>
     )
@@ -63,42 +71,57 @@ export const columns: ColumnDef<Item>[] = [
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue('amount'))
 
-      const formatted = new Intl.NumberFormat('en-US', {
+      const formatted = new Intl.NumberFormat('en-IN', {
         style: 'currency',
-        currency: 'USD'
+        currency: 'INR',
+        maximumFractionDigits: 0
       }).format(amount)
 
-      return <span>{formatted}</span>
+      return <span className="text-kpi text-sm">{formatted}</span>
     }
   },
   {
     accessorKey: 'status',
     header: 'Status',
-    cell: ({ row }) => (
-      <Badge className='bg-primary/10 text-primary rounded-sm px-1.5 capitalize'>{row.getValue('status')}</Badge>
-    )
+    cell: ({ row }) => {
+      const status = row.getValue('status') as string;
+      const statusClass = {
+        paid: 'status-delivered',
+        processing: 'status-processing',
+        pending: 'status-pending',
+        failed: 'status-delayed'
+      }[status] || 'status-pending';
+
+      return (
+        <Badge className={cn('rounded px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider border-none shadow-none', statusClass)}>
+          {status}
+        </Badge>
+      )
+    }
   },
   {
     accessorKey: 'paidBy',
-    header: () => <span className='w-fit'>Paid by</span>,
+    header: () => <span className='text-[10px] uppercase tracking-widest'>Gateway</span>,
     cell: ({ row }) => (
-      // eslint-disable-next-line @next/next/no-img-element
-      <img
-        src={
-          row.getValue('paidBy') === 'mastercard'
-            ? 'https://cdn.shadcnstudio.com/ss-assets/blocks/data-table/image-1.png'
-            : 'https://cdn.shadcnstudio.com/ss-assets/blocks/data-table/image-2.png'
-        }
-        alt='Payment platform'
-        className='w-10.5'
-      />
+      <div className="flex items-center gap-2 opacity-80">
+        <img
+          src={
+            row.getValue('paidBy') === 'mastercard'
+              ? 'https://cdn.shadcnstudio.com/ss-assets/blocks/data-table/image-1.png'
+              : 'https://cdn.shadcnstudio.com/ss-assets/blocks/data-table/image-2.png'
+          }
+          alt='Payment platform'
+          className='h-3.5 grayscale invert brightness-200'
+        />
+        <span className="text-[10px] font-medium text-muted-foreground uppercase">{row.getValue('paidBy')}</span>
+      </div>
     )
   },
   {
     id: 'actions',
-    header: () => 'Actions',
+    header: () => '',
     cell: () => <RowActions />,
-    size: 60,
+    size: 40,
     enableHiding: false
   }
 ]
@@ -133,36 +156,40 @@ const TransactionDatatable = ({ data }: { data: Item[] }) => {
 
   return (
     <div className='w-full'>
-      <div className='border-b'>
+      <div className='overflow-x-auto'>
         <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map(headerGroup => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map(header => {
-                  return (
-                    <TableHead key={header.id} className='text-muted-foreground h-14 first:pl-4'>
-                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableHead>
-                  )
-                })}
+          <TableHeader className="bg-muted/30 relative">
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id} className="border-b border-border/10 hover:bg-transparent">
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id} className="h-10 text-[10px] font-bold text-muted-foreground/70 uppercase tracking-[0.2em] py-0">
+                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                  </TableHead>
+                ))}
               </TableRow>
             ))}
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map(row => (
-                <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
-                  {row.getVisibleCells().map(cell => (
-                    <TableCell key={cell.id} className='first:pl-4'>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && 'selected'}
+                  className="border-b border-border/5 hover:bg-primary/[0.02] transition-colors group cursor-default"
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id} className="py-3">
+                      <div className="transition-transform duration-300 group-hover:translate-x-0.5">
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </div>
                     </TableCell>
                   ))}
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className='h-24 text-center'>
-                  No results.
+                <TableCell colSpan={columns.length} className='h-24 text-center text-xs text-muted-foreground'>
+                  NO SYSTEM RECORDS FOUND.
                 </TableCell>
               </TableRow>
             )}
@@ -170,83 +197,65 @@ const TransactionDatatable = ({ data }: { data: Item[] }) => {
         </Table>
       </div>
 
-      <div className='flex items-center justify-between gap-3 px-6 py-4 max-sm:flex-col md:max-lg:flex-col'>
-        <p className='text-muted-foreground text-sm whitespace-nowrap' aria-live='polite'>
-          Showing{' '}
-          <span>
-            {table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1} to{' '}
-            {Math.min(
-              Math.max(
-                table.getState().pagination.pageIndex * table.getState().pagination.pageSize +
-                  table.getState().pagination.pageSize,
-                0
-              ),
+      <div className='flex items-center justify-between gap-3 px-6 py-4 border-t border-border/10'>
+        <p className='text-[10px] font-bold text-muted-foreground/50 uppercase tracking-widest' aria-live='polite'>
+          SYSTEM_LOG: <span className="text-muted-foreground">
+            {table.getRowCount() === 0 ? 0 : table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1} - {Math.min(
+              table.getState().pagination.pageIndex * table.getState().pagination.pageSize +
+              table.getState().pagination.pageSize,
               table.getRowCount()
             )}
-          </span>{' '}
-          of <span>{table.getRowCount().toString()} entries</span>
+          </span> / <span className="text-secondary-foreground">{table.getRowCount().toString()}</span>
         </p>
 
-        <div>
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                <Button
-                  className='disabled:pointer-events-none disabled:opacity-50'
-                  variant={'ghost'}
-                  onClick={() => table.previousPage()}
-                  disabled={!table.getCanPreviousPage()}
-                  aria-label='Go to previous page'
-                >
-                  <ChevronLeftIcon aria-hidden='true' />
-                  Previous
-                </Button>
-              </PaginationItem>
+        <Pagination>
+          <PaginationContent className="gap-1">
+            <PaginationItem>
+              <Button
+                size="sm"
+                className='h-7 text-[10px] font-bold uppercase border-none hover:bg-primary/10 hover:text-primary transition-all'
+                variant={'ghost'}
+                onClick={() => table.previousPage()}
+                disabled={!table.getCanPreviousPage()}
+              >
+                <ChevronLeftIcon className="size-3 mr-1" />
+                PREV
+              </Button>
+            </PaginationItem>
 
-              {showLeftEllipsis && (
-                <PaginationItem>
-                  <PaginationEllipsis />
+            {pages.map(page => {
+              const isActive = page === table.getState().pagination.pageIndex + 1
+
+              return (
+                <PaginationItem key={page}>
+                  <Button
+                    size='icon'
+                    className={cn(
+                      "size-7 text-[10px] font-bold border-none transition-all",
+                      isActive ? "bg-primary text-primary-foreground shadow-glow-primary" : "bg-transparent text-muted-foreground hover:bg-muted"
+                    )}
+                    onClick={() => table.setPageIndex(page - 1)}
+                  >
+                    {page.toString().padStart(2, '0')}
+                  </Button>
                 </PaginationItem>
-              )}
+              )
+            })}
 
-              {pages.map(page => {
-                const isActive = page === table.getState().pagination.pageIndex + 1
-
-                return (
-                  <PaginationItem key={page}>
-                    <Button
-                      size='icon'
-                      className={`${!isActive && 'bg-primary/10 text-primary hover:bg-primary/20 focus-visible:ring-primary/20 dark:focus-visible:ring-primary/40'}`}
-                      onClick={() => table.setPageIndex(page - 1)}
-                      aria-current={isActive ? 'page' : undefined}
-                    >
-                      {page}
-                    </Button>
-                  </PaginationItem>
-                )
-              })}
-
-              {showRightEllipsis && (
-                <PaginationItem>
-                  <PaginationEllipsis />
-                </PaginationItem>
-              )}
-
-              <PaginationItem>
-                <Button
-                  className='disabled:pointer-events-none disabled:opacity-50'
-                  variant={'ghost'}
-                  onClick={() => table.nextPage()}
-                  disabled={!table.getCanNextPage()}
-                  aria-label='Go to next page'
-                >
-                  Next
-                  <ChevronRightIcon aria-hidden='true' />
-                </Button>
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
-        </div>
+            <PaginationItem>
+              <Button
+                size="sm"
+                className='h-7 text-[10px] font-bold uppercase border-none hover:bg-primary/10 hover:text-primary transition-all'
+                variant={'ghost'}
+                onClick={() => table.nextPage()}
+                disabled={!table.getCanNextPage()}
+              >
+                NEXT
+                <ChevronRightIcon className="size-3 ml-1" />
+              </Button>
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
       </div>
     </div>
   )

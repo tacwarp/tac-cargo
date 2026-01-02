@@ -12,7 +12,7 @@ import {
   CirclePlusIcon,
   LogOutIcon
 } from 'lucide-react'
-import { createClient } from '@/lib/supabase/client'
+import { signOutUser } from '@/lib/auth-helpers'
 
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import {
@@ -40,14 +40,13 @@ const ProfileDropdown = ({ trigger, defaultOpen, align = 'end', user }: Props) =
   const router = useRouter()
 
   const handleSignOut = async () => {
-    try {
-      const supabase = createClient()
-      const { error } = await supabase.auth.signOut()
-      if (error) throw error
-      router.push('/login')
-    } catch (error) {
-      console.error('Sign out failed:', error)
-    }
+    // Use robust sign-out with forced local cleanup
+    // This prevents authentication state inconsistency even if server sign-out fails
+    await signOutUser()
+    
+    // Always redirect to login regardless of result
+    // Local cleanup is guaranteed to have been performed
+    router.push('/login')
   }
 
   const displayName = user?.name || 'John Doe'

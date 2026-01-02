@@ -10,7 +10,7 @@ import {
   LogOut,
   Sparkles,
 } from "lucide-react"
-import { createClient } from "@/lib/supabase/client"
+import { signOutUser } from "@/lib/auth-helpers"
 
 import {
   Avatar,
@@ -52,14 +52,16 @@ export function NavUser({
   }, [])
 
   const handleSignOut = async () => {
-    try {
-      const supabase = createClient()
-      const { error } = await supabase.auth.signOut()
-      if (error) throw error
-      router.push('/login')
-    } catch (error) {
-      console.error('Sign out failed:', error)
-    }
+    // Use robust sign-out with forced local cleanup
+    // This prevents authentication state inconsistency even if server sign-out fails
+    const result = await signOutUser()
+
+    // Always redirect to login regardless of result
+    // Local cleanup is guaranteed to have been performed
+    router.push('/login')
+
+    // Note: If result.success is false, the server session may still exist
+    // but local state is cleared, preventing access to protected routes
   }
 
   if (!mounted) {
@@ -85,64 +87,72 @@ export function NavUser({
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className="data-[state=open]:bg-primary/5 h-12 border-t border-border/10 rounded-none hover:bg-muted/30 transition-all duration-300"
             >
-              <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
-              </Avatar>
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{user.name}</span>
-                <span className="truncate text-xs">{user.email}</span>
+              <div className="relative">
+                <Avatar className="h-8 w-8 rounded-md border border-white/10">
+                  <AvatarImage src={user.avatar} alt={user.name} />
+                  <AvatarFallback className="rounded-md bg-secondary text-[10px]">AD</AvatarFallback>
+                </Avatar>
+                <div className="absolute -bottom-0.5 -right-0.5 size-2 rounded-full border-2 border-background bg-success" />
               </div>
-              <ChevronsUpDown className="ml-auto size-4" />
+              <div className="grid flex-1 text-left ml-1">
+                <span className="truncate text-xs font-bold text-foreground uppercase tracking-tight">{user.name}</span>
+                <span className="truncate text-[10px] font-medium text-muted-foreground/60 uppercase tracking-tighter">{user.email}</span>
+              </div>
+              <ChevronsUpDown className="ml-auto size-3 opacity-40" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+            className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-md glass-card noise-overlay border-border/20 shadow-glow-primary/10"
             side={isMobile ? "bottom" : "right"}
             align="end"
             sideOffset={4}
           >
             <DropdownMenuLabel className="p-0 font-normal">
-              <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar className="h-8 w-8 rounded-lg">
+              <div className="flex items-center gap-3 px-3 py-3 text-left">
+                <Avatar className="h-8 w-8 rounded-md border border-white/10">
                   <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                  <AvatarFallback className="rounded-md bg-secondary text-[10px]">AD</AvatarFallback>
                 </Avatar>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">{user.name}</span>
-                  <span className="truncate text-xs">{user.email}</span>
+                <div className="grid flex-1 text-left">
+                  <span className="truncate text-xs font-bold text-foreground uppercase tracking-tight">{user.name}</span>
+                  <span className="truncate text-[10px] font-medium text-muted-foreground/60 uppercase tracking-tighter">{user.email}</span>
                 </div>
               </div>
             </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Sparkles />
-                Upgrade to Pro
+            <DropdownMenuSeparator className="bg-border/10" />
+            <DropdownMenuGroup className="p-1">
+              <DropdownMenuItem className="text-[11px] font-bold uppercase tracking-widest px-3 py-2 focus:bg-primary/10 focus:text-primary transition-colors cursor-pointer">
+                <Sparkles className="size-3.5 mr-2 text-primary" />
+                Management Console
               </DropdownMenuItem>
             </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck />
-                Account
+            <DropdownMenuSeparator className="bg-border/10" />
+            <DropdownMenuGroup className="p-1">
+              <DropdownMenuItem className="text-[11px] font-bold uppercase tracking-widest px-3 py-2 focus:bg-primary/10 transition-colors cursor-pointer">
+                <BadgeCheck className="size-3.5 mr-2 opacity-60" />
+                Profile Settings
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard />
-                Billing
+              <DropdownMenuItem className="text-[11px] font-bold uppercase tracking-widest px-3 py-2 focus:bg-primary/10 transition-colors cursor-pointer">
+                <CreditCard className="size-3.5 mr-2 opacity-60" />
+                Access Keys
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bell />
-                Notifications
+              <DropdownMenuItem className="text-[11px] font-bold uppercase tracking-widest px-3 py-2 focus:bg-primary/10 transition-colors cursor-pointer">
+                <Bell className="size-3.5 mr-2 opacity-60" />
+                Alert Logs
               </DropdownMenuItem>
             </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleSignOut}>
-              <LogOut />
-              Log out
-            </DropdownMenuItem>
+            <DropdownMenuSeparator className="bg-border/10" />
+            <div className="p-1">
+              <DropdownMenuItem
+                onClick={handleSignOut}
+                className="text-[11px] font-bold uppercase tracking-widest px-3 py-2 text-destructive focus:bg-destructive/10 focus:text-destructive transition-colors cursor-pointer"
+              >
+                <LogOut className="size-3.5 mr-2" />
+                Terminate Session
+              </DropdownMenuItem>
+            </div>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>

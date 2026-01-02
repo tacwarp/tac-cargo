@@ -14,6 +14,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { checkRateLimit, getClientIp, getRateLimitHeaders, RATE_LIMITS } from '@/lib/rate-limit'
+import { logger } from '@/lib/logger'
 
 /**
  * AWB validation regex pattern
@@ -162,11 +163,15 @@ export async function GET(request: Request) {
       .order('scanned_at', { ascending: false })
 
     if (eventsError) {
-      console.error('[Track API] Error fetching scan events:', eventsError)
-      // Continue without events rather than failing completely
+      logger.error('Failed to fetch scan events', eventsError, {
+        shipmentId: shipment.id,
+        awb,
+      })
+      // Continue without events rather than failing complete
     }
 
     // Return structured response with rate limit headers
+    // PII removed for public tracking - only essential tracking information exposed
     return NextResponse.json(
       {
         shipment: {
@@ -179,21 +184,34 @@ export async function GET(request: Request) {
           eta: shipment.eta,
           delivered_at: shipment.delivered_at,
           created_at: shipment.created_at,
-          consignee_name: shipment.consignee_name,
-          consignee_address: shipment.consignee_address,
-          consignee_phone: shipment.consignee_phone,
-          origin: shipment.origin_warehouse,
-          destination: shipment.destination_warehouse,
-          customer: shipment.customer,
+          origin: shipment.origin_warehouse ? {
+            code: shipment.origin_warehouse.code,
+            city: shipment.origin_warehouse.city,
+            state: shipment.origin_warehouse.state,
+          } : null,
+          destination: shipment.destination_warehouse ? {
+            code: shipment.destination_warehouse.code,
+            city: shipment.destination_warehouse.city,
+            state: shipment.destination_warehouse.state,
+          } : null,
         },
-        events: events || [],
+        events: events?.map(event => ({
+          id: event.id,
+          scan_type: event.scan_type,
+          scanned_at: event.scanned_at,
+          location: event.warehouse ? {
+            code: event.warehouse.code,
+            city: event.warehouse.city,
+          } : null,
+          remarks: event.remarks,
+        })) || [],
       },
       {
         headers: getRateLimitHeaders(rateLimitResult),
       }
     )
   } catch (error) {
-    console.error('[Track API] Unexpected error:', error)
+    logger.error('Tracking API unexpected error', error, { awb })
     return NextResponse.json(
       { 
         error: 'Internal server error',

@@ -6,11 +6,16 @@ export async function GET(request: Request) {
   const code = searchParams.get('code')
   const next = searchParams.get('next') ?? '/dashboard'
 
+  // Validate redirect path to prevent open redirect vulnerability
+  // Blocks both external URLs and protocol-relative URLs (//example.com)
+  const isValidRedirect = next.startsWith('/') && !next.startsWith('//')
+  const safePath = isValidRedirect ? next : '/dashboard'
+
   if (code) {
     const supabase = await createClient()
     const { error } = await supabase.auth.exchangeCodeForSession(code)
     if (!error) {
-      return NextResponse.redirect(`${origin}${next}`)
+      return NextResponse.redirect(`${origin}${safePath}`)
     }
   }
 

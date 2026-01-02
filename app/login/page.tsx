@@ -1,190 +1,285 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
-import { Package, Loader2, ArrowLeft } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { ThemeToggle } from '@/components/ui/theme-toggle'
-import { createClient } from '@/lib/supabase/client'
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { RiEyeLine, RiEyeOffLine, RiMailLine, RiLockLine, RiArrowLeftLine, RiShieldCheckLine, RiCheckboxCircleLine, RiTruckLine, RiArrowRightLine } from "@remixicon/react"
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+import { createClient } from '@/lib/supabase/client';
+import { LottieContainer } from "@/components/ui/lottie-container"
+import { ThemeToggle } from "@/components/ui/theme-toggle"
 
-export default function LoginPage() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const router = useRouter()
-  const supabase = createClient()
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setError(null)
-
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
-
-    if (error) {
-      setError(error.message)
-      setLoading(false)
-    } else {
-      router.push('/dashboard')
-      router.refresh()
+// Variants for staggered animation
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2
     }
   }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: "spring" as const,
+      stiffness: 100,
+      damping: 10
+    }
+  }
+};
+
+export default function LoginPage() {
+  const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+  const supabase = createClient();
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        toast.error("Authentication Failed", {
+          description: error.message,
+        });
+        return;
+      }
+
+      toast.success("Security Clearance Granted", {
+        description: "Welcome back, Operative.",
+      });
+
+      router.push('/dashboard');
+      router.refresh();
+
+    } catch (err) {
+      console.error("Login error:", err);
+      toast.error("System Error", {
+        description: "An unexpected error occurred. Please try again.",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
-    <div className="relative flex min-h-screen flex-col bg-background">
-      {/* Background Grid */}
-      <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:linear-gradient(to_bottom,black_40%,transparent_100%)]"></div>
-      
-      {/* Header */}
-      <header className="flex items-center justify-between border-b border-border/40 px-6 py-4">
-        <Link href="/" className="group flex items-center gap-3">
-          <div className="relative flex h-8 w-8 items-center justify-center overflow-hidden rounded-sm border border-border bg-muted/20 transition-colors group-hover:border-primary/50">
-            <Package className="h-4 w-4 text-foreground transition-transform duration-300 group-hover:scale-110" />
-          </div>
-          <div className="flex flex-col leading-none">
-            <span className="text-sm font-semibold tracking-tight text-foreground">TAC</span>
-            <span className="mt-[2px] font-mono text-[9px] uppercase tracking-widest text-muted-foreground">Infrastructure</span>
-          </div>
-        </Link>
-        <ThemeToggle />
-      </header>
+    <div className="min-h-screen w-full flex bg-background text-foreground overflow-hidden">
 
-      {/* Main Content */}
-      <main className="flex flex-1 items-center justify-center px-4 py-12">
-        <div className="w-full max-w-md space-y-8">
-          {/* Back Link */}
-          <Link 
-            href="/" 
-            className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back to home
+      {/* Visual Side (Left) - 60% */}
+      <motion.div
+        initial={{ opacity: 0, x: -50 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="hidden lg:flex w-1/2 relative flex-col justify-between p-16 overflow-hidden bg-black"
+      >
+        {/* Animated Background Mesh */}
+        <div className="absolute inset-0 z-0">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--gradient-start)_0%,_transparent_50%)] opacity-30 blur-[80px]" />
+          <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-black via-black/80 to-transparent" />
+
+          {/* Grid Pattern */}
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#333_1px,transparent_1px),linear-gradient(to_bottom,#333_1px,transparent_1px)] bg-[size:40px_40px] opacity-10 [mask-image:radial-gradient(ellipse_80%_80%_at_50%_50%,#000_70%,transparent_100%)]" />
+        </div>
+
+        {/* Branding */}
+        <div className="relative z-10">
+          <Link href="/" className="inline-flex items-center gap-3 group">
+            <div className="w-12 h-12 rounded-xl bg-white/5 backdrop-blur-md flex items-center justify-center border border-white/10 group-hover:border-primary/50 transition-colors">
+              <div className="w-6 h-6 rounded-lg bg-primary shadow-[0_0_15px_rgba(var(--primary),0.5)]" />
+            </div>
+            <div>
+              <div className="text-white font-bold text-2xl tracking-tight">TAC</div>
+              <div className="text-white/40 text-xs tracking-[0.2em] font-mono">INFRASTRUCTURE</div>
+            </div>
           </Link>
+        </div>
 
-          {/* Login Form Container */}
-          <div className="space-y-6 border border-border bg-card p-8">
-            {/* Corner Accents */}
-            <div className="relative">
-              <div className="absolute -left-8 -top-8 h-3 w-3 border-l border-t border-primary/30"></div>
-              <div className="absolute -right-8 -top-8 h-3 w-3 border-r border-t border-primary/30"></div>
+        {/* Center Visual - 3D/Lottie */}
+        <div className="absolute inset-0 flex items-center justify-center z-0 pointer-events-none">
+          {/* Constrained Container */}
+          <div className="w-[80%] max-w-[600px] h-auto aspect-square flex items-center justify-center relative p-8">
+            {/* Gradient glow behind placeholder */}
+            <div className="absolute inset-0 bg-primary/10 blur-[100px] rounded-full" />
+
+            <div className="w-full h-full opacity-90 mix-blend-screen grayscale-[20%] contrast-125">
+              <LottieContainer
+                src="/lottie/CORRIDOR_VISUALIZATION.json"
+                className="w-full h-full object-contain"
+              />
             </div>
-
-            {/* Header */}
-            <div className="space-y-2">
-              <span className="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground">Authentication Protocol</span>
-              <h1 className="text-2xl font-semibold tracking-tight text-foreground">Sign in to Portal</h1>
-              <p className="text-sm text-muted-foreground">
-                Enter your credentials to access the logistics dashboard.
-              </p>
-            </div>
-
-            {/* Error Message */}
-            {error && (
-              <div className="border border-destructive/50 bg-destructive/10 px-4 py-3 text-sm text-destructive">
-                {error}
-              </div>
-            )}
-
-            {/* Form */}
-            <form onSubmit={handleLogin} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                  Email Address
-                </Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="operator@tac.cargo"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="h-12 rounded-none border-border bg-background font-mono text-sm focus-visible:ring-primary"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="password" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                    Password
-                  </Label>
-                  <Link 
-                    href="/forgot-password" 
-                    className="text-xs text-muted-foreground transition-colors hover:text-primary"
-                  >
-                    Forgot password?
-                  </Link>
-                </div>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  className="h-12 rounded-none border-border bg-background font-mono text-sm focus-visible:ring-primary"
-                />
-              </div>
-
-              <Button 
-                type="submit" 
-                className="h-12 w-full rounded-none font-mono text-xs font-bold uppercase tracking-widest"
-                disabled={loading}
-              >
-                {loading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Authenticating...
-                  </>
-                ) : (
-                  'Execute Login'
-                )}
-              </Button>
-            </form>
-
-            {/* Divider */}
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-border"></div>
-              </div>
-              <div className="relative flex justify-center text-xs">
-                <span className="bg-card px-4 font-mono uppercase tracking-widest text-muted-foreground">
-                  Or
-                </span>
-              </div>
-            </div>
-
-            {/* Alternative Actions */}
-            <div className="text-center text-sm text-muted-foreground">
-              Don&apos;t have an account?{' '}
-              <Link href="/signup" className="font-medium text-primary hover:underline">
-                Request Access
-              </Link>
-            </div>
-
-            {/* Bottom Corner Accents */}
-            <div className="relative">
-              <div className="absolute -bottom-8 -left-8 h-3 w-3 border-b border-l border-primary/30"></div>
-              <div className="absolute -bottom-8 -right-8 h-3 w-3 border-b border-r border-primary/30"></div>
-            </div>
-          </div>
-
-          {/* Status Indicator */}
-          <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-75"></span>
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
-            </span>
-            <span className="font-mono uppercase tracking-widest">System Operational</span>
           </div>
         </div>
-      </main>
+
+        {/* Bottom Content */}
+        <div className="relative z-10 max-w-xl space-y-8">
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            className="text-5xl font-bold text-white leading-[1.1]"
+          >
+            Orchestrating <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">Global Commerce.</span>
+          </motion.h2>
+
+          <div className="grid grid-cols-2 gap-6">
+            {[
+              { icon: RiShieldCheckLine, text: "Military-Grade Encryption" },
+              { icon: RiTruckLine, text: "Autonomous Fleet Control" },
+              { icon: RiCheckboxCircleLine, text: "99.99% Uptime SLA" }
+            ].map((feature, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.7 + (i * 0.1) }}
+                className="flex items-center gap-3 text-white/70"
+              >
+                <feature.icon className="w-5 h-5 text-primary" />
+                <span className="text-sm font-medium">{feature.text}</span>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Form Side (Right) - 40% */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 lg:p-12 relative bg-background">
+        {/* Theme Toggle - Absolute Top Right */}
+        <div className="absolute top-6 right-6 z-50">
+          <ThemeToggle />
+        </div>
+
+        {/* Mobile Background Elements */}
+        <div className="lg:hidden absolute inset-0 bg-gradient-to-b from-primary/10 to-background z-0" />
+
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="w-full max-w-sm space-y-10 relative z-10"
+        >
+          {/* Header */}
+          <motion.div variants={itemVariants} className="space-y-2">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors mb-6 group"
+            >
+              <RiArrowLeftLine className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+              Return to Base
+            </Link>
+            <h1 className="text-3xl font-bold tracking-tight text-foreground">Identity Verification</h1>
+            <p className="text-muted-foreground">Authorized operatives only. Enter your credentials to access the command center.</p>
+          </motion.div>
+
+          {/* Form */}
+          <form onSubmit={handleLogin} className="space-y-6">
+            <motion.div variants={itemVariants} className="space-y-4">
+
+              {/* Email */}
+              <div className="space-y-1.5">
+                <label htmlFor="operative-id" className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Operative ID</label>
+                <div className="relative group">
+                  <RiMailLine className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                  <input
+                    id="operative-id"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="name@organization.com"
+                    autoComplete="email"
+                    required
+                    className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-secondary/30 border border-border focus:border-primary/50 focus:bg-secondary/50 focus:ring-4 focus:ring-primary/10 transition-all outline-none text-foreground placeholder:text-muted-foreground/40 font-medium"
+                  />
+                </div>
+              </div>
+
+              {/* Password */}
+              <div className="space-y-1.5">
+                <div className="flex justify-between items-center">
+                  <label htmlFor="security-key" className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Security Key</label>
+                  <Link href="#" className="text-xs text-primary hover:underline">Lost access?</Link>
+                </div>
+                <div className="relative group">
+                  <RiLockLine className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                  <input
+                    id="security-key"
+                    type={showPassword ? 'text' : 'password'}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••••••"
+                    autoComplete="current-password"
+                    required
+                    className="w-full pl-12 pr-12 py-3.5 rounded-xl bg-secondary/30 border border-border focus:border-primary/50 focus:bg-secondary/50 focus:ring-4 focus:ring-primary/10 transition-all outline-none text-foreground placeholder:text-muted-foreground/40 font-medium"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    {showPassword ? <RiEyeOffLine className="w-5 h-5" /> : <RiEyeLine className="w-5 h-5" />}
+                  </button>
+                </div>
+              </div>
+
+            </motion.div>
+
+            <motion.div variants={itemVariants} className="pt-2">
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="w-full relative overflow-hidden group btn-primary h-14 rounded-xl font-bold tracking-wide text-primary-foreground shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+                <span className="relative flex items-center justify-center gap-2">
+                  {isLoading ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      AUTHENTICATING...
+                    </>
+                  ) : (
+                    <>
+                      INITIATE SESSION
+                      <RiArrowRightLine className="w-5 h-5" />
+                    </>
+                  )}
+                </span>
+              </button>
+            </motion.div>
+          </form>
+
+          {/* Footer */}
+          <motion.div variants={itemVariants} className="text-center space-y-4">
+            <p className="text-sm text-muted-foreground">
+              New to the network?{' '}
+              <Link href="/request-access" className="text-primary font-medium hover:text-primary-hover transition-colors">
+                Request Clearance
+              </Link>
+            </p>
+
+            <div className="flex items-center justify-center gap-2 text-[10px] text-muted-foreground/60 uppercase tracking-widest font-mono">
+              <RiShieldCheckLine className="w-3 h-3" />
+              <span>End-to-End Encrypted</span>
+            </div>
+          </motion.div>
+
+        </motion.div>
+      </div>
     </div>
-  )
+  );
 }

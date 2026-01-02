@@ -1,5 +1,5 @@
 import { PageLayout } from '@/components/dashboard/page-layout'
-import StatisticsCard from '@/components/shadcn-studio/blocks/statistics-card-01'
+import { StatCard } from '@/components/dashboard/stat-card'
 import ProductInsightsCard from '@/components/shadcn-studio/blocks/widget-product-insights'
 import TotalEarningCard from '@/components/shadcn-studio/blocks/widget-total-earning'
 import SalesMetricsCard from '@/components/shadcn-studio/blocks/chart-sales-metrics'
@@ -7,52 +7,53 @@ import TransactionDatatable, { type Item } from '@/components/shadcn-studio/bloc
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import {
-  PackageIcon,
-  TruckIcon,
-  FileTextIcon,
-  UsersIcon,
-  PlusIcon,
-  PlaneIcon
-} from 'lucide-react'
+  RiBox3Line,
+  RiTruckLine,
+  RiAddLine,
+  RiPlaneLine,
+  RiTimeLine,
+  RiCheckboxCircleLine,
+} from '@remixicon/react'
 import Link from 'next/link'
 
 const StatisticsCardData = [
   {
-    icon: <PackageIcon className='size-4' />,
+    icon: RiBox3Line,
     value: '1,247',
     title: 'Active Shipments',
-    changePercentage: '+12.5%'
+    trend: { value: 12.5, isPositive: true },
+    isActive: true
   },
   {
-    icon: <TruckIcon className='size-4' />,
+    icon: RiTruckLine,
     value: '342',
     title: 'In Transit',
-    changePercentage: '+5.2%'
+    trend: { value: 5.2, isPositive: true }
   },
   {
-    icon: <FileTextIcon className='size-4' />,
+    icon: RiTimeLine,
     value: '23',
-    title: 'Pending Invoices',
-    changePercentage: '-3.1%'
+    title: 'Pending Deliveries',
+    trend: { value: 3.1, isPositive: false }
   },
   {
-    icon: <UsersIcon className='size-4' />,
-    value: '156',
-    title: 'Active Customers',
-    changePercentage: '+8.7%'
+    icon: RiCheckboxCircleLine,
+    value: '892',
+    title: 'Delivered Today',
+    trend: { value: 18.3, isPositive: true }
   }
 ]
 
 const earningData = [
   {
-    icon: <PlaneIcon className='size-6 text-primary' />,
+    icon: <RiPlaneLine className='size-6 text-primary' />,
     platform: 'Air Cargo',
     technologies: 'International',
     earnings: '₹8,56,926',
     progressPercentage: 75
   },
   {
-    icon: <TruckIcon className='size-6 text-primary' />,
+    icon: <RiTruckLine className='size-6 text-primary' />,
     platform: 'Surface',
     technologies: 'Domestic',
     earnings: '₹4,65,031',
@@ -100,65 +101,70 @@ const transactionData: Item[] = [
     status: 'pending',
     email: 'accounts@quickship.com',
     paidBy: 'visa'
-  },
-  {
-    id: '5',
-    avatar: 'https://cdn.shadcnstudio.com/ss-assets/avatar/avatar-5.png',
-    avatarFallback: 'PC',
-    name: 'Prime Cargo',
-    amount: 72316.0,
-    status: 'paid',
-    email: 'finance@primecargo.com',
-    paidBy: 'mastercard'
   }
 ]
 
 export default function DashboardPage() {
   return (
     <PageLayout
-      title='Dashboard'
-      description='Overview of your cargo operations'
+      title='Operations Control'
+      description='Mission-critical overview of TAC Cargo logistics'
       actions={
-        <Button asChild>
+        <Button asChild className="btn-primary">
           <Link href='/dashboard/shipments/new'>
-            <PlusIcon className='mr-2 size-4' />
-            New Shipment
+            <RiAddLine className='mr-2 size-4' />
+            Initialize Freight
           </Link>
         </Button>
       }
     >
-      <div className='grid grid-cols-2 gap-6 lg:grid-cols-3'>
-        <div className='col-span-full grid gap-6 sm:grid-cols-2 lg:grid-cols-4'>
+      <div className='grid grid-cols-12 gap-6'>
+        {/* Statistics Row - Bento Style High Density */}
+        <div className='col-span-full grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4'>
           {StatisticsCardData.map((card, index) => (
-            <StatisticsCard
-              key={index}
-              icon={card.icon}
-              title={card.title}
-              value={card.value}
-              changePercentage={card.changePercentage}
-            />
+            <div key={index}>
+              <StatCard
+                icon={card.icon}
+                title={card.title}
+                value={card.value}
+                trend={card.trend}
+                isActive={card.isActive}
+              />
+            </div>
           ))}
         </div>
 
-        <div className='grid gap-6 max-xl:col-span-full lg:max-xl:grid-cols-2'>
-          <ProductInsightsCard className='justify-between gap-3 [&>[data-slot=card-content]]:space-y-5' />
+        {/* Major Widgets - Asymmetrical Priority */}
+        <div className='col-span-full lg:col-span-4 grid gap-6'>
+          <ProductInsightsCard className='depth-surface noise-overlay h-full justify-between gap-3 [&>[data-slot=card-content]]:space-y-5' />
+        </div>
 
+        <div className='col-span-full lg:col-span-8'>
+          <SalesMetricsCard className='depth-surface noise-overlay [&>[data-slot=card-content]]:space-y-6 border-none' />
+        </div>
+
+        {/* Secondary Detailed Widgets */}
+        <div className='col-span-full xl:col-span-4'>
           <TotalEarningCard
-            title='Revenue Overview'
+            title='Revenue Stream'
             earning={2465050}
             trend='up'
             percentage={10}
-            comparisonText='Compare to last year (₹18,43,325)'
+            comparisonText='Relative to FY24 Performance'
             earningData={earningData}
-            className='justify-between gap-5 sm:min-w-0 [&>[data-slot=card-content]]:space-y-7'
+            className='depth-surface noise-overlay h-full justify-between gap-5 sm:min-w-0 [&>[data-slot=card-content]]:space-y-7 border-none'
           />
         </div>
 
-        <SalesMetricsCard className='col-span-full xl:col-span-2 [&>[data-slot=card-content]]:space-y-6' />
-
-        <Card className='col-span-full w-full py-0'>
-          <TransactionDatatable data={transactionData} />
-        </Card>
+        <div className='col-span-full xl:col-span-8'>
+          <Card className='depth-surface noise-overlay border-none overflow-hidden'>
+            <div className="px-6 py-4 border-b border-border/40 flex items-center justify-between">
+              <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Operational Queue</h3>
+              <Link href="/dashboard/shipments" className="text-[10px] font-bold uppercase tracking-tighter text-primary hover:underline">View Full Manifest</Link>
+            </div>
+            <TransactionDatatable data={transactionData} />
+          </Card>
+        </div>
       </div>
     </PageLayout>
   )

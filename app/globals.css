@@ -1,103 +1,301 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/forms";
+
+@custom-variant dark (&:where(.dark, .dark *));
 
 @layer base {
   :root {
     color-scheme: dark;
 
-    --background: oklch(0.17 0.01 270);
-    --foreground: oklch(0.96 0.00 0);
+    /* ============================================
+       BASE COLORS - TAC Indigo System
+       ============================================ */
+    --background: oklch(0.17 0.01 260);
+    --foreground: oklch(0.95 0 0);
 
-    --card: oklch(0.20 0.01 270);
-    --card-foreground: oklch(0.96 0.00 0);
+    /* Card Surfaces - Enhanced for visibility */
+    --card: oklch(0.22 0.015 260);
+    --card-foreground: oklch(0.95 0 0);
 
-    --popover: oklch(0.20 0.01 270);
-    --popover-foreground: oklch(0.96 0.00 0);
+    /* Elevated Surfaces */
+    --popover: oklch(0.24 0.015 260);
+    --popover-foreground: oklch(0.95 0 0);
+    
+    /* Additional neutral layers for depth */
+    --bg-elevated: oklch(0.26 0.015 260);
+    --bg-subtle: oklch(0.19 0.01 260);
 
-    --primary: oklch(0.62 0.22 285);
+    /* ============================================
+       BRAND COLORS - TAC Indigo
+       ============================================ */
+    --primary: oklch(0.63 0.18 265);
+    --primary-hover: oklch(0.68 0.20 265);
     --primary-foreground: oklch(1 0 0);
 
-    --secondary: oklch(0.25 0.01 270);
-    --secondary-foreground: oklch(0.96 0.00 0);
+    /* Secondary */
+    --secondary: oklch(0.27 0.01 260);
+    --secondary-hover: oklch(0.32 0.01 260);
+    --secondary-foreground: oklch(0.95 0 0);
 
-    --muted: oklch(0.25 0.01 270);
-    --muted-foreground: oklch(0.70 0.01 270);
+    /* Muted Elements */
+    --muted: oklch(0.25 0.01 260);
+    --muted-foreground: oklch(0.7 0 0);
 
-    --accent: oklch(0.30 0.02 260);
-    --accent-foreground: oklch(0.96 0.00 0);
+    /* Accent - Blue/Indigo Mix */
+    --accent: oklch(0.63 0.18 265);
+    --accent-hover: oklch(0.68 0.20 265);
+    --accent-foreground: oklch(1 0 0);
 
-    --destructive: oklch(0.68 0.20 25);
+    /* ============================================
+       STATUS COLORS - High Contrast
+       ============================================ */
+    --success: oklch(0.72 0.18 145);
+    --success-hover: oklch(0.77 0.20 145);
+    --success-foreground: oklch(0.95 0 0);
+
+    --warning: oklch(0.75 0.17 85);
+    --warning-hover: oklch(0.80 0.19 85);
+    --warning-foreground: oklch(0.10 0.015 250);
+
+    --destructive: oklch(0.63 0.22 25);
+    --destructive-hover: oklch(0.68 0.24 25);
     --destructive-foreground: oklch(1 0 0);
 
-    --border: oklch(0.30 0.01 270);
-    --input: oklch(0.30 0.01 270);
-    --ring: oklch(0.62 0.22 285);
+    --info: oklch(0.70 0.18 225);
+    --info-hover: oklch(0.75 0.20 225);
+    --info-foreground: oklch(0.10 0.015 250);
 
-    --chart-1: oklch(0.75 0.18 145);
-    --chart-2: oklch(0.62 0.22 285);
-    --chart-3: oklch(0.75 0.14 25);
-    --chart-4: oklch(0.65 0.18 250);
-    --chart-5: oklch(0.70 0.01 270);
+    /* Premium Purple */
+    --premium: oklch(0.63 0.24 285);
+    --premium-hover: oklch(0.68 0.26 285);
+    --premium-foreground: oklch(1 0 0);
 
-    --sidebar: oklch(0.14 0.01 270);
-    --sidebar-foreground: oklch(0.96 0.00 0);
-    --sidebar-primary: oklch(0.62 0.22 285);
-    --sidebar-primary-foreground: oklch(1 0 0);
-    --sidebar-accent: oklch(0.25 0.01 270);
-    --sidebar-accent-foreground: oklch(0.62 0.22 285);
-    --sidebar-border: oklch(0.30 0.01 270);
-    --sidebar-ring: oklch(0.62 0.22 285);
+    /* ============================================
+       UI ELEMENTS - Enhanced contrast
+       ============================================ */
+    --border: oklch(0.32 0.03 252);
+    --input: oklch(0.22 0.025 252);
+    --ring: oklch(0.72 0.20 195);
+    
+    /* ============================================
+       SHADOW SYSTEM - Dark Mode
+       ============================================ */
+    --shadow-sm: 0 1px 2px 0 oklch(0 0 0 / 0.3);
+    --shadow-md: 0 4px 6px -1px oklch(0 0 0 / 0.4), 0 2px 4px -2px oklch(0 0 0 / 0.3);
+    --shadow-lg: 0 10px 15px -3px oklch(0 0 0 / 0.5), 0 4px 6px -4px oklch(0 0 0 / 0.4);
+    --shadow-xl: 0 20px 25px -5px oklch(0 0 0 / 0.5), 0 8px 10px -6px oklch(0 0 0 / 0.4);
+    --shadow-2xl: 0 25px 50px -12px oklch(0 0 0 / 0.6);
+    --shadow-inner: inset 0 2px 4px 0 oklch(0 0 0 / 0.3);
 
-    --radius: 0.625rem;
+    /* ============================================
+       CHART COLORS - Vibrant & Distinct
+       ============================================ */
+    --chart-1: oklch(0.72 0.20 195);
+    /* Electric Cyan */
+    --chart-2: oklch(0.75 0.20 150);
+    /* Neon Green */
+    --chart-3: oklch(0.80 0.16 80);
+    /* Vibrant Amber */
+    --chart-4: oklch(0.65 0.24 240);
+    /* Electric Blue */
+    --chart-5: oklch(0.68 0.22 320);
+    /* Hot Pink */
+    --chart-6: oklch(0.63 0.24 285);
+    /* Purple */
+
+    /* ============================================
+       SIDEBAR
+       ============================================ */
+    --sidebar: oklch(0.08 0.015 250);
+    --sidebar-foreground: oklch(0.88 0.01 250);
+    --sidebar-primary: oklch(0.72 0.20 195);
+    --sidebar-primary-foreground: oklch(0.10 0.015 250);
+    --sidebar-accent: oklch(0.16 0.02 252);
+    --sidebar-accent-foreground: oklch(0.72 0.20 195);
+    --sidebar-border: oklch(0.24 0.025 252);
+    --sidebar-ring: oklch(0.72 0.20 195);
+
+    /* ============================================
+       GLASS MORPHISM EFFECTS - Enhanced visibility
+       ============================================ */
+    --glass-bg: oklch(0.20 0.02 252 / 0.85);
+    --glass-border: oklch(0.35 0.03 252 / 0.40);
+    --glass-shadow: oklch(0 0 0 / 0.40);
+
+    /* ============================================
+       GLOW EFFECTS (for dark mode)
+       ============================================ */
+    --glow-primary: oklch(0.72 0.20 195 / 0.35);
+    --glow-accent: oklch(0.65 0.24 240 / 0.35);
+    --glow-success: oklch(0.75 0.20 150 / 0.35);
+    --glow-warning: oklch(0.80 0.16 80 / 0.35);
+    --glow-destructive: oklch(0.68 0.22 25 / 0.35);
+    --glow-premium: oklch(0.63 0.24 285 / 0.35);
+
+    /* ============================================
+       GRADIENT STOPS
+       ============================================ */
+    --gradient-start: oklch(0.72 0.20 195);
+    --gradient-mid: oklch(0.65 0.24 240);
+    --gradient-end: oklch(0.63 0.24 285);
+
+    --gradient-success-start: oklch(0.75 0.20 150);
+    --gradient-success-end: oklch(0.72 0.20 195);
+
+    --gradient-warning-start: oklch(0.80 0.16 80);
+    --gradient-warning-end: oklch(0.75 0.20 150);
+
+    /* ============================================
+       KINETIC GRID & DEPTH
+       ============================================ */
+    --noise-opacity: 0.03;
+    --grain-opacity: 0.05;
+    --kinetic-glow: oklch(0.72 0.20 195);
+
+    /* Bento Grid Spacing */
+    --bento-gap: 1.5rem;
+    --bento-radius: 1.25rem;
+
+    /* Radius */
+    --radius: 0.875rem;
   }
 
-  .light {
+  /* ================================================
+     LIGHT MODE - Refined Professional
+     ================================================ */
+  .light,
+  :root:not(.dark) {
+    &:where(:not(.dark, .dark *)) {
     color-scheme: light;
 
-    --background: oklch(0.99 0.00 0);
-    --foreground: oklch(0.20 0.01 270);
+      /* Base - Warm off-white */
+      --background: oklch(0.99 0.002 250);
+      --foreground: oklch(0.15 0.015 250);
 
-    --card: oklch(0.98 0.00 0);
-    --card-foreground: oklch(0.20 0.01 270);
+      /* Cards - Pure white with subtle shadow */
+      --card: oklch(1 0 0);
+      --card-foreground: oklch(0.15 0.015 250);
 
-    --popover: oklch(0.98 0.00 0);
-    --popover-foreground: oklch(0.20 0.01 270);
+      /* Elevated */
+      --popover: oklch(0.98 0.002 250);
+      --popover-foreground: oklch(0.15 0.015 250);
+      
+      /* Additional neutral layers */
+      --bg-elevated: oklch(0.96 0.003 250);
+      --bg-subtle: oklch(0.995 0.001 250);
 
-    --primary: oklch(0.60 0.22 285);
-    --primary-foreground: oklch(1 0 0);
+      /* Brand Colors - Deeper for contrast */
+      --primary: oklch(0.55 0.18 195);
+      --primary-hover: oklch(0.50 0.20 195);
+      --primary-foreground: oklch(1 0 0);
 
-    --secondary: oklch(0.95 0.00 0);
-    --secondary-foreground: oklch(0.20 0.01 270);
+      --secondary: oklch(0.96 0.005 250);
+      --secondary-hover: oklch(0.93 0.008 250);
+      --secondary-foreground: oklch(0.15 0.015 250);
 
-    --muted: oklch(0.95 0.00 0);
-    --muted-foreground: oklch(0.55 0.01 270);
+      --muted: oklch(0.96 0.005 250);
+      --muted-foreground: oklch(0.48 0.015 250);
 
-    --accent: oklch(0.93 0.02 260);
-    --accent-foreground: oklch(0.20 0.01 270);
+      --accent: oklch(0.50 0.22 240);
+      --accent-hover: oklch(0.45 0.24 240);
+      --accent-foreground: oklch(1 0 0);
 
-    --destructive: oklch(0.65 0.20 25);
-    --destructive-foreground: oklch(1 0 0);
+      /* Status Colors */
+      --success: oklch(0.60 0.18 150);
+      --success-hover: oklch(0.55 0.20 150);
+      --success-foreground: oklch(1 0 0);
 
-    --border: oklch(0.88 0.01 270);
-    --input: oklch(0.88 0.01 270);
-    --ring: oklch(0.60 0.22 285);
+      --warning: oklch(0.65 0.14 80);
+      --warning-hover: oklch(0.60 0.16 80);
+      --warning-foreground: oklch(0.15 0.015 250);
 
-    --chart-1: oklch(0.65 0.18 145);
-    --chart-2: oklch(0.60 0.22 285);
-    --chart-3: oklch(0.65 0.14 25);
-    --chart-4: oklch(0.60 0.18 250);
-    --chart-5: oklch(0.55 0.01 270);
+      --destructive: oklch(0.58 0.20 25);
+      --destructive-hover: oklch(0.53 0.22 25);
+      --destructive-foreground: oklch(1 0 0);
 
-    --sidebar: oklch(0.97 0.00 0);
-    --sidebar-foreground: oklch(0.20 0.01 270);
-    --sidebar-primary: oklch(0.60 0.22 285);
-    --sidebar-primary-foreground: oklch(1 0 0);
-    --sidebar-accent: oklch(0.94 0.00 0);
-    --sidebar-accent-foreground: oklch(0.60 0.22 285);
-    --sidebar-border: oklch(0.88 0.01 270);
-    --sidebar-ring: oklch(0.60 0.22 285);
+      --info: oklch(0.55 0.16 225);
+      --info-hover: oklch(0.50 0.18 225);
+      --info-foreground: oklch(1 0 0);
+
+      --premium: oklch(0.53 0.22 285);
+      --premium-hover: oklch(0.48 0.24 285);
+      --premium-foreground: oklch(1 0 0);
+
+      /* UI Elements - Enhanced contrast */
+      --border: oklch(0.85 0.008 250);
+      --input: oklch(0.94 0.003 250);
+      --ring: oklch(0.55 0.18 195);
+      
+      /* ============================================
+         SHADOW SYSTEM - Light Mode
+         ============================================ */
+      --shadow-sm: 0 1px 2px 0 oklch(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px oklch(0 0 0 / 0.08), 0 2px 4px -2px oklch(0 0 0 / 0.05);
+      --shadow-lg: 0 10px 15px -3px oklch(0 0 0 / 0.10), 0 4px 6px -4px oklch(0 0 0 / 0.08);
+      --shadow-xl: 0 20px 25px -5px oklch(0 0 0 / 0.12), 0 8px 10px -6px oklch(0 0 0 / 0.08);
+      --shadow-2xl: 0 25px 50px -12px oklch(0 0 0 / 0.15);
+      --shadow-inner: inset 0 2px 4px 0 oklch(0 0 0 / 0.06);
+
+      /* Charts - Adjusted for light background */
+      --chart-1: oklch(0.55 0.18 195);
+      --chart-2: oklch(0.60 0.18 150);
+      --chart-3: oklch(0.65 0.14 80);
+      --chart-4: oklch(0.50 0.22 240);
+      --chart-5: oklch(0.58 0.20 320);
+      --chart-6: oklch(0.53 0.22 285);
+
+      /* Sidebar */
+      --sidebar: oklch(0.98 0.002 250);
+      --sidebar-foreground: oklch(0.15 0.015 250);
+      --sidebar-primary: oklch(0.55 0.18 195);
+      --sidebar-primary-foreground: oklch(1 0 0);
+      --sidebar-accent: oklch(0.94 0.005 250);
+      --sidebar-accent-foreground: oklch(0.55 0.18 195);
+      --sidebar-border: oklch(0.85 0.008 250);
+      --sidebar-ring: oklch(0.55 0.18 195);
+
+      /* Glass Morphism - Light mode - Enhanced visibility */
+      --glass-bg: oklch(1 0 0 / 0.92);
+      --glass-border: oklch(0.85 0.008 250 / 0.60);
+      --glass-shadow: oklch(0 0 0 / 0.08);
+
+      /* Glow Effects (more subtle in light) */
+      --glow-primary: oklch(0.55 0.18 195 / 0.20);
+      --glow-accent: oklch(0.50 0.22 240 / 0.20);
+      --glow-success: oklch(0.60 0.18 150 / 0.20);
+      --glow-warning: oklch(0.65 0.14 80 / 0.20);
+      --glow-destructive: oklch(0.58 0.20 25 / 0.20);
+      --glow-premium: oklch(0.53 0.22 285 / 0.20);
+
+      /* Gradients */
+      --gradient-start: oklch(0.55 0.18 195);
+      --gradient-mid: oklch(0.50 0.22 240);
+      --gradient-end: oklch(0.53 0.22 285);
+
+      --gradient-success-start: oklch(0.60 0.18 150);
+      --gradient-success-end: oklch(0.55 0.18 195);
+
+      --gradient-warning-start: oklch(0.65 0.14 80);
+      --gradient-warning-end: oklch(0.60 0.18 150);
+
+      /* Kinetic Grid & Depth - Light Mode */
+      --noise-opacity: 0.01;
+      --grain-opacity: 0.02;
+      --kinetic-glow: oklch(0.55 0.18 195);
+    }
+  }
+  
+  /* ================================================
+     DARK MODE - Explicit Class
+     ================================================ */
+  .dark {
+    color-scheme: dark;
   }
 }
 
+/* ================================================
+   TAILWIND THEME VARIABLES
+   ================================================ */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -106,15 +304,31 @@
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
   --color-primary-foreground: var(--primary-foreground);
   --color-secondary: var(--secondary);
+  --color-secondary-hover: var(--secondary-hover);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
+  --color-destructive-hover: var(--destructive-hover);
   --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-hover: var(--success-hover);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-hover: var(--warning-hover);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-hover: var(--info-hover);
+  --color-info-foreground: var(--info-foreground);
+  --color-premium: var(--premium);
+  --color-premium-hover: var(--premium-hover);
+  --color-premium-foreground: var(--premium-foreground);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
@@ -123,6 +337,7 @@
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
+  --color-chart-6: var(--chart-6);
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
@@ -131,12 +346,208 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+
+  /* Animations */
+  --animate-hide: hide 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-slide-down-and-fade: slideDownAndFade 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-slide-left-and-fade: slideLeftAndFade 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-slide-up-and-fade: slideUpAndFade 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-slide-right-and-fade: slideRightAndFade 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-accordion-open: accordionOpen 150ms cubic-bezier(0.87, 0, 0.13, 1);
+  --animate-accordion-close: accordionClose 150ms cubic-bezier(0.87, 0, 0.13, 1);
+  --animate-dialog-overlay-show: dialogOverlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-dialog-content-show: dialogContentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-gradient: gradient-shift 15s ease infinite;
+  --animate-bounce: bounce 2s infinite;
+  --animate-pulse-slow: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --animate-shimmer: shimmer 2s infinite;
+
+  @keyframes hide {
+    from {
+      opacity: 1;
+    }
+
+    to {
+      opacity: 0;
+    }
+  }
+
+  @keyframes slideDownAndFade {
+    from {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideLeftAndFade {
+    from {
+      opacity: 0;
+      transform: translateX(6px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes slideUpAndFade {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideRightAndFade {
+    from {
+      opacity: 0;
+      transform: translateX(-6px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes accordionOpen {
+    from {
+      height: 0px;
+    }
+
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+
+  @keyframes accordionClose {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+
+    to {
+      height: 0px;
+    }
+  }
+
+  @keyframes dialogOverlayShow {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes dialogContentShow {
+    from {
+      opacity: 0;
+      transform: translate(-50%, -45%) scale(0.95);
+    }
+
+    to {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+  }
+
+  @keyframes gradient-shift {
+    0% {
+      background-position: 0% 50%;
+    }
+
+    50% {
+      background-position: 100% 50%;
+    }
+
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  @keyframes shimmer {
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  @keyframes kinetic-border {
+
+    0%,
+    100% {
+      border-color: var(--border);
+    }
+
+    50% {
+      border-color: var(--kinetic-glow);
+    }
+  }
+
+  @keyframes grain {
+
+    0%,
+    100% {
+      transform: translate(0, 0);
+    }
+
+    10% {
+      transform: translate(-5%, -10%);
+    }
+
+    20% {
+      transform: translate(-15%, 5%);
+    }
+
+    30% {
+      transform: translate(7%, -25%);
+    }
+
+    40% {
+      transform: translate(-5%, 25%);
+    }
+
+    50% {
+      transform: translate(-15%, 10%);
+    }
+
+    60% {
+      transform: translate(15%, 0%);
+    }
+
+    70% {
+      transform: translate(0%, 15%);
+    }
+
+    80% {
+      transform: translate(3%, 35%);
+    }
+
+    90% {
+      transform: translate(-10%, 10%);
+    }
+  }
 }
 
+/* ================================================
+   BASE STYLES
+   ================================================ */
 @layer base {
   * {
     @apply border-border;
@@ -144,5 +555,734 @@
 
   body {
     @apply bg-background text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--muted);
+    border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 10px;
+    border: 2px solid var(--muted);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-hover);
+  }
+}
+
+/* ================================================
+   PREMIUM UTILITY CLASSES
+   ================================================ */
+@layer utilities {
+
+  /* ============================================
+     GLASS MORPHISM EFFECTS - Enhanced
+     ============================================ */
+  .glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-xl);
+  }
+
+  .glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-xl);
+    @apply rounded-xl;
+  }
+
+  .glass-intense {
+    background: var(--glass-bg);
+    backdrop-filter: blur(40px) saturate(200%);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-2xl), inset 0 1px 0 0 oklch(1 0 0 / 0.05);
+  }
+
+  .glass-sidebar {
+    background: var(--glass-bg);
+    backdrop-filter: blur(32px) saturate(190%);
+    border: 1px solid var(--glass-border);
+  }
+
+  /* ============================================
+     GRADIENT BACKGROUNDS
+     ============================================ */
+  .gradient-primary {
+    background: linear-gradient(135deg,
+        var(--gradient-start) 0%,
+        var(--gradient-mid) 50%,
+        var(--gradient-end) 100%);
+  }
+
+  .gradient-primary-radial {
+    background: radial-gradient(circle at 50% 50%,
+        var(--gradient-start) 0%,
+        var(--gradient-end) 100%);
+  }
+
+  .gradient-success {
+    background: linear-gradient(135deg,
+        var(--gradient-success-start) 0%,
+        var(--gradient-success-end) 100%);
+  }
+
+  .gradient-warning {
+    background: linear-gradient(135deg,
+        var(--gradient-warning-start) 0%,
+        var(--gradient-warning-end) 100%);
+  }
+
+  /* Animated gradient background */
+  .gradient-animated {
+    background: linear-gradient(-45deg,
+        var(--gradient-start),
+        var(--gradient-mid),
+        var(--gradient-end),
+        var(--gradient-success-start));
+    background-size: 400% 400%;
+    animation: gradient-shift 15s ease infinite;
+  }
+
+  /* Mesh gradient (premium effect) */
+  .gradient-mesh {
+    background:
+      radial-gradient(at 40% 20%, var(--gradient-start) 0px, transparent 50%),
+      radial-gradient(at 80% 0%, var(--gradient-mid) 0px, transparent 50%),
+      radial-gradient(at 0% 50%, var(--gradient-end) 0px, transparent 50%),
+      radial-gradient(at 80% 50%, var(--gradient-success-start) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, var(--gradient-start) 0px, transparent 50%),
+      radial-gradient(at 80% 100%, var(--gradient-mid) 0px, transparent 50%),
+      var(--background);
+  }
+
+  /* ============================================
+     GLOW EFFECTS
+     ============================================ */
+  .glow-primary {
+    box-shadow:
+      0 0 20px var(--glow-primary),
+      0 0 40px var(--glow-primary);
+  }
+
+  .glow-primary-lg {
+    box-shadow:
+      0 0 30px var(--glow-primary),
+      0 0 60px var(--glow-primary),
+      0 0 90px var(--glow-primary);
+  }
+
+  .glow-accent {
+    box-shadow:
+      0 0 20px var(--glow-accent),
+      0 0 40px var(--glow-accent);
+  }
+
+  .glow-success {
+    box-shadow:
+      0 0 20px var(--glow-success),
+      0 0 40px var(--glow-success);
+  }
+
+  .glow-warning {
+    box-shadow:
+      0 0 20px var(--glow-warning),
+      0 0 40px var(--glow-warning);
+  }
+
+  .glow-destructive {
+    box-shadow:
+      0 0 20px var(--glow-destructive),
+      0 0 40px var(--glow-destructive);
+  }
+
+  .glow-premium {
+    box-shadow:
+      0 0 20px var(--glow-premium),
+      0 0 40px var(--glow-premium);
+  }
+
+  /* ============================================
+     TEXT GRADIENTS
+     ============================================ */
+  .text-gradient-primary {
+    background: linear-gradient(135deg,
+        var(--gradient-start),
+        var(--gradient-end));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-gradient-success {
+    background: linear-gradient(135deg,
+        var(--gradient-success-start),
+        var(--gradient-success-end));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-gradient-warning {
+    background: linear-gradient(135deg,
+        var(--gradient-warning-start),
+        var(--gradient-warning-end));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ============================================
+     STATUS BADGES
+     ============================================ */
+  .status-delivered {
+    background: linear-gradient(135deg,
+        oklch(from var(--success) l c h / 0.15) 0%,
+        oklch(from var(--success) l c h / 0.05) 100%);
+    color: var(--success);
+    border: 1px solid oklch(from var(--success) l c h / 0.3);
+    box-shadow: 0 0 15px var(--glow-success);
+  }
+
+  .status-in-transit {
+    background: linear-gradient(135deg,
+        oklch(from var(--warning) l c h / 0.15) 0%,
+        oklch(from var(--warning) l c h / 0.05) 100%);
+    color: var(--warning);
+    border: 1px solid oklch(from var(--warning) l c h / 0.3);
+    box-shadow: 0 0 15px var(--glow-warning);
+  }
+
+  .status-delayed {
+    background: linear-gradient(135deg,
+        oklch(from var(--destructive) l c h / 0.15) 0%,
+        oklch(from var(--destructive) l c h / 0.05) 100%);
+    color: var(--destructive);
+    border: 1px solid oklch(from var(--destructive) l c h / 0.3);
+    box-shadow: 0 0 15px var(--glow-destructive);
+  }
+
+  .status-pending {
+    background: linear-gradient(135deg,
+        oklch(from var(--info) l c h / 0.15) 0%,
+        oklch(from var(--info) l c h / 0.05) 100%);
+    color: var(--info);
+    border: 1px solid oklch(from var(--info) l c h / 0.3);
+    box-shadow: 0 0 15px oklch(from var(--info) l c h / 0.2);
+  }
+
+  .status-processing {
+    background: linear-gradient(135deg,
+        oklch(from var(--primary) l c h / 0.15) 0%,
+        oklch(from var(--accent) l c h / 0.1) 100%);
+    color: var(--primary);
+    border: 1px solid oklch(from var(--primary) l c h / 0.3);
+    box-shadow: 0 0 15px var(--glow-primary);
+  }
+
+  /* ============================================
+     METRIC CARDS - Enhanced visibility
+     ============================================ */
+  .metric-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-lg);
+    @apply rounded-xl relative overflow-hidden transition-all duration-300;
+  }
+
+  .metric-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--gradient-start);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .metric-card:hover::before {
+    opacity: 1;
+  }
+
+  .metric-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-2xl), 0 0 30px var(--glow-primary);
+  }
+
+  /* ============================================
+     CHART CONTAINERS - Enhanced
+     ============================================ */
+  .chart-container {
+    background: var(--card);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-lg);
+    @apply rounded-xl p-6 relative;
+  }
+
+  .chart-container::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg,
+        oklch(from var(--primary) l c h / 0.3),
+        oklch(from var(--accent) l c h / 0.2));
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  /* ============================================
+     BUTTONS
+     ============================================ */
+  .btn-primary {
+    background: linear-gradient(135deg,
+        var(--gradient-start) 0%,
+        var(--gradient-mid) 50%,
+        var(--gradient-end) 100%);
+    @apply relative overflow-hidden text-primary-foreground;
+    box-shadow: 0 4px 20px var(--glow-primary);
+    transition: all 0.3s ease;
+  }
+
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg,
+        transparent,
+        oklch(1 0 0 / 0.2),
+        transparent);
+    transition: left 0.5s ease;
+  }
+
+  .btn-primary:hover::before {
+    left: 100%;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 30px var(--glow-primary);
+  }
+
+  .btn-primary:active {
+    transform: translateY(0);
+  }
+
+  /* Glass button variant */
+  .btn-glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-md);
+    @apply relative overflow-hidden;
+    transition: all 0.3s ease;
+  }
+
+  /* ============================================
+     KINETIC GRID UTILITIES
+     ============================================ */
+  .noise-overlay {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    contain: paint;
+  }
+
+  .noise-overlay::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: var(--noise-opacity);
+    pointer-events: none;
+  }
+
+  .kinetic-border {
+    border: 1px solid var(--border);
+  }
+
+  .bento-grid {
+    display: grid;
+    gap: var(--bento-gap);
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+
+  .depth-surface {
+    background: var(--card);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-lg);
+    @apply rounded-[var(--bento-radius)];
+  }
+
+  .text-kpi {
+    font-family: var(--font-geist-mono);
+    @apply tracking-tighter font-medium;
+  }
+
+  .btn-glass:hover {
+    background: oklch(from var(--glass-bg) l c h / 0.7);
+    border-color: var(--primary);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px var(--glass-shadow);
+  }
+
+  /* ============================================
+     NAVIGATION
+     ============================================ */
+  .nav-item-active {
+    background: linear-gradient(135deg,
+        oklch(from var(--primary) l c h / 0.15) 0%,
+        oklch(from var(--accent) l c h / 0.1) 100%);
+    border-left: 3px solid var(--primary);
+    box-shadow: 0 0 20px var(--glow-primary);
+  }
+
+  .nav-item {
+    @apply transition-all duration-200;
+  }
+
+  .nav-item:hover {
+    background: oklch(from var(--secondary) l c h / 0.8);
+    transform: translateX(4px);
+  }
+
+  /* ============================================
+     INPUT FIELDS
+     ============================================ */
+  .input-glow {
+    @apply transition-all duration-300;
+  }
+
+  .input-glow:focus {
+    border-color: var(--primary);
+    box-shadow:
+      0 0 0 3px var(--glow-primary),
+      0 0 20px var(--glow-primary);
+  }
+
+  /* ============================================
+     BACKDROP PATTERNS
+     ============================================ */
+  .dot-pattern {
+    background-image: radial-gradient(oklch(from var(--foreground) l c h / 0.1) 1px,
+        transparent 1px);
+    background-size: 20px 20px;
+  }
+
+  .grid-pattern {
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(to right, var(--border) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  /* ============================================
+     HERO EFFECTS
+     ============================================ */
+  .hero-gradient {
+    background:
+      radial-gradient(circle at 20% 50%,
+        oklch(from var(--primary) l c h / 0.15) 0%,
+        transparent 50%),
+      radial-gradient(circle at 80% 50%,
+        oklch(from var(--accent) l c h / 0.15) 0%,
+        transparent 50%),
+      var(--background);
+  }
+
+  /* ============================================
+     SHIMMER LOADING EFFECT
+     ============================================ */
+  .shimmer-bg {
+    background: linear-gradient(90deg,
+        transparent 0%,
+        oklch(1 0 0 / 0.1) 50%,
+        transparent 100%);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+  }
+
+  /* ============================================
+     ORBITAL TIMELINE ANIMATIONS
+     ============================================ */
+  /* Custom Pulse Override for Orbital */
+  .animate-pulse-orbital {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .animate-ping-orbital {
+    animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+
+  @keyframes ping {
+
+    75%,
+    100% {
+      transform: scale(2);
+      opacity: 0;
+    }
+  }
+
+  /* Orbital Specific Utilities */
+  .bg-gradient-orbital {
+    background: linear-gradient(to bottom right, var(--primary), var(--accent), var(--success));
+  }
+
+  .shadow-orbital {
+    box-shadow: 0 0 15px oklch(1 0 0 / 0.1);
+  }
+}
+
+.shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg,
+      transparent,
+      oklch(from var(--primary) l c h / 0.2),
+      transparent);
+  animation: shimmer 2s infinite;
+}
+
+@layer utilities {
+  .animate-scroll-up {
+    animation: scrollUp 40s linear infinite;
+  }
+
+  .animate-scroll-down {
+    animation: scrollDown 40s linear infinite;
+  }
+}
+
+@keyframes scrollUp {
+  0% {
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(-50%);
+  }
+}
+
+@keyframes scrollDown {
+  0% {
+    transform: translateY(-50%);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@layer utilities {
+  .animate-marquee {
+    animation: marquee 25s linear infinite;
+  }
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* ============================================
+   SCROLL CONTAINMENT - Prevent Jitter & Double Scrollbars
+   ============================================ */
+
+/* Dashboard scroll containment */
+.dashboard-scroll-container {
+  height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+.dashboard-main {
+  flex: 1 1 0%;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Fix Radix ScrollArea scrollbar duplication */
+[data-radix-scroll-area-viewport] {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+[data-radix-scroll-area-viewport]::-webkit-scrollbar {
+  display: none;
+}
+
+/* Utility to hide native scrollbar */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* ============================================
+   STRICT ANIMATION RULESET - Prevent Layout Reflow
+   ============================================
+   
+   RULE 1: Only animate compositor-friendly properties
+   - transform (translate, scale, rotate)
+   - opacity
+   - filter (blur, brightness, etc.)
+   
+   RULE 2: NEVER animate layout-affecting properties
+   - height, width, min-*, max-*
+   - margin, padding
+   - top, right, bottom, left
+   - border-width
+   
+   RULE 3: Use will-change sparingly and remove after animation
+   RULE 4: Contain animated elements to prevent reflow propagation
+   ============================================ */
+
+/* Animation containment for cards and widgets */
+.animate-contained {
+  contain: layout style paint;
+  will-change: transform, opacity;
+}
+
+/* Safe animation utility - only allows compositor properties */
+.animate-safe {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Prevent background/gradient overflow causing scroll */
+.bg-contained {
+  overflow: hidden;
+  contain: paint;
+}
+
+.bg-contained::before,
+.bg-contained::after {
+  max-height: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+/* Clamp decorative layers to prevent overflow */
+.decorative-layer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  contain: strict;
+}
+
+/* ============================================
+   LAYOUT STABILITY UTILITIES
+   ============================================ */
+
+/* Prevent Cumulative Layout Shift */
+.layout-stable {
+  contain: layout;
+}
+
+/* Fixed dimensions container */
+.fixed-dimensions {
+  box-sizing: border-box;
+  min-height: 0;
+  min-width: 0;
+}
+
+/* Overflow isolation for animated children */
+.overflow-isolate {
+  isolation: isolate;
+}
+
+/* ============================================
+   DARK THEME ANIMATION CONTROLS
+   ============================================ */
+.dark {
+  /* Specifically target shimmer effects to prevent visual artifacts */
+  .shimmer-disabled,
+  [data-shimmer-disabled="true"] {
+    animation: none !important;
+    background-image: none !important;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Animation safety utilities */
+.animation-safe {
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    transition: none;
+  }
+}
+
+/* Pause animations in dark mode on hover-capable devices */
+@media (hover: hover) {
+  .dark .animate-pause-dark {
+    animation-play-state: paused;
+  }
+  
+  .dark .animate-pause-dark:hover {
+    animation-play-state: running;
   }
 }

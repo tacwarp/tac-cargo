@@ -1,94 +1,120 @@
 'use client'
 
-import { ArrowDownRight } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { LottieContainer } from "@/components/ui/lottie-container"
+import { useRef } from "react"
+import { motion, useScroll, useTransform } from "framer-motion"
+import { RiArrowRightLine, RiGlobalLine, RiTimeLine, RiShieldCheckLine } from "@remixicon/react"
 import Link from "next/link"
 
 export function Hero() {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"],
+  })
+
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"])
+  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0])
+
   return (
-    <section className="relative flex min-h-[85vh] flex-col justify-center border-b border-border bg-background pt-24 pb-12 lg:pb-0">
-      {/* Background Grid - Subtle */}
-      <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:linear-gradient(to_bottom,black_40%,transparent_100%)]"></div>
-      
-      {/* Primary Glow */}
-      <div className="pointer-events-none absolute left-1/2 top-0 -z-10 h-[400px] w-[800px] -translate-x-1/2 rounded-full bg-primary/5 blur-[120px]"></div>
-
-      <div className="container mx-auto grid w-full max-w-[1400px] grid-cols-1 items-center gap-12 px-4 py-8 md:px-6 lg:grid-cols-2 lg:gap-16 lg:pr-12">
+    <section ref={containerRef} className="relative min-h-[90vh] flex items-center justify-center overflow-hidden bg-background selection:bg-primary/30">
+      {/* Abstract Deep Space Background */}
+      <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--gradient-start)_0%,_transparent_60%)] opacity-20 blur-[100px]" />
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
         
-        {/* Hero Content */}
-        <div className="flex flex-col justify-center animate-in fade-in slide-in-from-bottom-8 duration-700">
-          {/* Status Badge */}
-          <div className="mb-6 inline-flex w-fit items-center gap-2 rounded-full border border-border bg-card px-3 py-1 lg:mb-8">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-75"></span>
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
-            </span>
-            <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">Network Operational</span>
-          </div>
-          
-          <h1 className="mb-4 text-4xl font-semibold tracking-tighter text-foreground sm:text-5xl lg:mb-6 lg:text-7xl leading-[1.1]">
-            The Imphal–Delhi <br />
-            <span className="text-muted-foreground">Logistics Corridor.</span>
-          </h1>
-          
-          <p className="mb-8 max-w-lg text-base font-light leading-relaxed text-muted-foreground sm:text-lg lg:mb-10 lg:text-xl">
-            Engineering precision in high-velocity freight. We bridge the distance between the Northeast and the Capital with absolute reliability.
-          </p>
-
-          <div className="flex flex-col gap-4 sm:flex-row">
-            <Button 
-              size="lg" 
-              className="group h-12 gap-2 rounded-none px-6 text-xs font-medium uppercase tracking-widest ring-offset-2 hover:bg-primary/90 lg:h-auto lg:py-3"
-              asChild
-            >
-              <Link href="#tracking">
-                Track Shipment
-                <ArrowDownRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5" />
-              </Link>
-            </Button>
-            <Button 
-              variant="outline"
-              size="lg" 
-              className="h-12 rounded-none border-border bg-transparent px-6 text-xs font-medium uppercase tracking-widest text-foreground hover:bg-muted/10 lg:h-auto lg:py-3"
-              asChild
-            >
-              <Link href="#services">View Rate Card</Link>
-            </Button>
-          </div>
-
-          <div className="mt-12 grid grid-cols-3 gap-4 border-t border-border pt-8 lg:mt-16 lg:gap-8">
-            <div>
-              <div className="font-mono text-xl tracking-tighter text-foreground lg:text-2xl">0.01<span className="text-muted-foreground">%</span></div>
-              <div className="mt-1 text-[10px] uppercase tracking-widest text-muted-foreground">Error Rate</div>
-            </div>
-            <div>
-              <div className="font-mono text-xl tracking-tighter text-foreground lg:text-2xl">14<span className="text-muted-foreground">h</span></div>
-              <div className="mt-1 text-[10px] uppercase tracking-widest text-muted-foreground">Avg Transit</div>
-            </div>
-            <div>
-              <div className="font-mono text-xl tracking-tighter text-foreground lg:text-2xl">100<span className="text-muted-foreground">%</span></div>
-              <div className="mt-1 text-[10px] uppercase tracking-widest text-muted-foreground">Coverage</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Hero Visual */}
-        <div className="relative flex w-full items-center justify-center border border-border bg-background/50 h-[300px] sm:h-[400px] lg:h-[600px] animate-in fade-in slide-in-from-right-8 duration-1000 delay-200">
-          <div className="absolute left-0 top-0 z-10 border-b border-r border-border bg-background px-4 py-2 font-mono text-[10px] text-muted-foreground">
-            FIG_01: CORRIDOR_VISUALIZATION
-          </div>
-          <div className="absolute right-0 top-0 h-4 w-4 border-b border-l border-primary/20"></div>
-          <div className="absolute bottom-0 left-0 h-4 w-4 border-r border-t border-primary/20"></div>
-          
-          <div className="h-full w-full p-0">
-            <LottieContainer 
-              src="/lottie/CORRIDOR_VISUALIZATION.json"
-              className="h-full w-full"
-            />
-          </div>
-        </div>
+        {/* Animated Grid */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]" />
       </div>
+
+      {/* Content Container */}
+      <div className="container relative z-10 px-4 md:px-6">
+        <motion.div 
+          style={{ y, opacity }}
+          className="flex flex-col items-center text-center space-y-8 max-w-5xl mx-auto"
+        >
+          {/* Status Badge */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-mono tracking-widest uppercase"
+          >
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+            </span>
+            System Operational
+          </motion.div>
+
+          {/* Main Headline */}
+          <motion.h1 
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.1, ease: [0.2, 0.65, 0.3, 0.9] }}
+            className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter leading-[1.1] text-foreground"
+          >
+            The Imphal–Delhi
+            <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-secondary animate-gradient-x bg-[length:200%_auto]">
+              Logistics Corridor.
+            </span>
+          </motion.h1>
+
+          {/* Subtext */}
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+            className="text-xl md:text-2xl text-muted-foreground max-w-2xl leading-relaxed font-light"
+          >
+            Engineering precision in high-velocity freight. We bridge the distance between the Northeast and the Capital with absolute reliability.
+          </motion.p>
+
+          {/* CTA Buttons */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
+            className="flex flex-col sm:flex-row gap-4 pt-4"
+          >
+            <Link href="#tracking" className="group relative inline-flex h-12 items-center justify-center overflow-hidden rounded-md bg-primary px-8 font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50">
+              <span className="mr-2">Track Shipment</span>
+              <RiArrowRightLine className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+              <div className="absolute inset-0 -z-10 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-shimmer" />
+            </Link>
+            
+            <Link href="#services" className="inline-flex h-12 items-center justify-center rounded-md border border-input bg-background/50 backdrop-blur-sm px-8 font-medium shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50">
+              View Rate Card
+            </Link>
+          </motion.div>
+
+          {/* Stats Row */}
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 0.5 }}
+            className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-16 pt-12 border-t border-border/50 w-full max-w-4xl"
+          >
+            {[
+              { label: "Error Rate", value: "0.01%", icon: RiShieldCheckLine },
+              { label: "Avg Transit", value: "14h", icon: RiTimeLine },
+              { label: "Coverage", value: "100%", icon: RiGlobalLine },
+              { label: "Uptime", value: "99.9%", icon: RiShieldCheckLine },
+            ].map((stat, i) => (
+              <div key={i} className="flex flex-col items-center space-y-2">
+                <stat.icon className="w-5 h-5 text-muted-foreground mb-1" />
+                <span className="text-2xl md:text-3xl font-bold text-foreground">{stat.value}</span>
+                <span className="text-xs font-mono uppercase tracking-widest text-muted-foreground">{stat.label}</span>
+              </div>
+            ))}
+          </motion.div>
+        </motion.div>
+      </div>
+
+      {/* Decorative Elements */}
+      <div className="absolute top-1/2 left-0 w-64 h-64 bg-primary/5 rounded-full blur-[80px] -translate-y-1/2 -translate-x-1/2 pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-96 h-96 bg-accent/5 rounded-full blur-[100px] translate-y-1/3 translate-x-1/3 pointer-events-none" />
     </section>
   )
 }

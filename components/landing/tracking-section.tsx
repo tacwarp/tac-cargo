@@ -1,97 +1,170 @@
-'use client'
+"use client";
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { CheckCircle2, ShieldCheck, Terminal } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { LottieContainer } from "@/components/ui/lottie-container"
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { RiSearchLine, RiMapPinLine, RiFileListLine, RiLoader4Line } from "@remixicon/react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { PackageTrackerCard } from "@/components/ui/tracker-card";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Truck } from "lucide-react";
+import { LottieContainer } from "@/components/ui/lottie-container";
 
 export function TrackingSection() {
-  const [awb, setAwb] = useState("")
-  const router = useRouter()
+  const [trackingMode, setTrackingMode] = useState<"gps" | "custody">("gps");
+  const [trackingNumber, setTrackingNumber] = useState("TAC-8291"); // Prefilled dummy data
+  const [isSearching, setIsSearching] = useState(false);
+  const [showResult, setShowResult] = useState(false);
 
-  const handleTrack = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (awb.trim()) {
-      router.push(`/dashboard/tracking?awb=${encodeURIComponent(awb.trim())}`)
-    }
-  }
+  const handleSearch = () => {
+    if (!trackingNumber) return;
+    setIsSearching(true);
+    setShowResult(false);
+
+    // Simulate API call
+    setTimeout(() => {
+      setIsSearching(false);
+      setShowResult(true);
+    }, 1500);
+  };
 
   return (
-    <section id="tracking" className="border-b border-border bg-card py-16 lg:py-24">
-      <div className="container mx-auto max-w-[1200px] px-4 md:px-6">
-        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-16">
-          
-          {/* Tracking UI */}
-          <div className="lg:col-span-7">
-            <h2 className="mb-2 text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">Global Tracking Protocol</h2>
-            <p className="mb-8 text-sm text-muted-foreground sm:text-base lg:mb-10">Real-time telemetry for your high-value consignments.</p>
-            
-            <form onSubmit={handleTrack} className="group relative mb-8 flex items-center overflow-hidden border border-border bg-background p-1 shadow-2xl transition-all focus-within:border-primary/50 focus-within:ring-1 focus-within:ring-primary/20">
-              {/* Corner Accents */}
-              <div className="absolute -left-1 -top-1 h-3 w-3 border-l-2 border-t-2 border-primary/30 opacity-0 transition-opacity group-focus-within:opacity-100" />
-              <div className="absolute -bottom-1 -left-1 h-3 w-3 border-b-2 border-l-2 border-primary/30 opacity-0 transition-opacity group-focus-within:opacity-100" />
-              <div className="absolute -right-1 -top-1 h-3 w-3 border-r-2 border-t-2 border-primary/30 opacity-0 transition-opacity group-focus-within:opacity-100" />
-              <div className="absolute -bottom-1 -right-1 h-3 w-3 border-b-2 border-r-2 border-primary/30 opacity-0 transition-opacity group-focus-within:opacity-100" />
+    <section id="tracking" className="py-24 relative overflow-hidden bg-background">
+      {/* Background grid pattern */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]" />
 
-              <div className="relative flex flex-1 items-center">
-                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
-                  <Terminal className="h-4 w-4 text-muted-foreground" />
-                  <span className="ml-2 font-mono text-sm text-muted-foreground">{'>'}</span>
-                </div>
+      {/* Ambient Glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
+
+      <div className="container mx-auto px-4 relative z-10">
+        <div className="max-w-3xl mx-auto">
+
+          {/* Section Header */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center space-y-4 mb-10"
+          >
+            <h2 className="text-3xl md:text-5xl font-bold tracking-tight">
+              Global Tracking <span className="text-primary">Protocol</span>
+            </h2>
+            <p className="text-lg text-muted-foreground font-light">
+              Real-time telemetry for your high-value consignments.
+            </p>
+          </motion.div>
+
+          {/* Tracking Input Container */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="bg-card/50 backdrop-blur-xl rounded-xl border border-border shadow-2xl p-8"
+          >
+
+            {/* Tabs */}
+            <div className="flex justify-center mb-8">
+              <Tabs defaultValue="gps" onValueChange={(v: string) => setTrackingMode(v as "gps" | "custody")} className="w-auto">
+                <TabsList className="grid w-full grid-cols-2 bg-secondary/50">
+                  <TabsTrigger value="gps" className="flex items-center gap-2 px-6">
+                    <RiMapPinLine className="w-4 h-4" />
+                    GPS Telemetry
+                  </TabsTrigger>
+                  <TabsTrigger value="custody" className="flex items-center gap-2 px-6">
+                    <RiFileListLine className="w-4 h-4" />
+                    Chain of Custody
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
+            </div>
+
+            {/* Input Group */}
+            <div className="flex flex-col sm:flex-row gap-3 max-w-2xl mx-auto items-stretch">
+              <div className="relative flex-1 group">
+                <RiSearchLine className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
                 <Input
-                  type="text"
-                  value={awb}
-                  onChange={(e) => setAwb(e.target.value)}
-                  placeholder="ENTER AWB NUMBER (e.g. TAC-88291)"
-                  aria-label="Air Waybill Number"
-                  className="h-14 border-none bg-transparent pl-12 pr-4 font-mono text-xs uppercase tracking-wider text-foreground placeholder:text-muted-foreground/50 focus-visible:ring-0 sm:text-sm"
+                  placeholder="ENTER AWB NUMBER (E.G. TAC-02531)"
+                  className="pl-10 h-12 uppercase font-mono tracking-wider border-input bg-background/50 focus-visible:ring-primary"
+                  value={trackingNumber}
+                  onChange={(e) => setTrackingNumber(e.target.value)}
                 />
               </div>
-              <Button 
-                type="submit" 
-                className="h-14 rounded-none px-6 font-mono text-xs font-bold uppercase tracking-widest sm:px-8"
+              <Button
+                size="lg"
+                className="h-12 px-8 font-bold tracking-wide shrink-0"
+                onClick={handleSearch}
+                disabled={isSearching || !trackingNumber}
+                aria-label={isSearching ? "Searching shipment" : "Trace shipment"}
               >
-                Execute
+                {isSearching ? <RiLoader4Line className="w-5 h-5 animate-spin" /> : "TRACE"}
               </Button>
-            </form>
-            
-            <div className="flex flex-wrap gap-4 sm:gap-6">
-              <Badge variant="outline" className="gap-2 rounded-sm border-border bg-background/50 px-3 py-1.5 font-normal text-muted-foreground">
-                <CheckCircle2 className="h-3.5 w-3.5 text-primary" />
-                <span className="text-xs">GPS Telemetry</span>
-              </Badge>
-              <Badge variant="outline" className="gap-2 rounded-sm border-border bg-background/50 px-3 py-1.5 font-normal text-muted-foreground">
-                <ShieldCheck className="h-3.5 w-3.5 text-primary" />
-                <span className="text-xs">Chain of Custody</span>
-              </Badge>
-            </div>
-          </div>
-
-          {/* Tracking Animation */}
-          <div className="relative flex h-[300px] items-center justify-center border border-border bg-background lg:col-span-5 lg:h-[400px]">
-            {/* Decorative Corners */}
-            <div className="absolute left-0 top-0 h-3 w-3 border-l border-t border-primary"></div>
-            <div className="absolute right-0 top-0 h-3 w-3 border-r border-t border-primary"></div>
-            <div className="absolute bottom-0 left-0 h-3 w-3 border-b border-l border-primary"></div>
-            <div className="absolute bottom-0 right-0 h-3 w-3 border-b border-r border-primary"></div>
-            
-            <div className="absolute top-2 right-4 font-mono text-[10px] text-muted-foreground">
-              STATUS: <span className="text-emerald-500 animate-pulse">LIVE</span>
             </div>
 
-            <div className="h-full w-full p-0">
-              <LottieContainer 
-                src="/lottie/Global-Tracking-Protocol.json"
-                className="h-full w-full"
+            {/* Recent Queries */}
+            <div className="flex flex-wrap items-center justify-center gap-3 mt-8">
+              <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest">Recent Queries:</span>
+              {['TAC-02531', 'DEL-98234', 'IMP-45621'].map((example) => (
+                <Badge
+                  key={example}
+                  variant="secondary"
+                  className="font-mono text-[10px] cursor-pointer hover:bg-primary/10 hover:text-primary transition-colors"
+                  onClick={() => setTrackingNumber(example)}
+                  aria-label={`Search for example tracking number ${example}`}
+                >
+                  {example}
+                </Badge>
+              ))}
+            </div>
+
+          </motion.div>
+
+          {/* Status Indicator */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.6 }}
+            className="mt-8 text-center"
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 backdrop-blur-sm">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+              </span>
+              <span className="text-[10px] font-mono text-emerald-500 tracking-widest font-semibold">SATELLITE UPLINK ACTIVE</span>
+            </div>
+          </motion.div>
+
+          {/* Tracking Result Modal */}
+          {/* TODO: Replace with actual API data from useTracking hook for production */}
+          <Dialog open={showResult} onOpenChange={setShowResult}>
+            <DialogContent className="sm:max-w-md bg-transparent border-none shadow-none p-0" aria-describedby={undefined}>
+              <DialogTitle className="sr-only">Tracking Information for {trackingNumber}</DialogTitle>
+              <PackageTrackerCard
+                status="In Transit"
+                packageNumber={trackingNumber}
+                destination="Imphal, MN"
+                destinationFlag={<span className="text-xl" role="img" aria-label="India flag">🇮🇳</span>}
+                date={`Expected: ${new Date().toLocaleDateString('en-US', { weekday: 'long' })}, 4:00 PM`}
+                qrCodeValue={`https://tac.logistics/track/${encodeURIComponent(trackingNumber)}`}
+                packageImage={
+                  <div className="w-20 h-20 relative">
+                    <LottieContainer
+                      src="/lottie/parcel.json"
+                      className="w-full h-full"
+                      loop={true}
+                    />
+                  </div>
+                }
+                className="w-full border-primary/20 bg-background/95 backdrop-blur-xl shadow-2xl"
               />
-            </div>
-          </div>
-
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
     </section>
-  )
+  );
 }

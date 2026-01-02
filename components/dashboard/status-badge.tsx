@@ -2,14 +2,15 @@ import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 
 const statusConfig = {
-  pending: { label: 'Pending', className: 'bg-amber-500/10 text-amber-500 border-amber-500/20' },
-  scanned: { label: 'Scanned', className: 'bg-blue-500/10 text-blue-500 border-blue-500/20' },
-  'in-transit': { label: 'In Transit', className: 'bg-indigo-500/10 text-indigo-500 border-indigo-500/20' },
-  arrived: { label: 'Arrived', className: 'bg-cyan-500/10 text-cyan-500 border-cyan-500/20' },
-  delivered: { label: 'Delivered', className: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' },
-  delayed: { label: 'Delayed', className: 'bg-orange-500/10 text-orange-500 border-orange-500/20' },
-  cancelled: { label: 'Cancelled', className: 'bg-rose-500/10 text-rose-500 border-rose-500/20' },
-  exception: { label: 'Exception', className: 'bg-red-500/10 text-red-500 border-red-500/20' }
+  pending: { label: 'Pending', className: 'status-pending' },
+  scanned: { label: 'Scanned', className: 'status-processing' },
+  'in-transit': { label: 'In Transit', className: 'status-in-transit' },
+  arrived: { label: 'Arrived', className: 'bg-info/10 text-info border-info/20 shadow-[0_0_10px_hsl(var(--info)/0.2)]' },
+  delivered: { label: 'Delivered', className: 'status-delivered' },
+  delayed: { label: 'Delayed', className: 'status-delayed' },
+  cancelled: { label: 'Cancelled', className: 'bg-destructive/10 text-destructive border-destructive/20 shadow-[0_0_10px_hsl(var(--destructive)/0.2)]' },
+  exception: { label: 'Exception', className: 'status-delayed' },
+  processing: { label: 'Processing', className: 'status-processing' }
 } as const
 
 type Status = keyof typeof statusConfig
@@ -17,13 +18,26 @@ type Status = keyof typeof statusConfig
 interface StatusBadgeProps {
   status: Status
   className?: string
+  pulse?: boolean
 }
 
-export function StatusBadge({ status, className }: StatusBadgeProps) {
+export function StatusBadge({ status, className, pulse = false }: StatusBadgeProps) {
   const config = statusConfig[status]
 
   return (
-    <Badge variant='outline' className={cn(config.className, className)}>
+    <Badge 
+      variant='outline' 
+      className={cn(
+        config.className, 
+        'font-medium',
+        className
+      )}
+    >
+      {pulse && (
+        <span className="mr-1.5 relative flex h-2 w-2" role="status" aria-label="Status updating">
+          <span className="relative inline-flex rounded-full h-2 w-2 bg-current" aria-hidden="true"></span>
+        </span>
+      )}
       {config.label}
     </Badge>
   )

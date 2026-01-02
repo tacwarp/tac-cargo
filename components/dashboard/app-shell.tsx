@@ -12,9 +12,9 @@ export function AppShell({ children }: AppShellProps) {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <SidebarInset>
+      <SidebarInset className="dashboard-scroll-container flex flex-col">
         <AppHeader />
-        <main className='flex-1 p-6'>{children}</main>
+        <main className="dashboard-main p-6">{children}</main>
       </SidebarInset>
     </SidebarProvider>
   )

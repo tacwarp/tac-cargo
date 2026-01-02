@@ -44,7 +44,7 @@ export default function DashboardError({ error, reset }: DashboardErrorProps) {
         <div className="flex h-20 w-20 items-center justify-center rounded-full bg-destructive/10">
           <AlertTriangle className="h-10 w-10 text-destructive" />
         </div>
-        <div className="absolute -right-1 -top-1 h-4 w-4 animate-ping rounded-full bg-destructive/50" />
+        <div className="absolute -right-1 -top-1 h-4 w-4 rounded-full bg-destructive/50" />
       </div>
 
       {/* Error message */}
