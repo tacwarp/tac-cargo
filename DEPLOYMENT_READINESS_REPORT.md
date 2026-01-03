@@ -30,7 +30,7 @@ Comprehensive error checking revealed **critical type mismatches** that block pr
 **Resolution Required**:
 ```bash
 # Option 1: Use Supabase CLI
-npx supabase gen types typescript --project-id dqthizzubvoxmclkcubc > lib/supabase/types.ts
+npx supabase gen types typescript --project-id YOUR_PROJECT_ID > lib/supabase/types.ts
 
 # Option 2: Use Supabase MCP (already attempted, types generated but not saved)
 # Types were generated in previous session but file wasn't updated
