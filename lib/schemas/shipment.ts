@@ -26,7 +26,7 @@ export const shipmentSchema = z.object({
     .min(2, 'Consignee name is required')
     .max(100, 'Name too long'),
   consignee_phone: z.string()
-    .regex(/^\+?[1-9]\d{9,14}$/, 'Invalid phone number format. Expected: +919876543210'),
+    .regex(/^\+[1-9]\d{9,14}$/, 'Invalid phone number format. Expected: +919876543210'),
   consignee_email: z.string()
     .email('Invalid email address')
     .optional()
