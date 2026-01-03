@@ -94,7 +94,7 @@ export default function PaymentsPage() {
   }, [])
 
   const handleCreate = async () => {
-    if (!formData.invoice_id || !formData.amount || !formData.payment_method) {
+    if (!formData.invoice_id || !formData.amount || !formData.payment_mode) {
       toast.error('Please fill all required fields')
       return
     }

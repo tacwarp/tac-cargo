@@ -19,8 +19,7 @@ export async function GET(request: NextRequest) {
       .from('shipment_exceptions')
       .select(`
         *,
-        shipment:shipments(reference, consignee_name, status),
-        created_by_user:profiles(full_name, email)
+        shipment:shipments(reference, consignee_name, status)
       `)
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1)
@@ -55,9 +54,11 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     
     const exceptionData = {
-      ...body,
-      created_by: user.id,
+      shipment_id: body.shipment_id || null,
+      exception_type: body.exception_type,
+      description: body.description,
       status: body.status || 'open',
+      priority: body.priority || 'medium',
     }
 
     const { data, error } = await supabase
@@ -100,9 +101,13 @@ export async function PUT(request: NextRequest) {
     const { data, error } = await supabase
       .from('shipment_exceptions')
       .update({
-        ...updateData,
+        exception_type: updateData.exception_type,
+        description: updateData.description,
+        status: updateData.status,
+        priority: updateData.priority,
+        resolution_notes: updateData.resolution_notes,
         resolved_at: updateData.status === 'resolved' ? new Date().toISOString() : null,
-        resolved_by: updateData.status === 'resolved' ? user.id : null,
+        updated_at: new Date().toISOString(),
       })
       .eq('id', id)
       .select(`

@@ -109,11 +109,7 @@ export async function GET(request: NextRequest) {
 
     const { data, error } = await supabase
       .from('scan_events')
-      .select(`
-        *,
-        shipment:shipments(reference, consignee_name),
-        warehouse:warehouses(name, code)
-      `)
+      .select('*')
       .order('scanned_at', { ascending: false })
       .limit(limit)
 
