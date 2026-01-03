@@ -68,7 +68,9 @@ export async function GET(
         shipment,
         tracking: {
           lastUpdate: shipment.scan_events?.[0]?.scanned_at,
-          currentLocation: shipment.scan_events?.[0]?.warehouse?.city,
+          currentLocation: Array.isArray(shipment.scan_events) && shipment.scan_events[0]?.warehouse 
+            ? (shipment.scan_events[0].warehouse as any).city 
+            : null,
           eventsCount: shipment.scan_events?.length || 0,
         },
       },
