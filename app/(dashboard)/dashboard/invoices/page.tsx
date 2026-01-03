@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { toast } from 'sonner'
 import { PageLayout } from '@/components/dashboard/page-layout'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -27,42 +28,78 @@ import {
   EyeIcon,
   DownloadIcon,
   SendIcon,
-  Trash2Icon
+  Trash2Icon,
+  Loader2Icon
 } from 'lucide-react'
 import Link from 'next/link'
 
 interface Invoice {
   id: string
-  invoiceNumber: string
-  customer: string
-  amount: number
-  status: 'draft' | 'sent' | 'paid' | 'overdue'
-  dueDate: string
-  createdAt: string
+  reference: string
+  customer: { name: string; email: string | null } | null
+  total: number
+  status: 'pending' | 'paid' | 'overdue' | 'cancelled'
+  due_date: string | null
+  created_at: string
 }
 
-const invoices: Invoice[] = [
-  { id: '1', invoiceNumber: 'INV-2024-0001', customer: 'ABC Corporation', amount: 15250.00, status: 'paid', dueDate: '2024-12-15', createdAt: '2024-12-01' },
-  { id: '2', invoiceNumber: 'INV-2024-0002', customer: 'XYZ Logistics', amount: 8750.50, status: 'sent', dueDate: '2024-12-30', createdAt: '2024-12-15' },
-  { id: '3', invoiceNumber: 'INV-2024-0003', customer: 'Metro Express', amount: 3200.00, status: 'overdue', dueDate: '2024-12-20', createdAt: '2024-12-05' },
-  { id: '4', invoiceNumber: 'INV-2024-0004', customer: 'Quick Ship Co', amount: 12800.75, status: 'draft', dueDate: '2025-01-15', createdAt: '2024-12-28' },
-  { id: '5', invoiceNumber: 'INV-2024-0005', customer: 'Prime Cargo', amount: 5600.00, status: 'paid', dueDate: '2024-12-10', createdAt: '2024-11-25' },
-  { id: '6', invoiceNumber: 'INV-2024-0006', customer: 'Fast Freight', amount: 9450.25, status: 'sent', dueDate: '2025-01-05', createdAt: '2024-12-20' }
-]
-
 const statusStyles = {
-  draft: 'bg-gray-500/10 text-gray-500 border-gray-500/20',
-  sent: 'bg-blue-500/10 text-blue-500 border-blue-500/20',
+  pending: 'bg-blue-500/10 text-blue-500 border-blue-500/20',
   paid: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20',
-  overdue: 'bg-rose-500/10 text-rose-500 border-rose-500/20'
+  overdue: 'bg-rose-500/10 text-rose-500 border-rose-500/20',
+  cancelled: 'bg-gray-500/10 text-gray-500 border-gray-500/20'
 }
 
 export default function InvoicesPage() {
   const [searchQuery, setSearchQuery] = useState('')
+  const [invoices, setInvoices] = useState<Invoice[]>([])
+  const [loading, setLoading] = useState(true)
+  const [downloadingId, setDownloadingId] = useState<string | null>(null)
+
+  const fetchInvoices = async () => {
+    try {
+      const response = await fetch('/api/invoices')
+      if (!response.ok) throw new Error('Failed to fetch invoices')
+      const data = await response.json()
+      setInvoices(data.invoices || [])
+    } catch (error) {
+      toast.error('Failed to load invoices')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchInvoices()
+  }, [])
+
+  const handleDownloadPDF = async (invoiceId: string, reference: string) => {
+    setDownloadingId(invoiceId)
+    try {
+      const response = await fetch(`/api/invoices/${invoiceId}/pdf`)
+      if (!response.ok) throw new Error('Failed to generate PDF')
+      
+      const blob = await response.blob()
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `invoice-${reference}.pdf`
+      document.body.appendChild(a)
+      a.click()
+      window.URL.revokeObjectURL(url)
+      document.body.removeChild(a)
+      
+      toast.success('PDF downloaded successfully')
+    } catch (error) {
+      toast.error('Failed to download PDF')
+    } finally {
+      setDownloadingId(null)
+    }
+  }
 
   const filteredInvoices = invoices.filter(invoice =>
-    invoice.invoiceNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    invoice.customer.toLowerCase().includes(searchQuery.toLowerCase())
+    invoice.reference.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (invoice.customer?.name && invoice.customer.name.toLowerCase().includes(searchQuery.toLowerCase()))
   )
 
   const formatCurrency = (amount: number) => {
@@ -85,22 +122,28 @@ export default function InvoicesPage() {
         </Button>
       }
     >
+      {loading ? (
+        <Card className='p-12 flex items-center justify-center'>
+          <Loader2Icon className='size-8 animate-spin text-primary' />
+        </Card>
+      ) : (
+      <>
       <div className='grid gap-4 md:grid-cols-4'>
         <Card className='p-4'>
           <p className='text-sm text-muted-foreground'>Total Outstanding</p>
-          <p className='text-2xl font-bold'>₹24,650.75</p>
+          <p className='text-2xl font-bold'>{formatCurrency(invoices.filter(i => i.status === 'pending').reduce((sum, i) => sum + i.total, 0))}</p>
         </Card>
         <Card className='p-4'>
           <p className='text-sm text-muted-foreground'>Paid This Month</p>
-          <p className='text-2xl font-bold'>₹20,850.00</p>
+          <p className='text-2xl font-bold'>{formatCurrency(invoices.filter(i => i.status === 'paid').reduce((sum, i) => sum + i.total, 0))}</p>
         </Card>
         <Card className='p-4'>
           <p className='text-sm text-muted-foreground'>Overdue</p>
-          <p className='text-2xl font-bold text-rose-500'>₹3,200.00</p>
+          <p className='text-2xl font-bold text-rose-500'>{formatCurrency(invoices.filter(i => i.status === 'overdue').reduce((sum, i) => sum + i.total, 0))}</p>
         </Card>
         <Card className='p-4'>
-          <p className='text-sm text-muted-foreground'>Draft Invoices</p>
-          <p className='text-2xl font-bold'>1</p>
+          <p className='text-sm text-muted-foreground'>Total Invoices</p>
+          <p className='text-2xl font-bold'>{invoices.length}</p>
         </Card>
       </div>
 
@@ -131,15 +174,15 @@ export default function InvoicesPage() {
           <TableBody>
             {filteredInvoices.map(invoice => (
               <TableRow key={invoice.id}>
-                <TableCell className='font-mono text-sm'>{invoice.invoiceNumber}</TableCell>
-                <TableCell>{invoice.customer}</TableCell>
-                <TableCell className='font-medium'>{formatCurrency(invoice.amount)}</TableCell>
+                <TableCell className='font-mono text-sm'>{invoice.reference}</TableCell>
+                <TableCell>{invoice.customer?.name || 'N/A'}</TableCell>
+                <TableCell className='font-medium'>{formatCurrency(invoice.total)}</TableCell>
                 <TableCell>
                   <Badge variant='outline' className={statusStyles[invoice.status]}>
                     {invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)}
                   </Badge>
                 </TableCell>
-                <TableCell className='hidden sm:table-cell'>{invoice.dueDate}</TableCell>
+                <TableCell className='hidden sm:table-cell'>{invoice.due_date || 'N/A'}</TableCell>
                 <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -148,21 +191,12 @@ export default function InvoicesPage() {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align='end'>
-                      <DropdownMenuItem>
-                        <EyeIcon className='mr-2 size-4' />
-                        View
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <DownloadIcon className='mr-2 size-4' />
-                        Download PDF
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <SendIcon className='mr-2 size-4' />
-                        Send to Customer
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className='text-destructive focus:text-destructive'>
-                        <Trash2Icon className='mr-2 size-4' />
-                        Delete
+                      <DropdownMenuItem onClick={() => handleDownloadPDF(invoice.id, invoice.reference)} disabled={downloadingId === invoice.id}>
+                        {downloadingId === invoice.id ? (
+                          <><Loader2Icon className='mr-2 size-4 animate-spin' />Generating...</>
+                        ) : (
+                          <><DownloadIcon className='mr-2 size-4' />Download PDF</>
+                        )}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -172,6 +206,8 @@ export default function InvoicesPage() {
           </TableBody>
         </Table>
       </Card>
+      </>
+      )}
     </PageLayout>
   )
 }
