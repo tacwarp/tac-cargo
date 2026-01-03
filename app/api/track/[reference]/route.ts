@@ -4,8 +4,9 @@ import { rateLimit } from '../rate-limit'
 
 export async function GET(
   request: Request,
-  { params }: { params: { reference: string } }
+  { params }: { params: Promise<{ reference: string }> }
 ) {
+  const { reference } = await params
   const clientIp = request.headers.get('x-forwarded-for') || 'unknown'
   const rateLimitResult = rateLimit(clientIp, 10, 60000)
 
@@ -28,7 +29,7 @@ export async function GET(
   }
 
   const supabase = await createClient()
-  const reference = params.reference.toUpperCase()
+  const shipmentRef = reference.toUpperCase()
 
   try {
     const { data: shipment, error } = await supabase
@@ -53,7 +54,7 @@ export async function GET(
           warehouse:warehouses(code, name, city)
         )
       `)
-      .eq('reference', reference)
+      .eq('reference', shipmentRef)
       .single()
 
     if (error || !shipment) {

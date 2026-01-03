@@ -78,16 +78,23 @@ export function useCreateShipment() {
   const queryClient = useQueryClient()
   
   return useMutation({
-    mutationFn: async (shipment: NewShipment) => {
+    mutationFn: async (shipment: Partial<NewShipment>) => {
       const supabase = createClient()
+      
+      // Map form data to database schema with defaults
+      const shipmentData = {
+        ...shipment,
+        weight: shipment.weight_kg || 0,
+        status: 'pending' as const,
+      }
+      
       const { data, error } = await supabase
         .from('shipments')
-        .insert(shipment)
+        .insert(shipmentData)
         .select()
         .single()
       
       if (error) throw error
-      
       return data
     },
     onSuccess: () => {

@@ -114,7 +114,7 @@ function parseGS1_128(barcode: string): GS1ValidationResult {
     }
   }
   
-  const parsedData: any = {}
+  const parsedData: Record<string, string> = {}
   let recognizedAIs = 0
   
   matches.forEach(([, ai, value]) => {

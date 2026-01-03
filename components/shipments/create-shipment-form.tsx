@@ -2,6 +2,7 @@
 
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import * as z from 'zod'
 import { shipmentSchema, type ShipmentFormData } from '@/lib/schemas/shipment'
 import { useCreateShipment } from '@/lib/queries/shipments'
 import { Button } from '@/components/ui/button'
@@ -41,16 +42,15 @@ export function CreateShipmentForm({ onSuccess }: CreateShipmentFormProps) {
     },
   })
 
-  const onSubmit = async (data: ShipmentFormData) => {
+  const onSubmit = async (values: z.infer<typeof shipmentSchema>) => {
     try {
-      await createShipment.mutateAsync(data as any)
+      await createShipment.mutateAsync(values)
       toast.success('Shipment created successfully')
       form.reset()
       onSuccess?.()
-    } catch (error: any) {
-      toast.error('Failed to create shipment', {
-        description: error.message,
-      })
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to create shipment'
+      toast.error(errorMessage)
     }
   }
 

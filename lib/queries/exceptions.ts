@@ -37,7 +37,7 @@ export function useExceptions(status?: string) {
       
       const { data, error } = await query
       if (error) throw error
-      return data as any[]
+      return data
     },
     refetchInterval: 30000, // Refetch every 30s for exceptions
   })
