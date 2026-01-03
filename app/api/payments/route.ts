@@ -19,15 +19,10 @@ export async function GET(request: NextRequest) {
       .from('payments')
       .select(`
         *,
-        invoice:invoices(reference, total, customer:customers(name)),
-        shipment:shipments(reference, consignee_name)
+        invoice:invoices(reference, total, customer:customers(name))
       `)
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1)
-
-    if (status) {
-      query = query.eq('status', status)
-    }
 
     const { data, error } = await query
 
@@ -55,9 +50,13 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     
     const paymentData = {
-      ...body,
-      recorded_by: user.id,
-      status: body.status || 'pending',
+      invoice_id: body.invoice_id,
+      amount: body.amount,
+      payment_mode: body.payment_mode || 'cash',
+      transaction_ref: body.transaction_ref || null,
+      notes: body.notes || null,
+      received_by: user.id,
+      paid_at: body.paid_at || new Date().toISOString(),
     }
 
     const { data, error } = await supabase

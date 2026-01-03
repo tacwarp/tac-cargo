@@ -44,27 +44,21 @@ import {
 interface Payment {
   id: string
   invoice_id?: string
-  shipment_id?: string
   invoice?: { reference: string; total: number; customer: { name: string } }
   amount: number
-  payment_method: string
-  payment_reference?: string
-  status: 'pending' | 'completed' | 'failed'
-  payment_date?: string
+  payment_mode: 'cash' | 'upi' | 'neft' | 'cheque' | 'credit'
+  transaction_ref?: string
+  notes?: string
+  paid_at?: string
   created_at: string
 }
 
-const methodLabels = {
-  bank_transfer: 'Bank Transfer',
+const methodLabels: Record<string, string> = {
+  cash: 'Cash',
   upi: 'UPI',
+  neft: 'NEFT',
   cheque: 'Cheque',
-  cash: 'Cash'
-}
-
-const statusStyles = {
-  completed: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20',
-  pending: 'bg-amber-500/10 text-amber-500 border-amber-500/20',
-  failed: 'bg-rose-500/10 text-rose-500 border-rose-500/20'
+  credit: 'Credit'
 }
 
 export default function PaymentsPage() {
@@ -77,9 +71,9 @@ export default function PaymentsPage() {
   const [formData, setFormData] = useState({
     invoice_id: '',
     amount: '',
-    payment_method: '',
-    payment_reference: '',
-    status: 'completed' as 'pending' | 'completed' | 'failed',
+    payment_mode: 'cash' as 'cash' | 'upi' | 'neft' | 'cheque' | 'credit',
+    transaction_ref: '',
+    notes: '',
   })
 
   const fetchPayments = async () => {
@@ -120,7 +114,7 @@ export default function PaymentsPage() {
 
       toast.success('Payment recorded successfully')
       setCreateOpen(false)
-      setFormData({ invoice_id: '', amount: '', payment_method: '', payment_reference: '', status: 'completed' })
+      setFormData({ invoice_id: '', amount: '', payment_mode: 'cash', transaction_ref: '', notes: '' })
       fetchPayments()
     } catch (error) {
       toast.error('Failed to record payment')
@@ -130,7 +124,7 @@ export default function PaymentsPage() {
   }
 
   const filteredPayments = payments.filter(payment =>
-    payment.payment_reference?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    payment.transaction_ref?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     payment.invoice?.customer?.name.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
@@ -165,7 +159,7 @@ export default function PaymentsPage() {
             <DollarSignIcon className='size-4 text-muted-foreground' />
           </CardHeader>
           <CardContent>
-            <p className='text-2xl font-bold'>{formatCurrency(payments.filter(p => p.status === 'completed').reduce((sum, p) => sum + p.amount, 0))}</p>
+            <p className='text-2xl font-bold'>{formatCurrency(payments.reduce((sum, p) => sum + p.amount, 0))}</p>
             <p className='text-xs text-muted-foreground'>Completed</p>
           </CardContent>
         </Card>
@@ -175,8 +169,8 @@ export default function PaymentsPage() {
             <ClockIcon className='size-4 text-amber-500' />
           </CardHeader>
           <CardContent>
-            <p className='text-2xl font-bold'>{formatCurrency(payments.filter(p => p.status === 'pending').reduce((sum, p) => sum + p.amount, 0))}</p>
-            <p className='text-xs text-muted-foreground'>1 transaction</p>
+            <p className='text-2xl font-bold'>{payments.length}</p>
+            <p className='text-xs text-muted-foreground'>Total payments</p>
           </CardContent>
         </Card>
         <Card>
@@ -236,17 +230,17 @@ export default function PaymentsPage() {
             ) : (
               filteredPayments.map(payment => (
                 <TableRow key={payment.id}>
-                  <TableCell className='font-mono text-sm'>{payment.payment_reference || 'N/A'}</TableCell>
+                  <TableCell className='font-mono text-sm'>{payment.transaction_ref || payment.id.slice(0, 8)}</TableCell>
                   <TableCell>{payment.invoice?.customer?.name || 'N/A'}</TableCell>
-                  <TableCell className='font-mono text-sm'>{payment.invoice?.reference || 'N/A'}</TableCell>
+                  <TableCell className='font-mono text-sm hidden sm:table-cell'>{payment.invoice?.reference || 'N/A'}</TableCell>
                   <TableCell className='font-medium'>{formatCurrency(payment.amount)}</TableCell>
-                  <TableCell className='capitalize'>{payment.payment_method.replace('_', ' ')}</TableCell>
+                  <TableCell className='capitalize hidden md:table-cell'>{methodLabels[payment.payment_mode] || payment.payment_mode}</TableCell>
                   <TableCell>
-                    <Badge variant='outline' className={statusStyles[payment.status]}>
-                      {payment.status.charAt(0).toUpperCase() + payment.status.slice(1)}
+                    <Badge variant='outline' className='bg-emerald-500/10 text-emerald-500 border-emerald-500/20'>
+                      Completed
                     </Badge>
                   </TableCell>
-                  <TableCell className='hidden sm:table-cell'>{payment.payment_date || new Date(payment.created_at).toLocaleDateString()}</TableCell>
+                  <TableCell className='hidden sm:table-cell'>{payment.paid_at ? new Date(payment.paid_at).toLocaleDateString() : new Date(payment.created_at).toLocaleDateString()}</TableCell>
                 </TableRow>
               ))
             )}
@@ -287,47 +281,40 @@ export default function PaymentsPage() {
               />
             </div>
             <div>
-              <Label htmlFor='payment_method'>Payment Method</Label>
+              <Label htmlFor='payment_mode'>Payment Mode</Label>
               <Select
-                value={formData.payment_method}
-                onValueChange={value => setFormData({ ...formData, payment_method: value })}
+                value={formData.payment_mode}
+                onValueChange={(value: 'cash' | 'upi' | 'neft' | 'cheque' | 'credit') => setFormData({ ...formData, payment_mode: value })}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder='Select method' />
+                  <SelectValue placeholder='Select mode' />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value='bank_transfer'>Bank Transfer</SelectItem>
-                  <SelectItem value='upi'>UPI</SelectItem>
-                  <SelectItem value='cheque'>Cheque</SelectItem>
                   <SelectItem value='cash'>Cash</SelectItem>
-                  <SelectItem value='card'>Card</SelectItem>
+                  <SelectItem value='upi'>UPI</SelectItem>
+                  <SelectItem value='neft'>NEFT</SelectItem>
+                  <SelectItem value='cheque'>Cheque</SelectItem>
+                  <SelectItem value='credit'>Credit</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <div>
-              <Label htmlFor='payment_reference'>Payment Reference</Label>
+              <Label htmlFor='transaction_ref'>Transaction Reference</Label>
               <Input
-                id='payment_reference'
-                value={formData.payment_reference}
-                onChange={e => setFormData({ ...formData, payment_reference: e.target.value })}
+                id='transaction_ref'
+                value={formData.transaction_ref}
+                onChange={e => setFormData({ ...formData, transaction_ref: e.target.value })}
                 placeholder='Transaction ID or reference number'
               />
             </div>
             <div>
-              <Label htmlFor='status'>Status</Label>
-              <Select
-                value={formData.status}
-                onValueChange={(value: 'pending' | 'completed' | 'failed') => setFormData({ ...formData, status: value })}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value='completed'>Completed</SelectItem>
-                  <SelectItem value='pending'>Pending</SelectItem>
-                  <SelectItem value='failed'>Failed</SelectItem>
-                </SelectContent>
-              </Select>
+              <Label htmlFor='notes'>Notes</Label>
+              <Input
+                id='notes'
+                value={formData.notes}
+                onChange={e => setFormData({ ...formData, notes: e.target.value })}
+                placeholder='Additional notes (optional)'
+              />
             </div>
           </div>
           <DialogFooter>
