@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import type { ReactNode } from 'react'
 import { useRouter } from 'next/navigation'
 
@@ -38,6 +39,11 @@ type Props = {
 
 const ProfileDropdown = ({ trigger, defaultOpen, align = 'end', user }: Props) => {
   const router = useRouter()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const handleSignOut = async () => {
     // Use robust sign-out with forced local cleanup
@@ -53,6 +59,10 @@ const ProfileDropdown = ({ trigger, defaultOpen, align = 'end', user }: Props) =
   const displayEmail = user?.email || 'john.doe@example.com'
   const displayAvatar = user?.avatar || 'https://cdn.shadcnstudio.com/ss-assets/avatar/avatar-1.png'
   const initials = displayName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
+
+  if (!mounted) {
+    return <>{trigger}</>
+  }
 
   return (
     <DropdownMenu defaultOpen={defaultOpen}>

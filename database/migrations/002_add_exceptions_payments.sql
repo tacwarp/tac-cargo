@@ -91,12 +91,14 @@ BEGIN
 END;
 $$ language 'plpgsql';
 
--- Add triggers for updated_at
+-- Add triggers for updated_at (drop first for idempotency)
+DROP TRIGGER IF EXISTS update_shipment_exceptions_updated_at ON shipment_exceptions;
 CREATE TRIGGER update_shipment_exceptions_updated_at
   BEFORE UPDATE ON shipment_exceptions
   FOR EACH ROW
   EXECUTE FUNCTION update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_payments_updated_at ON payments;
 CREATE TRIGGER update_payments_updated_at
   BEFORE UPDATE ON payments
   FOR EACH ROW

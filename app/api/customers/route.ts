@@ -23,7 +23,9 @@ export async function GET(request: NextRequest) {
       .range(offset, offset + limit - 1)
 
     if (search) {
-      query = query.or(`name.ilike.%${search}%,contact_email.ilike.%${search}%`)
+      // Sanitize search input to prevent SQL injection
+      const sanitizedSearch = search.replace(/[%_\\]/g, '\\$&')
+      query = query.or(`name.ilike.%${sanitizedSearch}%,contact_email.ilike.%${sanitizedSearch}%`)
     }
 
     const { data, error } = await query
@@ -33,7 +35,19 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Failed to fetch customers' }, { status: 500 })
     }
 
-    return NextResponse.json({ customers: data, count: data.length })
+    // Get total count for pagination - apply same search filter
+    let countQuery = supabase
+      .from('customers')
+      .select('*', { count: 'exact', head: true })
+    
+    if (search) {
+      const sanitizedSearch = search.replace(/[%_\\]/g, '\\$&')
+      countQuery = countQuery.or(`name.ilike.%${sanitizedSearch}%,contact_email.ilike.%${sanitizedSearch}%`)
+    }
+    
+    const { count: totalCount } = await countQuery
+
+    return NextResponse.json({ customers: data, count: totalCount ?? data.length })
   } catch (error) {
     console.error('Server error:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

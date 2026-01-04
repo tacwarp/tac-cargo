@@ -31,8 +31,16 @@ interface GlobalErrorProps {
  */
 export default function GlobalError({ error, reset }: GlobalErrorProps) {
   useEffect(() => {
-    // Log error to console (or error reporting service)
+    // Log error to console and Sentry (if configured)
     console.error('[Global Error]', error)
+    
+    // Sentry integration - captures critical error
+    if (typeof window !== 'undefined' && (window as unknown as { Sentry?: { captureException: (e: Error, opts?: object) => void } }).Sentry) {
+      (window as unknown as { Sentry: { captureException: (e: Error, opts?: object) => void } }).Sentry.captureException(error, {
+        level: 'fatal',
+        tags: { errorBoundary: 'global' }
+      })
+    }
   }, [error])
 
   return (

@@ -122,12 +122,12 @@ function TrackingContent() {
 
   const getStatusColor = (status: string) => {
     const statusMap: Record<string, string> = {
-      'pending': 'bg-yellow-500/10 text-yellow-500',
-      'picked_up': 'bg-blue-500/10 text-blue-500',
+      'pending': 'bg-warning/10 text-warning',
+      'picked_up': 'bg-primary/10 text-primary',
       'in_transit': 'bg-primary/10 text-primary',
-      'at_hub': 'bg-purple-500/10 text-purple-500',
-      'out_for_delivery': 'bg-orange-500/10 text-orange-500',
-      'delivered': 'bg-emerald-500/10 text-emerald-500',
+      'at_hub': 'bg-secondary/10 text-secondary',
+      'out_for_delivery': 'bg-warning/10 text-warning',
+      'delivered': 'bg-success/10 text-success',
       'cancelled': 'bg-destructive/10 text-destructive',
       'exception': 'bg-destructive/10 text-destructive'
     }
@@ -298,11 +298,11 @@ function TrackingContent() {
                   </div>
                 ) : shipment.delivered_at ? (
                   <div className='flex items-center gap-3'>
-                    <div className='flex size-10 items-center justify-center rounded-full bg-emerald-500/10'>
-                      <MapPinIcon className='size-5 text-emerald-500' />
+                    <div className='flex size-10 items-center justify-center rounded-full bg-success/10'>
+                      <MapPinIcon className='size-5 text-success' />
                     </div>
                     <div>
-                      <p className='font-medium text-emerald-500'>Delivered</p>
+                      <p className='font-medium text-success'>Delivered</p>
                       <p className='text-sm text-muted-foreground'>{formatDate(shipment.delivered_at)}</p>
                     </div>
                   </div>

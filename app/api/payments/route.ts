@@ -24,6 +24,11 @@ export async function GET(request: NextRequest) {
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1)
 
+    // Apply status filter if provided
+    if (status) {
+      query = query.eq('status', status)
+    }
+
     const { data, error } = await query
 
     if (error) {
@@ -31,7 +36,14 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Failed to fetch payments' }, { status: 500 })
     }
 
-    return NextResponse.json({ payments: data, count: data.length })
+    // Get total count for pagination
+    let countQuery = supabase.from('payments').select('*', { count: 'exact', head: true })
+    if (status) {
+      countQuery = countQuery.eq('status', status)
+    }
+    const { count: totalCount } = await countQuery
+
+    return NextResponse.json({ payments: data, count: totalCount ?? data.length })
   } catch (error) {
     console.error('Server error:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

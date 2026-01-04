@@ -1,5 +1,6 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import { PageLayout } from '@/components/dashboard/page-layout'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -49,18 +50,24 @@ const manifests: Manifest[] = [
 ]
 
 const statusStyles = {
-  open: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20',
-  locked: 'bg-amber-500/10 text-amber-500 border-amber-500/20',
-  dispatched: 'bg-blue-500/10 text-blue-500 border-blue-500/20'
+  open: 'bg-success/10 text-success border-success/20',
+  locked: 'bg-warning/10 text-warning border-warning/20',
+  dispatched: 'bg-primary/10 text-primary border-primary/20'
 }
 
 export default function ManifestsPage() {
+  const router = useRouter()
+
+  const handleCreateManifest = () => {
+    router.push('/dashboard/manifests/new')
+  }
+
   return (
     <PageLayout
       title='Manifests'
       description='Manage cargo manifests for dispatch'
       actions={
-        <Button>
+        <Button onClick={handleCreateManifest}>
           <PlusIcon className='mr-2 size-4' />
           New Manifest
         </Button>
@@ -116,9 +123,9 @@ export default function ManifestsPage() {
                 <TableCell>
                   <div className='flex items-center gap-2'>
                     {manifest.type === 'air' ? (
-                      <PlaneIcon className='size-4 text-blue-500' />
+                      <PlaneIcon className='size-4 text-primary' />
                     ) : (
-                      <TruckIcon className='size-4 text-amber-500' />
+                      <TruckIcon className='size-4 text-warning' />
                     )}
                     <span className='capitalize'>{manifest.type}</span>
                   </div>

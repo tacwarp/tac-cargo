@@ -50,7 +50,7 @@ export function TrendChart({ data, loading }: TrendChartProps) {
       <CardContent>
         <ResponsiveContainer width="100%" height={300}>
           <LineChart data={formattedData}>
-            <CartesianGrid strokeDasharray="3 3" />
+            <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.1} />
             <XAxis dataKey="date" />
             <YAxis />
             <Tooltip />
@@ -58,23 +58,29 @@ export function TrendChart({ data, loading }: TrendChartProps) {
             <Line
               type="monotone"
               dataKey="total"
-              stroke="#8b5cf6"
+              stroke="hsl(var(--primary))"
               strokeWidth={2}
               name="Total"
+              dot={false}
+              activeDot={{ r: 6, fill: "hsl(var(--primary))" }}
             />
             <Line
               type="monotone"
               dataKey="delivered"
-              stroke="#10b981"
+              stroke="hsl(var(--emerald-500))"
               strokeWidth={2}
               name="Delivered"
+              dot={false}
+              activeDot={{ r: 6, fill: "hsl(var(--emerald-500))" }}
             />
             <Line
               type="monotone"
               dataKey="pending"
-              stroke="#f59e0b"
+              stroke="hsl(var(--orange-500))"
               strokeWidth={2}
               name="Pending"
+              dot={false}
+              activeDot={{ r: 6, fill: "hsl(var(--orange-500))" }}
             />
           </LineChart>
         </ResponsiveContainer>

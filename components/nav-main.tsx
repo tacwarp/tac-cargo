@@ -79,13 +79,21 @@ export function NavMain({
                   tooltip={item.title}
                   isActive={isActive}
                   className={cn(
-                    "transition-all duration-300 h-9 px-3",
-                    isActive ? "bg-primary/10 text-primary border-l-2 border-primary shadow-[inset_4px_0_12px_-4px_hsl(var(--primary)/0.2)]" : "hover:bg-muted/50 text-muted-foreground"
+                    "transition-all duration-200 h-9 px-3 rounded-lg group/nav-item",
+                    isActive 
+                      ? "bg-gradient-to-r from-primary/15 via-primary/10 to-transparent text-primary border-l-[3px] border-primary shadow-[inset_6px_0_20px_-6px_var(--glow-primary)]" 
+                      : "hover:bg-muted/50 hover:translate-x-1 text-muted-foreground border-l-[3px] border-transparent"
                   )}
                 >
                   <Link href={item.url} className="flex items-center gap-3">
-                    <item.icon className={cn("size-4", isActive ? "text-primary" : "text-muted-foreground/60")} />
-                    <span className={cn("text-xs font-medium tracking-tight", isActive ? "text-foreground" : "text-muted-foreground")}>{item.title}</span>
+                    <item.icon className={cn(
+                      "size-4 transition-all duration-200",
+                      isActive ? "text-primary" : "text-muted-foreground/50 group-hover/nav-item:text-primary/70 group-hover/nav-item:scale-110"
+                    )} />
+                    <span className={cn(
+                      "text-xs font-medium tracking-tight transition-colors",
+                      isActive ? "text-foreground font-semibold" : "text-muted-foreground/80 group-hover/nav-item:text-foreground"
+                    )}>{item.title}</span>
                   </Link>
                 </SidebarMenuButton>
                 {item.items?.length ? (

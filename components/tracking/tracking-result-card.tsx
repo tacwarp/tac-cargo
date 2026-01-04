@@ -25,7 +25,7 @@ export function TrackingResultCard({ data }: { data: TrackingPayload }) {
 
     return (
         <div className="w-full max-w-3xl mx-auto space-y-6">
-            <Card className="overflow-hidden border-border/50 bg-card/40 backdrop-blur-md shadow-xl">
+            <Card className="overflow-hidden border-border/50 bg-card/40 backdrop-blur-md shadow-elevation-1">
                 <CardHeader className="pb-4">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div>

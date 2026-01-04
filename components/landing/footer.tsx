@@ -8,12 +8,7 @@ export function Footer() {
   return (
     <footer className="relative bg-background pt-20 pb-10">
       <div className="sm:px-6 lg:px-8 animate-in fade-in slide-in-from-bottom-4 duration-1000 max-w-7xl mx-auto px-4">
-        <div className="overflow-hidden xl:bg-card/60 border border-white/10 border-dashed rounded-3xl mt-6 relative backdrop-blur-md">
-          {/* Background Effects */}
-          <div className="pointer-events-none absolute inset-0">
-            <div className="absolute inset-0 opacity-70 [mask-image:radial-gradient(65%_65%_at_50%_50%,black,transparent)] bg-[radial-gradient(1200px_400px_at_50%_-10%,oklch(from_var(--primary)_l_c_h_/_0.15),transparent),radial-gradient(1200px_600px_at_50%_120%,oklch(from_var(--accent)_l_c_h_/_0.15),transparent)]" />
-            <div className="absolute inset-0 opacity-[0.18] [mask-image:radial-gradient(80%_80%_at_50%_50%,black,transparent)] bg-[linear-gradient(to_right,rgba(255,255,255,0.7)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.7)_1px,transparent_1px)] bg-[size:28px_28px]" />
-          </div>
+        <div className="mt-6 relative">
 
           {/* Floating Utility Icon */}
           <div className="absolute left-5 top-5 hidden lg:block">
@@ -26,13 +21,13 @@ export function Footer() {
           <div className="flex flex-col sm:py-16 md:px-8 text-center mx-auto pt-16 pb-16 px-4 relative items-center justify-center">
             <div className="w-full max-w-7xl">
               {/* Footer Top */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 pb-12 border-b border-white/10">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 pb-12 border-b border-border/10">
                 {/* Brand Column */}
                 <div className="lg:col-span-2 text-left">
                   <div className="flex flex-col items-start">
                     {/* Logo */}
                     <Link href="/" className="flex items-center gap-2 mb-4 group">
-                      <div className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-white/5 transition-colors group-hover:border-primary/50 group-hover:bg-primary/10">
+                      <div className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl border border-border/10 bg-background/40 transition-colors group-hover:border-primary/50 group-hover:bg-primary/10">
                         <Box className="h-5 w-5 text-primary transition-transform duration-300 group-hover:rotate-12" />
                       </div>
                       <div className="flex flex-col leading-none">

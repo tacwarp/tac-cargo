@@ -109,28 +109,28 @@ export default function ScanningPage() {
   const getStatusIcon = (scanStatus?: 'success' | 'duplicate' | 'error') => {
     switch (scanStatus) {
       case 'success':
-        return <CheckCircleIcon className='size-5 text-emerald-500' />
+        return <CheckCircleIcon className='size-5 text-success' />
       case 'duplicate':
-        return <AlertCircleIcon className='size-5 text-amber-500' />
+        return <AlertCircleIcon className='size-5 text-warning' />
       case 'error':
-        return <XCircleIcon className='size-5 text-rose-500' />
+        return <XCircleIcon className='size-5 text-destructive' />
       default:
-        return <CheckCircleIcon className='size-5 text-emerald-500' />
+        return <CheckCircleIcon className='size-5 text-success' />
     }
   }
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'picked_up':
-        return 'bg-blue-500/10 text-blue-500 border-blue-500/20'
+        return 'bg-primary/10 text-primary border-primary/20'
       case 'in_transit':
-        return 'bg-purple-500/10 text-purple-500 border-purple-500/20'
+        return 'bg-secondary/10 text-secondary border-secondary/20'
       case 'at_hub':
-        return 'bg-orange-500/10 text-orange-500 border-orange-500/20'
+        return 'bg-accent/10 text-accent border-accent/20'
       case 'out_for_delivery':
-        return 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20'
+        return 'bg-success/10 text-success border-success/20'
       default:
-        return 'bg-gray-500/10 text-gray-500 border-gray-500/20'
+        return 'bg-muted/20 text-muted-foreground border-muted'
     }
   }
 
@@ -217,7 +217,7 @@ export default function ScanningPage() {
                       </div>
                       <div className='text-right'>
                         <Badge variant='outline' className={getStatusColor(event.status)}>
-                          {event.status.replace('_', ' ')}
+                          {event.status.replaceAll('_', ' ')}
                         </Badge>
                         <p className='mt-1 text-xs text-muted-foreground'>
                           {new Date(event.scanned_at).toLocaleTimeString()}
@@ -243,15 +243,15 @@ export default function ScanningPage() {
               </div>
               <div className='flex items-center justify-between'>
                 <span className='text-sm text-muted-foreground'>Successful</span>
-                <span className='text-xl font-bold text-emerald-500'>{stats.success}</span>
+                <span className='text-xl font-bold text-success'>{stats.success}</span>
               </div>
               <div className='flex items-center justify-between'>
                 <span className='text-sm text-muted-foreground'>Duplicates</span>
-                <span className='text-xl font-bold text-amber-500'>{stats.duplicate}</span>
+                <span className='text-xl font-bold text-warning'>{stats.duplicate}</span>
               </div>
               <div className='flex items-center justify-between'>
                 <span className='text-sm text-muted-foreground'>Errors</span>
-                <span className='text-xl font-bold text-rose-500'>{stats.error}</span>
+                <span className='text-xl font-bold text-destructive'>{stats.error}</span>
               </div>
             </CardContent>
           </Card>
@@ -274,7 +274,7 @@ export default function ScanningPage() {
               <div>
                 <p className='text-sm text-muted-foreground'>Current Status</p>
                 <Badge variant='outline' className={getStatusColor(scanStatus)}>
-                  {scanStatus.replace('_', ' ')}
+                  {scanStatus.replaceAll('_', ' ')}
                 </Badge>
               </div>
             </CardContent>

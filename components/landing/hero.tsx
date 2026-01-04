@@ -38,7 +38,7 @@ export function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-mono tracking-widest uppercase"
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-sm bg-primary/10 border border-primary/30 text-primary text-[10px] font-mono tracking-[0.2em] uppercase backdrop-blur-sm"
           >
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
@@ -78,13 +78,13 @@ export function Hero() {
             transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
             className="flex flex-col sm:flex-row gap-4 pt-4"
           >
-            <Link href="#tracking" className="group relative inline-flex h-12 items-center justify-center overflow-hidden rounded-md bg-primary px-8 font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50">
+            <Link href="#tracking" className="group relative inline-flex h-12 items-center justify-center overflow-hidden rounded-sm bg-gradient-to-r from-primary via-primary to-accent px-8 font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition-all duration-300 hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 disabled:pointer-events-none disabled:opacity-50">
               <span className="mr-2">Track Shipment</span>
               <RiArrowRightLine className="w-4 h-4 transition-transform group-hover:translate-x-1" />
               <div className="absolute inset-0 -z-10 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-shimmer" />
             </Link>
             
-            <Link href="#services" className="inline-flex h-12 items-center justify-center rounded-md border border-input bg-background/50 backdrop-blur-sm px-8 font-medium shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50">
+            <Link href="#services" className="inline-flex h-12 items-center justify-center rounded-sm border border-border/50 bg-background/30 backdrop-blur-md px-8 font-semibold text-foreground/90 shadow-sm transition-all duration-300 hover:bg-background/50 hover:border-primary/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 disabled:pointer-events-none disabled:opacity-50">
               View Rate Card
             </Link>
           </motion.div>
@@ -102,10 +102,11 @@ export function Hero() {
               { label: "Coverage", value: "100%", icon: RiGlobalLine },
               { label: "Uptime", value: "99.9%", icon: RiShieldCheckLine },
             ].map((stat, i) => (
-              <div key={i} className="flex flex-col items-center space-y-2">
-                <stat.icon className="w-5 h-5 text-muted-foreground mb-1" />
-                <span className="text-2xl md:text-3xl font-bold text-foreground">{stat.value}</span>
-                <span className="text-xs font-mono uppercase tracking-widest text-muted-foreground">{stat.label}</span>
+              <div key={i} className="group flex flex-col items-center space-y-3 relative">
+                <stat.icon className="w-4 h-4 text-primary/60 mb-0.5" />
+                <span className="text-4xl md:text-5xl font-bold tracking-tighter text-foreground tabular-nums">{stat.value}</span>
+                <div className="w-8 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+                <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground">{stat.label}</span>
               </div>
             ))}
           </motion.div>

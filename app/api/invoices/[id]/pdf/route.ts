@@ -4,9 +4,10 @@ import { generateInvoicePDF } from '@/lib/pdf/invoice-generator'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const supabase = await createClient()
     
     const { data: { user }, error: authError } = await supabase.auth.getUser()
@@ -22,7 +23,7 @@ export async function GET(
         shipment:shipments(reference, weight, pieces, consignee_name, consignee_address),
         items:invoice_items(*)
       `)
-      .eq('id', params.id)
+      .eq('id', id)
       .single()
 
     if (error || !invoice) {

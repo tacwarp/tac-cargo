@@ -52,7 +52,7 @@ export function HeroSection() {
                             initial="hidden"
                             animate="visible"
                             variants={fadeUpVariant}
-                            className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 backdrop-blur-md transition-colors hover:bg-primary/15"
+                            className="inline-flex items-center gap-2 rounded-sm border border-primary/20 bg-primary/10 px-4 py-1.5 backdrop-blur-md transition-colors hover:bg-primary/15"
                         >
                             <Award className="h-4 w-4 text-primary" />
                             <span className="text-xs font-medium uppercase tracking-wider text-primary">
@@ -69,7 +69,7 @@ export function HeroSection() {
                         >
                             Delivering
                             <br />
-                            <span className="bg-gradient-to-br from-primary to-[#ffcd75] bg-clip-text text-transparent pr-4">
+                            <span className="bg-gradient-to-br from-foreground to-muted-foreground bg-clip-text text-transparent pr-4">
                                 Certainty.
                             </span>
                             <br />
@@ -94,12 +94,12 @@ export function HeroSection() {
                             variants={fadeUpVariant}
                             className="flex flex-col gap-4 sm:flex-row"
                         >
-                            <button aria-label="Request a logistics quote" className="group relative inline-flex items-center justify-center gap-3 overflow-hidden rounded-full bg-foreground px-8 py-4 text-sm font-medium text-background transition-all hover:bg-foreground/90 hover:shadow-lg hover:shadow-primary/20">
+                            <button aria-label="Request a logistics quote" className="group relative inline-flex items-center justify-center gap-3 overflow-hidden rounded-sm bg-foreground px-8 py-4 text-sm font-medium text-background transition-all hover:bg-foreground/90 hover:shadow-lg hover:shadow-primary/20">
                                 <span className="relative z-10">Get a Quote</span>
                                 <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                             </button>
 
-                            <button aria-label="Track your shipment" className="group inline-flex items-center justify-center gap-3 rounded-full border border-input bg-background/50 px-8 py-4 text-sm font-medium text-foreground backdrop-blur-sm transition-all hover:bg-accent hover:text-accent-foreground">
+                            <button aria-label="Track your shipment" className="group inline-flex items-center justify-center gap-3 rounded-sm border border-input bg-background/50 px-8 py-4 text-sm font-medium text-foreground backdrop-blur-sm transition-all hover:bg-accent hover:text-accent-foreground">
                                 <Play className="h-4 w-4 fill-current opacity-70 group-hover:opacity-100 transition-opacity" />
                                 <span>Track Shipment</span>
                             </button>
@@ -137,8 +137,8 @@ export function HeroSection() {
                                         <span className="text-muted-foreground">Client Satisfaction</span>
                                         <span className="font-medium text-foreground">98%</span>
                                     </div>
-                                    <div className="h-2 w-full overflow-hidden rounded-full bg-muted/50">
-                                        <div className="h-full w-[98%] rounded-full bg-gradient-to-r from-primary to-primary/60" />
+                                    <div className="h-2 w-full overflow-hidden rounded-sm bg-muted/50">
+                                        <div className="h-full w-[98%] rounded-sm bg-gradient-to-r from-primary to-primary/60" />
                                     </div>
                                 </div>
 
@@ -146,14 +146,14 @@ export function HeroSection() {
                                 <div className="h-px w-full bg-gradient-to-r from-transparent via-border to-transparent" />
 
                                 {/* Secondary Stats Grid */}
-                                <div className="flex justify-between gap-4">
+                                <div className="flex justify-between gap-4 divide-x divide-border/40">
                                     {[
                                         { value: "5+", label: "Years" },
                                         { value: "24/7", label: "Support" },
                                         { value: "100%", label: "Quality" }
                                     ].map((stat, idx) => (
-                                        <div key={idx} className="flex-1 text-center group cursor-default">
-                                            <div className="text-2xl font-medium text-foreground group-hover:scale-105 transition-transform duration-300">
+                                        <div key={idx} className="flex-1 text-center group cursor-default px-2">
+                                            <div className="text-5xl font-medium text-foreground group-hover:scale-105 transition-transform duration-300">
                                                 {stat.value}
                                             </div>
                                             <div className="text-[10px] uppercase tracking-wider text-muted-foreground mt-1">
@@ -186,11 +186,11 @@ export function HeroSection() {
 
                                 {/* Status Pills */}
                                 <div className="flex flex-wrap gap-2 pt-2">
-                                    <span className="inline-flex items-center gap-1.5 rounded-full border border-green-500/20 bg-green-500/10 px-2.5 py-1 text-[10px] font-medium text-green-500">
+                                    <span className="inline-flex items-center gap-1.5 rounded-sm border border-green-500/20 bg-green-500/10 px-2.5 py-1 text-[10px] font-medium text-green-500">
                                         <span className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />
                                         SYSTEM ACTIVE
                                     </span>
-                                    <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/20 bg-amber-500/10 px-2.5 py-1 text-[10px] font-medium text-amber-500">
+                                    <span className="inline-flex items-center gap-1.5 rounded-sm border border-amber-500/20 bg-amber-500/10 px-2.5 py-1 text-[10px] font-medium text-amber-500">
                                         <Star className="h-3 w-3 fill-current" />
                                         PREMIUM TIER
                                     </span>

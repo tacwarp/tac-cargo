@@ -1,295 +1,390 @@
 @import "tailwindcss";
+
 @plugin "@tailwindcss/forms";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
 @layer base {
   :root {
+    color-scheme: light;
+
+    /* ============================================
+       PREMIUM LIGHT THEME SYSTEM
+       Concept: "Crisp Daylight"
+       Deep contrast, colorful shadows, subtle tinting
+       ============================================ */
+
+    /* Base - Not boring white. Cool, crisp porcelain. */
+    --background: oklch(98.5% 0.002 265deg);
+
+    /* Deep Indigo-Grey for text - softer than black, sharper than grey */
+    --foreground: oklch(20% 0.03 265deg);
+
+    /* Cards - Pure white to pop against the tinted background */
+    --card: oklch(100% 0 0deg);
+    --card-foreground: oklch(20% 0.03 265deg);
+
+    /* Elevated */
+    --popover: oklch(100% 0 0deg);
+    --popover-foreground: oklch(20% 0.03 265deg);
+
+    /* Neutral Layers - Tinted slightly cool for harmony */
+    --bg-elevated: oklch(97% 0.005 265deg);
+    --bg-subtle: oklch(96% 0.01 265deg);
+
+    /* ============================================
+       BRAND COLORS - Retuned for Light Mode
+       Needs to be deeper to maintain 4.5:1 contrast
+       ============================================ */
+
+    /* Primary: Strong, vibrant Indigo */
+    --primary: oklch(48% 0.22 265deg);
+    --primary-hover: oklch(42% 0.24 265deg);
+    --primary-foreground: oklch(100% 0 0deg);
+
+    /* Secondary: Very subtle indigo wash */
+    --secondary: oklch(96% 0.01 265deg);
+    --secondary-hover: oklch(93% 0.02 265deg);
+    --secondary-foreground: oklch(25% 0.04 265deg);
+
+    /* Muted: Neutral cool grey */
+    --muted: oklch(94% 0.01 260deg);
+    --muted-foreground: oklch(40% 0.02 260deg);
+
+    /* Accent: Electric Violet/Indigo crossover */
+    --accent: oklch(50% 0.22 280deg);
+    --accent-hover: oklch(45% 0.24 280deg);
+    --accent-foreground: oklch(100% 0 0deg);
+
+    /* ============================================
+       STATUS COLORS - Adjusted for vibrance/readability
+       ============================================ */
+    --success: oklch(50% 0.18 150deg);
+    --success-hover: oklch(45% 0.20 150deg);
+    --success-foreground: oklch(100% 0 0deg);
+    --warning: oklch(65% 0.18 85deg);
+    --warning-hover: oklch(60% 0.20 85deg);
+    --warning-foreground: oklch(15% 0.02 85deg);
+    --destructive: oklch(52% 0.22 25deg);
+    --destructive-hover: oklch(45% 0.24 25deg);
+    --destructive-foreground: oklch(100% 0 0deg);
+    --info: oklch(45% 0.20 230deg);
+    --info-hover: oklch(40% 0.22 230deg);
+    --info-foreground: oklch(100% 0 0deg);
+
+    /* State Colors */
+    --state-pending: oklch(45% 0.20 230deg);
+    --state-scanned: oklch(48% 0.22 265deg);
+    --state-in-transit: oklch(65% 0.18 85deg);
+    --state-arrived: oklch(50% 0.18 150deg);
+    --state-delivered: oklch(50% 0.18 150deg);
+    --state-delayed: oklch(52% 0.22 25deg);
+    --state-cancelled: oklch(25% 0.04 265deg);
+
+    /* KPI Colors - Slightly darkened for white bg */
+    --kpi-positive: oklch(50% 0.18 150deg);
+    --kpi-negative: oklch(52% 0.22 25deg);
+    --kpi-neutral: oklch(45% 0.20 230deg);
+    --kpi-glow-positive: oklch(50% 0.18 150deg / 15%);
+    --kpi-glow-negative: oklch(52% 0.22 25deg / 15%);
+    --premium: oklch(45% 0.24 290deg);
+    --premium-hover: oklch(40% 0.26 290deg);
+    --premium-foreground: oklch(100% 0 0deg);
+
+    /* ============================================
+       UI ELEMENTS
+       ============================================ */
+    --border: oklch(90% 0.01 265deg);
+
+    /* Subtle cool border */
+    --input: oklch(98% 0.005 265deg);
+    --ring: oklch(48% 0.22 265deg);
+
+    /* ============================================
+       PREMIUM SHADOW SYSTEM (Light Mode)
+       Using tinted, layered shadows for depth
+       Color: Deep Indigo (265 hue) at very low opacity
+       ============================================ */
+    --shadow-color: 265 0.05 0.15;
+
+    /* Base for alpha composition */
+
+    --shadow-sm: 0 1px 2px 0 oklch(20% 0.05 265deg / 5%);
+    --shadow-md: 0 4px 6px -1px oklch(20% 0.05 265deg / 6%), 0 2px 4px -2px oklch(20% 0.05 265deg / 4%);
+    --shadow-lg: 0 10px 15px -3px oklch(20% 0.05 265deg / 8%), 0 4px 6px -4px oklch(20% 0.05 265deg / 6%);
+    --shadow-xl: 0 20px 25px -5px oklch(20% 0.05 265deg / 10%), 0 8px 10px -6px oklch(20% 0.05 265deg / 8%);
+    --shadow-2xl: 0 25px 50px -12px oklch(20% 0.06 265deg / 15%);
+    --shadow-inner: inset 0 2px 4px 0 oklch(20% 0.05 265deg / 3%);
+
+    /* Elevation Tokens */
+    --elevation-1: 0 1px 3px oklch(20% 0.05 265deg / 8%);
+    --elevation-2: 0 4px 12px oklch(20% 0.05 265deg / 10%);
+    --elevation-3: 0 12px 32px oklch(20% 0.05 265deg / 14%);
+
+    /* Charts - Adjusted max contrast */
+    --chart-1: oklch(48% 0.22 265deg);
+    --chart-2: oklch(50% 0.18 150deg);
+    --chart-3: oklch(65% 0.18 85deg);
+    --chart-4: oklch(45% 0.20 230deg);
+    --chart-5: oklch(45% 0.24 320deg);
+    --chart-6: oklch(45% 0.24 290deg);
+
+    /* Sidebar - Light Mode (Slightly darker/cool) */
+    --sidebar: oklch(97% 0.005 265deg);
+    --sidebar-foreground: oklch(25% 0.04 265deg);
+    --sidebar-primary: oklch(48% 0.22 265deg);
+    --sidebar-primary-foreground: oklch(100% 0 0deg);
+    --sidebar-accent: oklch(93% 0.01 265deg);
+    --sidebar-accent-foreground: oklch(48% 0.22 265deg);
+    --sidebar-border: oklch(90% 0.01 265deg);
+    --sidebar-ring: oklch(48% 0.22 265deg);
+
+    /* Glass Morphism */
+    --glass-bg: oklch(100% 0 0deg / 75%);
+    --glass-border: oklch(100% 0 0deg / 50%);
+    --glass-shadow: oklch(20% 0.05 265deg / 8%);
+
+    /* Glows -> Transformed to Color Washes in light mode */
+    --glow-primary: oklch(48% 0.22 265deg / 8%);
+    --glow-accent: oklch(50% 0.22 280deg / 8%);
+    --glow-success: oklch(50% 0.18 150deg / 8%);
+    --glow-warning: oklch(65% 0.18 85deg / 8%);
+    --glow-destructive: oklch(52% 0.22 25deg / 8%);
+    --glow-premium: oklch(45% 0.24 290deg / 8%);
+
+    /* Gradients - Vibrant Daylight */
+    --gradient-start: oklch(48% 0.22 265deg);
+
+    /* Indigo */
+    --gradient-mid: oklch(50% 0.22 280deg);
+
+    /* Violet */
+    --gradient-end: oklch(0.45 0.24 290deg);
+
+    /* Purple */
+
+    --gradient-success-start: oklch(0.55 0.18 150deg);
+    --gradient-success-end: oklch(50% 0.18 150deg);
+    --gradient-warning-start: oklch(70% 0.18 85deg);
+    --gradient-warning-end: oklch(65% 0.18 85deg);
+
+    /* Kinetic Grid - Subtle pattern */
+    --noise-opacity: 0.02;
+    --grain-opacity: 0.03;
+    --kinetic-glow: oklch(48% 0.22 265deg / 20%);
+
+    /* Bento Grid */
+    --bento-gap: 1.5rem;
+    --bento-radius: 1.25rem;
+    --radius: 0.5rem;
+
+    /* Typo */
+    --font-size-hero: 4.5rem;
+    --font-size-kpi: 3rem;
+    --font-size-card-title: 1.5rem;
+    --font-size-body: 1rem;
+    --font-size-label: 0.75rem;
+    --tracking-normal: 0.01em;
+
+  }
+
+  .dark {
     color-scheme: dark;
 
     /* ============================================
        BASE COLORS - TAC Indigo System
        ============================================ */
-    --background: oklch(0.17 0.01 260);
-    --foreground: oklch(0.95 0 0);
+    --background: oklch(17% 0.01 260deg);
+    --foreground: oklch(95% 0 0deg);
 
     /* Card Surfaces - Enhanced for visibility */
-    --card: oklch(0.22 0.015 260);
-    --card-foreground: oklch(0.95 0 0);
+    --card: oklch(22% 0.015 260deg);
+    --card-foreground: oklch(95% 0 0deg);
 
     /* Elevated Surfaces */
-    --popover: oklch(0.24 0.015 260);
-    --popover-foreground: oklch(0.95 0 0);
-    
+    --popover: oklch(24% 0.015 260deg);
+    --popover-foreground: oklch(95% 0 0deg);
+
     /* Additional neutral layers for depth */
-    --bg-elevated: oklch(0.26 0.015 260);
-    --bg-subtle: oklch(0.19 0.01 260);
+    --bg-elevated: oklch(26% 0.015 260deg);
+    --bg-subtle: oklch(19% 0.01 260deg);
 
     /* ============================================
        BRAND COLORS - TAC Indigo
        ============================================ */
-    --primary: oklch(0.63 0.18 265);
-    --primary-hover: oklch(0.68 0.20 265);
-    --primary-foreground: oklch(1 0 0);
+    --primary: oklch(63% 0.18 265deg);
+    --primary-hover: oklch(68% 0.20 265deg);
+    --primary-foreground: oklch(100% 0 0deg);
 
     /* Secondary */
-    --secondary: oklch(0.27 0.01 260);
-    --secondary-hover: oklch(0.32 0.01 260);
-    --secondary-foreground: oklch(0.95 0 0);
+    --secondary: oklch(27% 0.01 260deg);
+    --secondary-hover: oklch(32% 0.01 260deg);
+    --secondary-foreground: oklch(95% 0 0deg);
 
     /* Muted Elements */
-    --muted: oklch(0.25 0.01 260);
-    --muted-foreground: oklch(0.7 0 0);
+    --muted: oklch(25% 0.01 260deg);
+    --muted-foreground: oklch(70% 0 0deg);
 
     /* Accent - Blue/Indigo Mix */
-    --accent: oklch(0.63 0.18 265);
-    --accent-hover: oklch(0.68 0.20 265);
-    --accent-foreground: oklch(1 0 0);
+    --accent: oklch(63% 0.18 265deg);
+    --accent-hover: oklch(68% 0.20 265deg);
+    --accent-foreground: oklch(100% 0 0deg);
 
     /* ============================================
        STATUS COLORS - High Contrast
        ============================================ */
-    --success: oklch(0.72 0.18 145);
-    --success-hover: oklch(0.77 0.20 145);
-    --success-foreground: oklch(0.95 0 0);
+    --success: oklch(72% 0.18 145deg);
+    --success-hover: oklch(77% 0.20 145deg);
+    --success-foreground: oklch(95% 0 0deg);
+    --warning: oklch(75% 0.17 85deg);
+    --warning-hover: oklch(80% 0.19 85deg);
+    --warning-foreground: oklch(10% 0.015 250deg);
+    --destructive: oklch(63% 0.22 25deg);
+    --destructive-hover: oklch(68% 0.24 25deg);
+    --destructive-foreground: oklch(100% 0 0deg);
+    --info: oklch(70% 0.18 225deg);
+    --info-hover: oklch(75% 0.20 225deg);
+    --info-foreground: oklch(10% 0.015 250deg);
 
-    --warning: oklch(0.75 0.17 85);
-    --warning-hover: oklch(0.80 0.19 85);
-    --warning-foreground: oklch(0.10 0.015 250);
+    /* State Colors - Semantic */
+    --state-pending: oklch(70% 0.18 225deg);
+    --state-scanned: oklch(63% 0.18 265deg);
+    --state-in-transit: oklch(75% 0.17 85deg);
+    --state-arrived: oklch(72% 0.18 145deg);
+    --state-delivered: oklch(72% 0.18 145deg);
+    --state-delayed: oklch(63% 0.22 25deg);
+    --state-cancelled: oklch(25% 0.01 260deg);
 
-    --destructive: oklch(0.63 0.22 25);
-    --destructive-hover: oklch(0.68 0.24 25);
-    --destructive-foreground: oklch(1 0 0);
-
-    --info: oklch(0.70 0.18 225);
-    --info-hover: oklch(0.75 0.20 225);
-    --info-foreground: oklch(0.10 0.015 250);
+    /* KPI Colors */
+    --kpi-positive: oklch(72% 0.18 145deg);
+    --kpi-negative: oklch(63% 0.22 25deg);
+    --kpi-neutral: oklch(70% 0.18 225deg);
+    --kpi-glow-positive: oklch(72% 0.18 145deg / 35%);
+    --kpi-glow-negative: oklch(63% 0.22 25deg / 35%);
 
     /* Premium Purple */
-    --premium: oklch(0.63 0.24 285);
-    --premium-hover: oklch(0.68 0.26 285);
-    --premium-foreground: oklch(1 0 0);
+    --premium: oklch(63% 0.24 285deg);
+    --premium-hover: oklch(68% 0.26 285deg);
+    --premium-foreground: oklch(100% 0 0deg);
 
     /* ============================================
        UI ELEMENTS - Enhanced contrast
        ============================================ */
-    --border: oklch(0.32 0.03 252);
-    --input: oklch(0.22 0.025 252);
-    --ring: oklch(0.72 0.20 195);
-    
+    --border: oklch(32% 0.03 252deg);
+    --input: oklch(22% 0.025 252deg);
+    --ring: oklch(72% 0.20 195deg);
+
     /* ============================================
        SHADOW SYSTEM - Dark Mode
        ============================================ */
-    --shadow-sm: 0 1px 2px 0 oklch(0 0 0 / 0.3);
-    --shadow-md: 0 4px 6px -1px oklch(0 0 0 / 0.4), 0 2px 4px -2px oklch(0 0 0 / 0.3);
-    --shadow-lg: 0 10px 15px -3px oklch(0 0 0 / 0.5), 0 4px 6px -4px oklch(0 0 0 / 0.4);
-    --shadow-xl: 0 20px 25px -5px oklch(0 0 0 / 0.5), 0 8px 10px -6px oklch(0 0 0 / 0.4);
-    --shadow-2xl: 0 25px 50px -12px oklch(0 0 0 / 0.6);
-    --shadow-inner: inset 0 2px 4px 0 oklch(0 0 0 / 0.3);
+    --shadow-sm: 0 1px 2px 0 oklch(0% 0 0deg / 30%);
+    --shadow-md: 0 4px 6px -1px oklch(0% 0 0deg / 40%), 0 2px 4px -2px oklch(0% 0 0deg / 30%);
+    --shadow-lg: 0 10px 15px -3px oklch(0% 0 0deg / 50%), 0 4px 6px -4px oklch(0% 0 0deg / 40%);
+    --shadow-xl: 0 20px 25px -5px oklch(0% 0 0deg / 50%), 0 8px 10px -6px oklch(0% 0 0deg / 40%);
+    --shadow-2xl: 0 25px 50px -12px oklch(0% 0 0deg / 60%);
+    --shadow-inner: inset 0 2px 4px 0 oklch(0% 0 0deg / 30%);
 
     /* ============================================
        CHART COLORS - Vibrant & Distinct
        ============================================ */
-    --chart-1: oklch(0.72 0.20 195);
+    --chart-1: oklch(72% 0.20 195deg);
+
     /* Electric Cyan */
-    --chart-2: oklch(0.75 0.20 150);
+    --chart-2: oklch(75% 0.20 150deg);
+
     /* Neon Green */
-    --chart-3: oklch(0.80 0.16 80);
+    --chart-3: oklch(80% 0.16 80deg);
+
     /* Vibrant Amber */
-    --chart-4: oklch(0.65 0.24 240);
+    --chart-4: oklch(65% 0.24 240deg);
+
     /* Electric Blue */
-    --chart-5: oklch(0.68 0.22 320);
+    --chart-5: oklch(68% 0.22 320deg);
+
     /* Hot Pink */
-    --chart-6: oklch(0.63 0.24 285);
+    --chart-6: oklch(63% 0.24 285deg);
+
     /* Purple */
 
     /* ============================================
        SIDEBAR
        ============================================ */
-    --sidebar: oklch(0.08 0.015 250);
-    --sidebar-foreground: oklch(0.88 0.01 250);
-    --sidebar-primary: oklch(0.72 0.20 195);
-    --sidebar-primary-foreground: oklch(0.10 0.015 250);
-    --sidebar-accent: oklch(0.16 0.02 252);
-    --sidebar-accent-foreground: oklch(0.72 0.20 195);
-    --sidebar-border: oklch(0.24 0.025 252);
-    --sidebar-ring: oklch(0.72 0.20 195);
+    --sidebar: oklch(8% 0.015 250deg);
+    --sidebar-foreground: oklch(88% 0.01 250deg);
+    --sidebar-primary: oklch(72% 0.20 195deg);
+    --sidebar-primary-foreground: oklch(10% 0.015 250deg);
+    --sidebar-accent: oklch(16% 0.02 252deg);
+    --sidebar-accent-foreground: oklch(72% 0.20 195deg);
+    --sidebar-border: oklch(24% 0.025 252deg);
+    --sidebar-ring: oklch(72% 0.20 195deg);
 
     /* ============================================
        GLASS MORPHISM EFFECTS - Enhanced visibility
        ============================================ */
-    --glass-bg: oklch(0.20 0.02 252 / 0.85);
-    --glass-border: oklch(0.35 0.03 252 / 0.40);
-    --glass-shadow: oklch(0 0 0 / 0.40);
+    --glass-bg: oklch(20% 0.02 252deg / 85%);
+    --glass-border: oklch(35% 0.03 252deg / 40%);
+    --glass-shadow: oklch(0% 0 0deg / 40%);
 
     /* ============================================
        GLOW EFFECTS (for dark mode)
        ============================================ */
-    --glow-primary: oklch(0.72 0.20 195 / 0.35);
-    --glow-accent: oklch(0.65 0.24 240 / 0.35);
-    --glow-success: oklch(0.75 0.20 150 / 0.35);
-    --glow-warning: oklch(0.80 0.16 80 / 0.35);
-    --glow-destructive: oklch(0.68 0.22 25 / 0.35);
-    --glow-premium: oklch(0.63 0.24 285 / 0.35);
+    --glow-primary: oklch(72% 0.20 195deg / 35%);
+    --glow-accent: oklch(65% 0.24 240deg / 35%);
+    --glow-success: oklch(75% 0.20 150deg / 35%);
+    --glow-warning: oklch(80% 0.16 80deg / 35%);
+    --glow-destructive: oklch(68% 0.22 25deg / 35%);
+    --glow-premium: oklch(63% 0.24 285deg / 35%);
 
     /* ============================================
        GRADIENT STOPS
        ============================================ */
-    --gradient-start: oklch(0.72 0.20 195);
-    --gradient-mid: oklch(0.65 0.24 240);
-    --gradient-end: oklch(0.63 0.24 285);
-
-    --gradient-success-start: oklch(0.75 0.20 150);
-    --gradient-success-end: oklch(0.72 0.20 195);
-
-    --gradient-warning-start: oklch(0.80 0.16 80);
-    --gradient-warning-end: oklch(0.75 0.20 150);
+    --gradient-start: oklch(72% 0.20 195deg);
+    --gradient-mid: oklch(65% 0.24 240deg);
+    --gradient-end: oklch(63% 0.24 285deg);
+    --gradient-success-start: oklch(75% 0.20 150deg);
+    --gradient-success-end: oklch(72% 0.20 195deg);
+    --gradient-warning-start: oklch(80% 0.16 80deg);
+    --gradient-warning-end: oklch(75% 0.20 150deg);
 
     /* ============================================
        KINETIC GRID & DEPTH
        ============================================ */
     --noise-opacity: 0.03;
     --grain-opacity: 0.05;
-    --kinetic-glow: oklch(0.72 0.20 195);
+    --kinetic-glow: oklch(72% 0.20 195deg);
 
     /* Bento Grid Spacing */
     --bento-gap: 1.5rem;
     --bento-radius: 1.25rem;
 
     /* Radius */
-    --radius: 0.875rem;
+    --radius: 0.5rem;
+
+    /* Typography Scale */
+    --font-size-hero: 4.5rem;
+
+    /* 72px */
+    --font-size-kpi: 3rem;
+
+    /* 48px */
+    --font-size-card-title: 1.5rem;
+
+    /* 24px */
+    --font-size-body: 1rem;
+
+    /* 16px */
+    --font-size-label: 0.75rem;
+
+    /* 12px */
+
+    /* Elevation Tokens */
+    --elevation-1: 0 1px 2px oklch(0% 0 0deg / 25%);
+    --elevation-2: 0 4px 12px oklch(0% 0 0deg / 35%);
+    --elevation-3: 0 8px 24px oklch(0% 0 0deg / 45%);
   }
 
-  /* ================================================
-     LIGHT MODE - Refined Professional
-     ================================================ */
-  .light,
-  :root:not(.dark) {
-    &:where(:not(.dark, .dark *)) {
-    color-scheme: light;
-
-      /* Base - Warm off-white */
-      --background: oklch(0.99 0.002 250);
-      --foreground: oklch(0.15 0.015 250);
-
-      /* Cards - Pure white with subtle shadow */
-      --card: oklch(1 0 0);
-      --card-foreground: oklch(0.15 0.015 250);
-
-      /* Elevated */
-      --popover: oklch(0.98 0.002 250);
-      --popover-foreground: oklch(0.15 0.015 250);
-      
-      /* Additional neutral layers */
-      --bg-elevated: oklch(0.96 0.003 250);
-      --bg-subtle: oklch(0.995 0.001 250);
-
-      /* Brand Colors - Deeper for contrast */
-      --primary: oklch(0.55 0.18 195);
-      --primary-hover: oklch(0.50 0.20 195);
-      --primary-foreground: oklch(1 0 0);
-
-      --secondary: oklch(0.96 0.005 250);
-      --secondary-hover: oklch(0.93 0.008 250);
-      --secondary-foreground: oklch(0.15 0.015 250);
-
-      --muted: oklch(0.96 0.005 250);
-      --muted-foreground: oklch(0.48 0.015 250);
-
-      --accent: oklch(0.50 0.22 240);
-      --accent-hover: oklch(0.45 0.24 240);
-      --accent-foreground: oklch(1 0 0);
-
-      /* Status Colors */
-      --success: oklch(0.60 0.18 150);
-      --success-hover: oklch(0.55 0.20 150);
-      --success-foreground: oklch(1 0 0);
-
-      --warning: oklch(0.65 0.14 80);
-      --warning-hover: oklch(0.60 0.16 80);
-      --warning-foreground: oklch(0.15 0.015 250);
-
-      --destructive: oklch(0.58 0.20 25);
-      --destructive-hover: oklch(0.53 0.22 25);
-      --destructive-foreground: oklch(1 0 0);
-
-      --info: oklch(0.55 0.16 225);
-      --info-hover: oklch(0.50 0.18 225);
-      --info-foreground: oklch(1 0 0);
-
-      --premium: oklch(0.53 0.22 285);
-      --premium-hover: oklch(0.48 0.24 285);
-      --premium-foreground: oklch(1 0 0);
-
-      /* UI Elements - Enhanced contrast */
-      --border: oklch(0.85 0.008 250);
-      --input: oklch(0.94 0.003 250);
-      --ring: oklch(0.55 0.18 195);
-      
-      /* ============================================
-         SHADOW SYSTEM - Light Mode
-         ============================================ */
-      --shadow-sm: 0 1px 2px 0 oklch(0 0 0 / 0.05);
-      --shadow-md: 0 4px 6px -1px oklch(0 0 0 / 0.08), 0 2px 4px -2px oklch(0 0 0 / 0.05);
-      --shadow-lg: 0 10px 15px -3px oklch(0 0 0 / 0.10), 0 4px 6px -4px oklch(0 0 0 / 0.08);
-      --shadow-xl: 0 20px 25px -5px oklch(0 0 0 / 0.12), 0 8px 10px -6px oklch(0 0 0 / 0.08);
-      --shadow-2xl: 0 25px 50px -12px oklch(0 0 0 / 0.15);
-      --shadow-inner: inset 0 2px 4px 0 oklch(0 0 0 / 0.06);
-
-      /* Charts - Adjusted for light background */
-      --chart-1: oklch(0.55 0.18 195);
-      --chart-2: oklch(0.60 0.18 150);
-      --chart-3: oklch(0.65 0.14 80);
-      --chart-4: oklch(0.50 0.22 240);
-      --chart-5: oklch(0.58 0.20 320);
-      --chart-6: oklch(0.53 0.22 285);
-
-      /* Sidebar */
-      --sidebar: oklch(0.98 0.002 250);
-      --sidebar-foreground: oklch(0.15 0.015 250);
-      --sidebar-primary: oklch(0.55 0.18 195);
-      --sidebar-primary-foreground: oklch(1 0 0);
-      --sidebar-accent: oklch(0.94 0.005 250);
-      --sidebar-accent-foreground: oklch(0.55 0.18 195);
-      --sidebar-border: oklch(0.85 0.008 250);
-      --sidebar-ring: oklch(0.55 0.18 195);
-
-      /* Glass Morphism - Light mode - Enhanced visibility */
-      --glass-bg: oklch(1 0 0 / 0.92);
-      --glass-border: oklch(0.85 0.008 250 / 0.60);
-      --glass-shadow: oklch(0 0 0 / 0.08);
-
-      /* Glow Effects (more subtle in light) */
-      --glow-primary: oklch(0.55 0.18 195 / 0.20);
-      --glow-accent: oklch(0.50 0.22 240 / 0.20);
-      --glow-success: oklch(0.60 0.18 150 / 0.20);
-      --glow-warning: oklch(0.65 0.14 80 / 0.20);
-      --glow-destructive: oklch(0.58 0.20 25 / 0.20);
-      --glow-premium: oklch(0.53 0.22 285 / 0.20);
-
-      /* Gradients */
-      --gradient-start: oklch(0.55 0.18 195);
-      --gradient-mid: oklch(0.50 0.22 240);
-      --gradient-end: oklch(0.53 0.22 285);
-
-      --gradient-success-start: oklch(0.60 0.18 150);
-      --gradient-success-end: oklch(0.55 0.18 195);
-
-      --gradient-warning-start: oklch(0.65 0.14 80);
-      --gradient-warning-end: oklch(0.60 0.18 150);
-
-      /* Kinetic Grid & Depth - Light Mode */
-      --noise-opacity: 0.01;
-      --grain-opacity: 0.02;
-      --kinetic-glow: oklch(0.55 0.18 195);
-    }
-  }
-  
-  /* ================================================
-     DARK MODE - Explicit Class
-     ================================================ */
-  .dark {
-    color-scheme: dark;
+  body {
+    letter-spacing: var(--tracking-normal);
   }
 }
 
@@ -346,203 +441,87 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
   --radius-2xl: calc(var(--radius) + 8px);
+}
 
-  /* Animations */
-  --animate-hide: hide 150ms cubic-bezier(0.16, 1, 0.3, 1);
-  --animate-slide-down-and-fade: slideDownAndFade 150ms cubic-bezier(0.16, 1, 0.3, 1);
-  --animate-slide-left-and-fade: slideLeftAndFade 150ms cubic-bezier(0.16, 1, 0.3, 1);
-  --animate-slide-up-and-fade: slideUpAndFade 150ms cubic-bezier(0.16, 1, 0.3, 1);
-  --animate-slide-right-and-fade: slideRightAndFade 150ms cubic-bezier(0.16, 1, 0.3, 1);
-  --animate-accordion-open: accordionOpen 150ms cubic-bezier(0.87, 0, 0.13, 1);
-  --animate-accordion-close: accordionClose 150ms cubic-bezier(0.87, 0, 0.13, 1);
-  --animate-dialog-overlay-show: dialogOverlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
-  --animate-dialog-content-show: dialogContentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
-  --animate-gradient: gradient-shift 15s ease infinite;
-  --animate-bounce: bounce 2s infinite;
-  --animate-pulse-slow: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  --animate-shimmer: shimmer 2s infinite;
+/* ================================================
+   KEYFRAME ANIMATIONS
+   ================================================ */
+@keyframes hide {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
 
-  @keyframes hide {
-    from {
-      opacity: 1;
-    }
+@keyframes slide-down-and-fade {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
-    to {
-      opacity: 0;
-    }
-  }
+@keyframes slide-left-and-fade {
+  from { opacity: 0; transform: translateX(6px); }
+  to { opacity: 1; transform: translateX(0); }
+}
 
-  @keyframes slideDownAndFade {
-    from {
-      opacity: 0;
-      transform: translateY(-6px);
-    }
+@keyframes slide-up-and-fade {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
+@keyframes slide-right-and-fade {
+  from { opacity: 0; transform: translateX(-6px); }
+  to { opacity: 1; transform: translateX(0); }
+}
 
-  @keyframes slideLeftAndFade {
-    from {
-      opacity: 0;
-      transform: translateX(6px);
-    }
+@keyframes accordion-open {
+  from { height: 0; }
+  to { height: var(--radix-accordion-content-height); }
+}
 
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
+@keyframes accordion-close {
+  from { height: var(--radix-accordion-content-height); }
+  to { height: 0; }
+}
 
-  @keyframes slideUpAndFade {
-    from {
-      opacity: 0;
-      transform: translateY(6px);
-    }
+@keyframes dialog-overlay-show {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
+@keyframes dialog-content-show {
+  from { opacity: 0; transform: translate(-50%, -45%) scale(0.95); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
 
-  @keyframes slideRightAndFade {
-    from {
-      opacity: 0;
-      transform: translateX(-6px);
-    }
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
 
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
+}
 
-  @keyframes accordionOpen {
-    from {
-      height: 0px;
-    }
+@keyframes kinetic-border {
+  0%, 100% { border-color: var(--border); }
+  50% { border-color: var(--kinetic-glow); }
+}
 
-    to {
-      height: var(--radix-accordion-content-height);
-    }
-  }
-
-  @keyframes accordionClose {
-    from {
-      height: var(--radix-accordion-content-height);
-    }
-
-    to {
-      height: 0px;
-    }
-  }
-
-  @keyframes dialogOverlayShow {
-    from {
-      opacity: 0;
-    }
-
-    to {
-      opacity: 1;
-    }
-  }
-
-  @keyframes dialogContentShow {
-    from {
-      opacity: 0;
-      transform: translate(-50%, -45%) scale(0.95);
-    }
-
-    to {
-      opacity: 1;
-      transform: translate(-50%, -50%) scale(1);
-    }
-  }
-
-  @keyframes gradient-shift {
-    0% {
-      background-position: 0% 50%;
-    }
-
-    50% {
-      background-position: 100% 50%;
-    }
-
-    100% {
-      background-position: 0% 50%;
-    }
-  }
-
-  @keyframes shimmer {
-    100% {
-      transform: translateX(100%);
-    }
-  }
-
-  @keyframes kinetic-border {
-
-    0%,
-    100% {
-      border-color: var(--border);
-    }
-
-    50% {
-      border-color: var(--kinetic-glow);
-    }
-  }
-
-  @keyframes grain {
-
-    0%,
-    100% {
-      transform: translate(0, 0);
-    }
-
-    10% {
-      transform: translate(-5%, -10%);
-    }
-
-    20% {
-      transform: translate(-15%, 5%);
-    }
-
-    30% {
-      transform: translate(7%, -25%);
-    }
-
-    40% {
-      transform: translate(-5%, 25%);
-    }
-
-    50% {
-      transform: translate(-15%, 10%);
-    }
-
-    60% {
-      transform: translate(15%, 0%);
-    }
-
-    70% {
-      transform: translate(0%, 15%);
-    }
-
-    80% {
-      transform: translate(3%, 35%);
-    }
-
-    90% {
-      transform: translate(-10%, 10%);
-    }
-  }
+@keyframes grain {
+  0%, 100% { transform: translate(0, 0); }
+  10% { transform: translate(-5%, -10%); }
+  20% { transform: translate(-15%, 5%); }
+  30% { transform: translate(7%, -25%); }
+  40% { transform: translate(-5%, 25%); }
+  50% { transform: translate(-15%, 10%); }
+  60% { transform: translate(15%, 0%); }
+  70% { transform: translate(0%, 15%); }
+  80% { transform: translate(3%, 35%); }
+  90% { transform: translate(-10%, 10%); }
 }
 
 /* ================================================
@@ -550,11 +529,14 @@
    ================================================ */
 @layer base {
   * {
-    @apply border-border;
+    border-color: var(--border);
   }
 
   body {
-    @apply bg-background text-foreground antialiased;
+    background-color: var(--background);
+    color: var(--foreground);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 
@@ -588,7 +570,6 @@
    PREMIUM UTILITY CLASSES
    ================================================ */
 @layer utilities {
-
   /* ============================================
      GLASS MORPHISM EFFECTS - Enhanced
      ============================================ */
@@ -604,14 +585,14 @@
     backdrop-filter: blur(24px) saturate(180%);
     border: 1px solid var(--glass-border);
     box-shadow: var(--shadow-xl);
-    @apply rounded-xl;
+    border-radius: 0.75rem;
   }
 
   .glass-intense {
     background: var(--glass-bg);
     backdrop-filter: blur(40px) saturate(200%);
     border: 1px solid var(--glass-border);
-    box-shadow: var(--shadow-2xl), inset 0 1px 0 0 oklch(1 0 0 / 0.05);
+    box-shadow: var(--shadow-2xl), inset 0 1px 0 0 oklch(100% 0 0deg / 5%);
   }
 
   .glass-sidebar {
@@ -662,12 +643,12 @@
   /* Mesh gradient (premium effect) */
   .gradient-mesh {
     background:
-      radial-gradient(at 40% 20%, var(--gradient-start) 0px, transparent 50%),
-      radial-gradient(at 80% 0%, var(--gradient-mid) 0px, transparent 50%),
-      radial-gradient(at 0% 50%, var(--gradient-end) 0px, transparent 50%),
-      radial-gradient(at 80% 50%, var(--gradient-success-start) 0px, transparent 50%),
-      radial-gradient(at 0% 100%, var(--gradient-start) 0px, transparent 50%),
-      radial-gradient(at 80% 100%, var(--gradient-mid) 0px, transparent 50%),
+      radial-gradient(at 40% 20%, var(--gradient-start) 0, transparent 50%),
+      radial-gradient(at 80% 0%, var(--gradient-mid) 0, transparent 50%),
+      radial-gradient(at 0% 50%, var(--gradient-end) 0, transparent 50%),
+      radial-gradient(at 80% 50%, var(--gradient-success-start) 0, transparent 50%),
+      radial-gradient(at 0% 100%, var(--gradient-start) 0, transparent 50%),
+      radial-gradient(at 80% 100%, var(--gradient-mid) 0, transparent 50%),
       var(--background);
   }
 
@@ -725,8 +706,8 @@
         var(--gradient-start),
         var(--gradient-end));
     -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
     background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 
   .text-gradient-success {
@@ -734,8 +715,8 @@
         var(--gradient-success-start),
         var(--gradient-success-end));
     -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
     background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 
   .text-gradient-warning {
@@ -743,8 +724,8 @@
         var(--gradient-warning-start),
         var(--gradient-warning-end));
     -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
     background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 
   /* ============================================
@@ -752,47 +733,64 @@
      ============================================ */
   .status-delivered {
     background: linear-gradient(135deg,
-        oklch(from var(--success) l c h / 0.15) 0%,
-        oklch(from var(--success) l c h / 0.05) 100%);
+        oklch(from var(--success) l c h / 15%) 0%,
+        oklch(from var(--success) l c h / 5%) 100%);
     color: var(--success);
-    border: 1px solid oklch(from var(--success) l c h / 0.3);
+    border: 1px solid oklch(from var(--success) l c h / 30%);
     box-shadow: 0 0 15px var(--glow-success);
   }
 
   .status-in-transit {
     background: linear-gradient(135deg,
-        oklch(from var(--warning) l c h / 0.15) 0%,
-        oklch(from var(--warning) l c h / 0.05) 100%);
+        oklch(from var(--warning) l c h / 15%) 0%,
+        oklch(from var(--warning) l c h / 5%) 100%);
     color: var(--warning);
-    border: 1px solid oklch(from var(--warning) l c h / 0.3);
+    border: 1px solid oklch(from var(--warning) l c h / 30%);
     box-shadow: 0 0 15px var(--glow-warning);
   }
 
   .status-delayed {
     background: linear-gradient(135deg,
-        oklch(from var(--destructive) l c h / 0.15) 0%,
-        oklch(from var(--destructive) l c h / 0.05) 100%);
+        oklch(from var(--destructive) l c h / 15%) 0%,
+        oklch(from var(--destructive) l c h / 5%) 100%);
     color: var(--destructive);
-    border: 1px solid oklch(from var(--destructive) l c h / 0.3);
+    border: 1px solid oklch(from var(--destructive) l c h / 30%);
     box-shadow: 0 0 15px var(--glow-destructive);
   }
 
   .status-pending {
     background: linear-gradient(135deg,
-        oklch(from var(--info) l c h / 0.15) 0%,
-        oklch(from var(--info) l c h / 0.05) 100%);
+        oklch(from var(--info) l c h / 15%) 0%,
+        oklch(from var(--info) l c h / 5%) 100%);
     color: var(--info);
-    border: 1px solid oklch(from var(--info) l c h / 0.3);
-    box-shadow: 0 0 15px oklch(from var(--info) l c h / 0.2);
+    border: 1px solid oklch(from var(--info) l c h / 30%);
+    box-shadow: 0 0 15px oklch(from var(--info) l c h / 20%);
   }
 
   .status-processing {
     background: linear-gradient(135deg,
-        oklch(from var(--primary) l c h / 0.15) 0%,
-        oklch(from var(--accent) l c h / 0.1) 100%);
+        oklch(from var(--primary) l c h / 15%) 0%,
+        oklch(from var(--accent) l c h / 10%) 100%);
     color: var(--primary);
-    border: 1px solid oklch(from var(--primary) l c h / 0.3);
+    border: 1px solid oklch(from var(--primary) l c h / 30%);
     box-shadow: 0 0 15px var(--glow-primary);
+  }
+
+  .status-arrived {
+    background: linear-gradient(135deg,
+        oklch(from var(--success) l c h / 12%) 0%,
+        oklch(from var(--info) l c h / 8%) 100%);
+    color: var(--success);
+    border: 1px solid oklch(from var(--success) l c h / 25%);
+    box-shadow: 0 0 12px var(--glow-success);
+  }
+
+  .status-cancelled {
+    background: linear-gradient(135deg,
+        oklch(from var(--muted) l c h / 15%) 0%,
+        oklch(from var(--muted) l c h / 5%) 100%);
+    color: var(--muted-foreground);
+    border: 1px solid oklch(from var(--muted-foreground) l c h / 20%);
   }
 
   /* ============================================
@@ -802,7 +800,10 @@
     background: var(--card);
     border: 1px solid var(--border);
     box-shadow: var(--shadow-lg);
-    @apply rounded-xl relative overflow-hidden transition-all duration-300;
+    border-radius: 0.75rem;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s;
   }
 
   .metric-card::before {
@@ -833,7 +834,9 @@
     background: var(--card);
     border: 1px solid var(--border);
     box-shadow: var(--shadow-lg);
-    @apply rounded-xl p-6 relative;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    position: relative;
   }
 
   .chart-container::after {
@@ -843,15 +846,15 @@
     border-radius: inherit;
     padding: 1px;
     background: linear-gradient(135deg,
-        oklch(from var(--primary) l c h / 0.3),
-        oklch(from var(--accent) l c h / 0.2));
+        oklch(from var(--primary) l c h / 30%),
+        oklch(from var(--accent) l c h / 20%));
     -webkit-mask:
       linear-gradient(#fff 0 0) content-box,
       linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
     mask:
       linear-gradient(#fff 0 0) content-box,
       linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
     mask-composite: exclude;
     pointer-events: none;
   }
@@ -864,7 +867,9 @@
         var(--gradient-start) 0%,
         var(--gradient-mid) 50%,
         var(--gradient-end) 100%);
-    @apply relative overflow-hidden text-primary-foreground;
+    position: relative;
+    overflow: hidden;
+    color: var(--primary-foreground);
     box-shadow: 0 4px 20px var(--glow-primary);
     transition: all 0.3s ease;
   }
@@ -878,7 +883,7 @@
     height: 100%;
     background: linear-gradient(90deg,
         transparent,
-        oklch(1 0 0 / 0.2),
+        oklch(100% 0 0deg / 20%),
         transparent);
     transition: left 0.5s ease;
   }
@@ -902,7 +907,8 @@
     backdrop-filter: blur(24px) saturate(180%);
     border: 1px solid var(--glass-border);
     box-shadow: var(--shadow-md);
-    @apply relative overflow-hidden;
+    position: relative;
+    overflow: hidden;
     transition: all 0.3s ease;
   }
 
@@ -940,16 +946,17 @@
     background: var(--card);
     border: 1px solid var(--border);
     box-shadow: var(--shadow-lg);
-    @apply rounded-[var(--bento-radius)];
+    border-radius: var(--bento-radius);
   }
 
   .text-kpi {
     font-family: var(--font-geist-mono);
-    @apply tracking-tighter font-medium;
+    font-weight: 500;
+    letter-spacing: -0.05em;
   }
 
   .btn-glass:hover {
-    background: oklch(from var(--glass-bg) l c h / 0.7);
+    background: oklch(from var(--glass-bg) l c h / 70%);
     border-color: var(--primary);
     transform: translateY(-2px);
     box-shadow: 0 8px 24px var(--glass-shadow);
@@ -960,18 +967,18 @@
      ============================================ */
   .nav-item-active {
     background: linear-gradient(135deg,
-        oklch(from var(--primary) l c h / 0.15) 0%,
-        oklch(from var(--accent) l c h / 0.1) 100%);
+        oklch(from var(--primary) l c h / 15%) 0%,
+        oklch(from var(--accent) l c h / 10%) 100%);
     border-left: 3px solid var(--primary);
     box-shadow: 0 0 20px var(--glow-primary);
   }
 
   .nav-item {
-    @apply transition-all duration-200;
+    transition: all 0.2s;
   }
 
   .nav-item:hover {
-    background: oklch(from var(--secondary) l c h / 0.8);
+    background: oklch(from var(--secondary) l c h / 80%);
     transform: translateX(4px);
   }
 
@@ -979,7 +986,7 @@
      INPUT FIELDS
      ============================================ */
   .input-glow {
-    @apply transition-all duration-300;
+    transition: all 0.3s;
   }
 
   .input-glow:focus {
@@ -993,7 +1000,7 @@
      BACKDROP PATTERNS
      ============================================ */
   .dot-pattern {
-    background-image: radial-gradient(oklch(from var(--foreground) l c h / 0.1) 1px,
+    background-image: radial-gradient(oklch(from var(--foreground) l c h / 10%) 1px,
         transparent 1px);
     background-size: 20px 20px;
   }
@@ -1011,10 +1018,10 @@
   .hero-gradient {
     background:
       radial-gradient(circle at 20% 50%,
-        oklch(from var(--primary) l c h / 0.15) 0%,
+        oklch(from var(--primary) l c h / 15%) 0%,
         transparent 50%),
       radial-gradient(circle at 80% 50%,
-        oklch(from var(--accent) l c h / 0.15) 0%,
+        oklch(from var(--accent) l c h / 15%) 0%,
         transparent 50%),
       var(--background);
   }
@@ -1025,7 +1032,7 @@
   .shimmer-bg {
     background: linear-gradient(90deg,
         transparent 0%,
-        oklch(1 0 0 / 0.1) 50%,
+        oklch(100% 0 0deg / 10%) 50%,
         transparent 100%);
     background-size: 200% 100%;
     animation: shimmer 2s infinite;
@@ -1034,6 +1041,7 @@
   /* ============================================
      ORBITAL TIMELINE ANIMATIONS
      ============================================ */
+
   /* Custom Pulse Override for Orbital */
   .animate-pulse-orbital {
     animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
@@ -1044,7 +1052,6 @@
   }
 
   @keyframes ping {
-
     75%,
     100% {
       transform: scale(2);
@@ -1058,7 +1065,7 @@
   }
 
   .shadow-orbital {
-    box-shadow: 0 0 15px oklch(1 0 0 / 0.1);
+    box-shadow: 0 0 15px oklch(100% 0 0deg / 10%);
   }
 }
 
@@ -1070,29 +1077,26 @@
 .shimmer::after {
   content: '';
   position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  inset: 0;
   transform: translateX(-100%);
   background: linear-gradient(90deg,
       transparent,
-      oklch(from var(--primary) l c h / 0.2),
+      oklch(from var(--primary) l c h / 20%),
       transparent);
   animation: shimmer 2s infinite;
 }
 
 @layer utilities {
   .animate-scroll-up {
-    animation: scrollUp 40s linear infinite;
+    animation: scroll-up 40s linear infinite;
   }
 
   .animate-scroll-down {
-    animation: scrollDown 40s linear infinite;
+    animation: scroll-down 40s linear infinite;
   }
 }
 
-@keyframes scrollUp {
+@keyframes scroll-up {
   0% {
     transform: translateY(0);
   }
@@ -1102,7 +1106,7 @@
   }
 }
 
-@keyframes scrollDown {
+@keyframes scroll-down {
   0% {
     transform: translateY(-50%);
   }
@@ -1143,8 +1147,7 @@
 .dashboard-main {
   flex: 1 1 0%;
   min-height: 0;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden auto;
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
 }
@@ -1172,18 +1175,18 @@
 /* ============================================
    STRICT ANIMATION RULESET - Prevent Layout Reflow
    ============================================
-   
+
    RULE 1: Only animate compositor-friendly properties
    - transform (translate, scale, rotate)
    - opacity
    - filter (blur, brightness, etc.)
-   
+
    RULE 2: NEVER animate layout-affecting properties
    - height, width, min-*, max-*
    - margin, padding
    - top, right, bottom, left
    - border-width
-   
+
    RULE 3: Use will-change sparingly and remove after animation
    RULE 4: Contain animated elements to prevent reflow propagation
    ============================================ */
@@ -1254,6 +1257,67 @@
     animation: none !important;
     background-image: none !important;
   }
+
+  --background: oklch(23.03% 0.0125 264.2926deg);
+  --foreground: oklch(92.19% 0 0deg);
+  --card: oklch(32.1% 0.0078 223.6661deg);
+  --card-foreground: oklch(92.19% 0 0deg);
+  --popover: oklch(32.1% 0.0078 223.6661deg);
+  --popover-foreground: oklch(92.19% 0 0deg);
+  --primary: oklch(56.76% 0.2021 283.0838deg);
+  --primary-foreground: oklch(100% 0 0deg);
+  --secondary: oklch(33.9% 0.1793 301.6848deg);
+  --secondary-foreground: oklch(92.19% 0 0deg);
+  --muted: oklch(38.67% 0 0deg);
+  --muted-foreground: oklch(71.55% 0 0deg);
+  --accent: oklch(67.46% 0.1414 261.3380deg);
+  --accent-foreground: oklch(92.19% 0 0deg);
+  --destructive: oklch(63.68% 0.2078 25.3313deg);
+  --destructive-foreground: oklch(100% 0 0deg);
+  --border: oklch(38.67% 0 0deg);
+  --input: oklch(38.67% 0 0deg);
+  --ring: oklch(56.76% 0.2021 283.0838deg);
+  --chart-1: oklch(56.76% 0.2021 283.0838deg);
+  --chart-2: oklch(52.61% 0.1705 314.6534deg);
+  --chart-3: oklch(33.9% 0.1793 301.6848deg);
+  --chart-4: oklch(67.46% 0.1414 261.3380deg);
+  --chart-5: oklch(58.8% 0.0993 245.7394deg);
+  --radius: 0.5rem;
+  --sidebar: oklch(23.03% 0.0125 264.2926deg);
+  --sidebar-foreground: oklch(92.19% 0 0deg);
+  --sidebar-primary: oklch(56.76% 0.2021 283.0838deg);
+  --sidebar-primary-foreground: oklch(100% 0 0deg);
+  --sidebar-accent: oklch(67.46% 0.1414 261.3380deg);
+  --sidebar-accent-foreground: oklch(92.19% 0 0deg);
+  --sidebar-border: oklch(38.67% 0 0deg);
+  --sidebar-ring: oklch(56.76% 0.2021 283.0838deg);
+  --font-sans: montserrat,
+  sans-serif;
+  --font-serif: playfair display,
+  serif;
+  --font-mono: source code pro,
+  monospace;
+  --shadow-color: oklch(0 0 0deg);
+  --shadow-opacity: 0.1;
+  --shadow-blur: 10px;
+  --shadow-spread: -2px;
+  --shadow-offset-x: 0px;
+  --shadow-offset-y: 5px;
+  --letter-spacing: 0em;
+  --spacing: 0.25rem;
+  --shadow-2xs: 0px 5px 10px -2px oklch(0 0 0deg / 5%);
+  --shadow-xs: 0px 5px 10px -2px oklch(0 0 0deg / 5%);
+  --shadow-sm: 0px 5px 10px -2px oklch(0 0 0deg / 10%),
+  0px 1px 2px -3px oklch(0 0 0deg / 10%);
+  --shadow: 0px 5px 10px -2px oklch(0 0 0deg / 10%),
+  0px 1px 2px -3px oklch(0 0 0deg / 10%);
+  --shadow-md: 0px 5px 10px -2px oklch(0 0 0deg / 10%),
+  0px 2px 4px -3px oklch(0 0 0deg / 10%);
+  --shadow-lg: 0px 5px 10px -2px oklch(0 0 0deg / 10%),
+  0px 4px 6px -3px oklch(0 0 0deg / 10%);
+  --shadow-xl: 0px 5px 10px -2px oklch(0 0 0deg / 10%),
+  0px 8px 10px -3px oklch(0 0 0deg / 10%);
+  --shadow-2xl: 0px 5px 10px -2px oklch(0 0 0deg / 25%)
 }
 
 /* Reduced motion support */
@@ -1281,7 +1345,7 @@
   .dark .animate-pause-dark {
     animation-play-state: paused;
   }
-  
+
   .dark .animate-pause-dark:hover {
     animation-play-state: running;
   }

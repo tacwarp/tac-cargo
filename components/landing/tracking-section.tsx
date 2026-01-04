@@ -62,7 +62,7 @@ export function TrackingSection() {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="bg-card/50 backdrop-blur-xl rounded-xl border border-border shadow-2xl p-8"
+            className="rounded-xl border-border dark:bg-card/40 dark:backdrop-blur-xl dark:border dark:shadow-elevation-2 p-0 sm:p-8 transition-all"
           >
 
             {/* Tabs */}
@@ -87,14 +87,14 @@ export function TrackingSection() {
                 <RiSearchLine className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
                 <Input
                   placeholder="ENTER AWB NUMBER (E.G. TAC-02531)"
-                  className="pl-10 h-12 uppercase font-mono tracking-wider border-input bg-background/50 focus-visible:ring-primary"
+                  className="pl-10 h-14 uppercase font-mono tracking-wider border-input bg-background/50 focus-visible:ring-0 focus-visible:border-primary focus-visible:border-2 transition-all rounded-sm"
                   value={trackingNumber}
                   onChange={(e) => setTrackingNumber(e.target.value)}
                 />
               </div>
               <Button
                 size="lg"
-                className="h-12 px-8 font-bold tracking-wide shrink-0"
+                className="h-14 px-8 font-bold tracking-wide shrink-0 rounded-sm"
                 onClick={handleSearch}
                 disabled={isSearching || !trackingNumber}
                 aria-label={isSearching ? "Searching shipment" : "Trace shipment"}
@@ -103,20 +103,22 @@ export function TrackingSection() {
               </Button>
             </div>
 
-            {/* Recent Queries */}
-            <div className="flex flex-wrap items-center justify-center gap-3 mt-8">
-              <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest">Recent Queries:</span>
-              {['TAC-02531', 'DEL-98234', 'IMP-45621'].map((example) => (
-                <Badge
-                  key={example}
-                  variant="secondary"
-                  className="font-mono text-[10px] cursor-pointer hover:bg-primary/10 hover:text-primary transition-colors"
-                  onClick={() => setTrackingNumber(example)}
-                  aria-label={`Search for example tracking number ${example}`}
-                >
-                  {example}
-                </Badge>
-              ))}
+            {/* Recent Queries - Scrollable */}
+            <div className="flex flex-col gap-2 mt-8">
+              <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest px-1">Recent Access:</span>
+              <div className="flex items-center gap-3 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-hide mask-linear-fade">
+                {['TAC-02531', 'DEL-98234', 'IMP-45621', 'BOM-88219', 'NYC-10293', 'LHR-99283'].map((example) => (
+                  <Badge
+                    key={example}
+                    variant="outline"
+                    className="rounded-sm font-mono text-[10px] cursor-pointer hover:bg-primary/10 hover:text-primary hover:border-primary/50 transition-all shrink-0 py-1.5 px-3"
+                    onClick={() => setTrackingNumber(example)}
+                    aria-label={`Search for example tracking number ${example}`}
+                  >
+                    {example}
+                  </Badge>
+                ))}
+              </div>
             </div>
 
           </motion.div>
@@ -159,7 +161,7 @@ export function TrackingSection() {
                     />
                   </div>
                 }
-                className="w-full border-primary/20 bg-background/95 backdrop-blur-xl shadow-2xl"
+                className="w-full border-primary/20 bg-background/95 backdrop-blur-xl dark:shadow-elevation-2 shadow-none"
               />
             </DialogContent>
           </Dialog>

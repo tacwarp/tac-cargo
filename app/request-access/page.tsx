@@ -26,7 +26,19 @@ export default function RequestAccessPage() {
     setIsSubmitting(true)
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1500))
+      // Submit to actual API endpoint
+      const response = await fetch('/api/access-requests', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.error || 'Failed to submit request')
+      }
       
       toast.success('Request Submitted', {
         description: 'Our team will contact you within 24 hours.',
@@ -40,8 +52,9 @@ export default function RequestAccessPage() {
         message: '',
       })
     } catch (error) {
+      console.error('Access request error:', error)
       toast.error('Submission Failed', {
-        description: 'Please try again or contact support.',
+        description: error instanceof Error ? error.message : 'Please try again or contact support.',
       })
     } finally {
       setIsSubmitting(false)

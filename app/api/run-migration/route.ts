@@ -1,10 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server'
-
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+import { createClient } from '@/lib/supabase/server'
 
 export async function POST(request: NextRequest) {
   try {
+    // Validate environment variables
+    const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
+    
+    if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
+      return NextResponse.json({ error: 'Server configuration error' }, { status: 500 })
+    }
+
+    // Require authentication for migration endpoints
+    const supabase = await createClient()
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    
+    if (authError || !user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
     const { step } = await request.json()
 
     const migrations: Record<string, string> = {
@@ -59,13 +73,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid step. Use 1-5.' }, { status: 400 })
     }
 
-    // Use Supabase REST API to execute SQL via RPC
+    // Use Supabase REST API to execute SQL via RPC (using service role key for migrations)
     const response = await fetch(`${SUPABASE_URL}/rest/v1/rpc/exec_sql`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'apikey': SUPABASE_ANON_KEY,
-        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+        'apikey': SUPABASE_SERVICE_KEY,
+        'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`
       },
       body: JSON.stringify({ sql_query: sql })
     })
@@ -80,7 +94,7 @@ export async function POST(request: NextRequest) {
       }, { status: 500 })
     }
 
-    return NextResponse.json({ step, success: true, sql })
+    return NextResponse.json({ step, success: true, message: 'Migration applied successfully' })
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
@@ -97,6 +111,15 @@ export async function GET() {
       '4': 'Add exceptions RLS policies',
       '5': 'Add payments RLS policies'
     },
-    alternative: 'Run SQL directly in Supabase Dashboard: https://supabase.com/dashboard/project/dqthizzubvoxmclkcubc/sql'
+    fullMigration: {
+      description: 'Run the full cargo logistics schema',
+      migrationFile: '/supabase/migrations/001_cargo_logistics_schema.sql',
+      instructions: [
+        '1. Open the Supabase Dashboard SQL Editor',
+        '2. Copy the contents of the migration file',
+        '3. Paste into the SQL editor and click Run',
+        '4. Verify tables are created in Table Editor'
+      ]
+    }
   })
 }

@@ -109,9 +109,33 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'Shipment ID is required' }, { status: 400 })
     }
 
+    // Check if shipment exists
+    const { data: existing, error: existError } = await supabase
+      .from('shipments')
+      .select('id')
+      .eq('id', id)
+      .single()
+
+    if (existError || !existing) {
+      return NextResponse.json({ error: 'Shipment not found' }, { status: 404 })
+    }
+
+    // Validate update data - only allow specific fields
+    const allowedFields = ['status', 'consignee_name', 'consignee_address', 'consignee_city', 'consignee_state', 'consignee_pincode', 'consignee_phone', 'weight', 'pieces', 'notes', 'special_instructions']
+    const filteredData: Record<string, unknown> = {}
+    for (const key of Object.keys(updateData)) {
+      if (allowedFields.includes(key)) {
+        filteredData[key] = updateData[key]
+      }
+    }
+
+    if (Object.keys(filteredData).length === 0) {
+      return NextResponse.json({ error: 'No valid fields to update' }, { status: 400 })
+    }
+
     const { data, error } = await supabase
       .from('shipments')
-      .update(updateData)
+      .update(filteredData)
       .eq('id', id)
       .select(`
         *,

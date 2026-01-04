@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import type { ReactNode } from 'react'
 
 import {
@@ -19,6 +19,15 @@ type Props = {
 
 const LanguageDropdown = ({ defaultOpen, align, trigger }: Props) => {
   const [language, setLanguage] = useState('english')
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) {
+    return <>{trigger}</>
+  }
 
   return (
     <DropdownMenu defaultOpen={defaultOpen}>

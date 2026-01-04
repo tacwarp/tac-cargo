@@ -44,10 +44,10 @@ interface Invoice {
 }
 
 const statusStyles = {
-  pending: 'bg-blue-500/10 text-blue-500 border-blue-500/20',
-  paid: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20',
-  overdue: 'bg-rose-500/10 text-rose-500 border-rose-500/20',
-  cancelled: 'bg-gray-500/10 text-gray-500 border-gray-500/20'
+  pending: 'bg-primary/10 text-primary border-primary/20',
+  paid: 'bg-success/10 text-success border-success/20',
+  overdue: 'bg-destructive/10 text-destructive border-destructive/20',
+  cancelled: 'bg-muted/20 text-muted-foreground border-muted'
 }
 
 export default function InvoicesPage() {
@@ -139,7 +139,7 @@ export default function InvoicesPage() {
         </Card>
         <Card className='p-4'>
           <p className='text-sm text-muted-foreground'>Overdue</p>
-          <p className='text-2xl font-bold text-rose-500'>{formatCurrency(invoices.filter(i => i.status === 'overdue').reduce((sum, i) => sum + i.total, 0))}</p>
+          <p className='text-2xl font-bold text-destructive'>{formatCurrency(invoices.filter(i => i.status === 'overdue').reduce((sum, i) => sum + i.total, 0))}</p>
         </Card>
         <Card className='p-4'>
           <p className='text-sm text-muted-foreground'>Total Invoices</p>

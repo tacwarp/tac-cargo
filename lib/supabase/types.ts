@@ -35,6 +35,26 @@ export interface Database {
         Insert: ScanEventInsert
         Update: ScanEventUpdate
       }
+      invoices: {
+        Row: Invoice
+        Insert: InvoiceInsert
+        Update: InvoiceUpdate
+      }
+      packages: {
+        Row: Package
+        Insert: PackageInsert
+        Update: PackageUpdate
+      }
+      manifests: {
+        Row: Manifest
+        Insert: ManifestInsert
+        Update: ManifestUpdate
+      }
+      payments: {
+        Row: Payment
+        Insert: PaymentInsert
+        Update: PaymentUpdate
+      }
     }
     Views: Record<string, never>
     Functions: Record<string, never>
@@ -42,6 +62,9 @@ export interface Database {
       shipment_status: ShipmentStatus
       transport_mode: TransportMode
       scan_type: ScanType
+      invoice_status: InvoiceStatus
+      payment_mode: PaymentMode
+      manifest_status: ManifestStatus
     }
   }
 }
@@ -211,3 +234,155 @@ export interface ApiError {
   code: string
   details?: unknown
 }
+
+/**
+ * Invoice status enum
+ */
+export type InvoiceStatus = 'draft' | 'pending' | 'paid' | 'partial' | 'overdue' | 'cancelled'
+
+/**
+ * Payment mode enum
+ */
+export type PaymentMode = 'prepaid' | 'to_pay' | 'credit'
+
+/**
+ * Manifest status enum
+ */
+export type ManifestStatus = 'draft' | 'finalized' | 'dispatched' | 'in_transit' | 'arrived' | 'completed'
+
+/**
+ * Invoice table row type
+ */
+export interface Invoice {
+  id: string
+  invoice_no: string
+  awb_no: string
+  barcode_data: string | null
+  customer_id: string | null
+  shipper_name: string | null
+  shipper_address: string | null
+  shipper_phone: string | null
+  shipper_gstin: string | null
+  consignee_name: string
+  consignee_address: string
+  consignee_city: string
+  consignee_state: string
+  consignee_pincode: string
+  consignee_phone: string | null
+  consignee_email: string | null
+  origin_warehouse_id: string | null
+  destination_warehouse_id: string | null
+  transport_mode: TransportMode
+  payment_mode: PaymentMode
+  total_pieces: number
+  total_weight: number | null
+  total_volumetric_weight: number | null
+  chargeable_weight: number | null
+  declared_value: number | null
+  content_description: string | null
+  freight_charge: number
+  pickup_charge: number
+  delivery_charge: number
+  packing_charge: number
+  insurance_charge: number
+  handling_charge: number
+  other_charges: number
+  subtotal: number
+  cgst: number
+  sgst: number
+  igst: number
+  total_tax: number
+  total_amount: number
+  status: InvoiceStatus
+  invoice_date: string
+  due_date: string | null
+  paid_amount: number
+  balance_due: number
+  invoice_pdf_url: string | null
+  label_pdf_url: string | null
+  notes: string | null
+  special_instructions: string | null
+  created_by: string | null
+  created_at: string
+  updated_at: string
+}
+
+export type InvoiceInsert = Omit<Invoice, 'id' | 'created_at' | 'updated_at'>
+export type InvoiceUpdate = Partial<InvoiceInsert>
+
+/**
+ * Package table row type
+ */
+export interface Package {
+  id: string
+  invoice_id: string
+  package_no: number
+  length: number | null
+  width: number | null
+  height: number | null
+  actual_weight: number | null
+  volumetric_weight: number | null
+  description: string | null
+  declared_value: number | null
+  packaging_type: string | null
+  is_fragile: boolean
+  requires_special_handling: boolean
+  handling_notes: string | null
+  created_at: string
+}
+
+export type PackageInsert = Omit<Package, 'id' | 'created_at'>
+export type PackageUpdate = Partial<PackageInsert>
+
+/**
+ * Manifest table row type
+ */
+export interface Manifest {
+  id: string
+  manifest_no: string
+  barcode_data: string | null
+  origin_warehouse_id: string | null
+  destination_warehouse_id: string | null
+  transport_mode: TransportMode
+  vehicle_no: string | null
+  driver_name: string | null
+  driver_phone: string | null
+  flight_no: string | null
+  total_shipments: number
+  total_pieces: number
+  total_weight: number
+  status: ManifestStatus
+  dispatch_time: string | null
+  arrival_time: string | null
+  notes: string | null
+  created_by: string | null
+  created_at: string
+  updated_at: string
+}
+
+export type ManifestInsert = Omit<Manifest, 'id' | 'created_at' | 'updated_at'>
+export type ManifestUpdate = Partial<ManifestInsert>
+
+/**
+ * Payment method enum
+ */
+export type PaymentMethod = 'cash' | 'upi' | 'bank_transfer' | 'card' | 'credit_account' | 'cheque'
+
+/**
+ * Payment table row type
+ */
+export interface Payment {
+  id: string
+  invoice_id: string
+  payment_method: PaymentMethod
+  amount: number
+  transaction_id: string | null
+  reference_no: string | null
+  payment_date: string
+  received_by: string | null
+  notes: string | null
+  created_at: string
+}
+
+export type PaymentInsert = Omit<Payment, 'id' | 'created_at'>
+export type PaymentUpdate = Partial<PaymentInsert>

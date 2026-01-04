@@ -34,8 +34,19 @@ export default function FeedbackPage() {
 
     setSubmitting(true)
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      const response = await fetch('/api/feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...formData,
+          rating: rating || null,
+        }),
+      })
+      
+      if (!response.ok) {
+        throw new Error('Failed to submit feedback')
+      }
+      
       toast.success('Feedback submitted successfully! Thank you for your input.')
       setFormData({ category: '', subject: '', message: '' })
       setRating(0)

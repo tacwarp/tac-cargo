@@ -54,27 +54,153 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json()
     
+    // Extract packages from the request
+    const { packages, sendWhatsApp, sendEmail, printLabel, ...invoiceFields } = body
+    
+    // Map frontend field names to database column names
     const invoiceData = {
-      ...body,
+      invoice_no: invoiceFields.invoiceNo,
+      awb_no: invoiceFields.awbNo,
+      barcode_data: invoiceFields.barcodeData,
+      customer_id: invoiceFields.customerId || null,
+      shipper_name: invoiceFields.shipperName,
+      shipper_address: invoiceFields.shipperAddress,
+      shipper_phone: invoiceFields.shipperPhone,
+      shipper_gstin: invoiceFields.shipperGstin,
+      consignee_name: invoiceFields.consigneeName,
+      consignee_address: invoiceFields.consigneeAddress,
+      consignee_city: invoiceFields.consigneeCity,
+      consignee_state: invoiceFields.consigneeState,
+      consignee_pincode: invoiceFields.consigneePincode,
+      consignee_phone: invoiceFields.consigneePhone,
+      consignee_email: invoiceFields.consigneeEmail,
+      origin_warehouse_id: invoiceFields.originWarehouseId || null,
+      destination_warehouse_id: invoiceFields.destinationWarehouseId || null,
+      transport_mode: invoiceFields.transportMode,
+      payment_mode: invoiceFields.paymentMode,
+      content_description: invoiceFields.contentDescription,
+      special_instructions: invoiceFields.specialInstructions,
+      invoice_date: invoiceFields.invoiceDate,
+      due_date: invoiceFields.dueDate,
+      total_pieces: invoiceFields.totalPieces,
+      total_weight: invoiceFields.totalActualWeight,
+      total_volumetric_weight: invoiceFields.totalVolumetricWeight,
+      chargeable_weight: invoiceFields.chargeableWeight,
+      declared_value: invoiceFields.totalDeclaredValue,
+      freight_charge: invoiceFields.freightCharge,
+      pickup_charge: invoiceFields.pickupCharge,
+      delivery_charge: invoiceFields.deliveryCharge,
+      packing_charge: invoiceFields.packingCharge,
+      insurance_charge: invoiceFields.insuranceCharge,
+      handling_charge: invoiceFields.handlingCharge || 0,
+      other_charges: invoiceFields.otherCharges,
+      subtotal: invoiceFields.subtotal,
+      cgst: invoiceFields.cgst,
+      sgst: invoiceFields.sgst,
+      igst: invoiceFields.igst || 0,
+      total_tax: invoiceFields.totalTax,
+      total_amount: invoiceFields.totalAmount,
+      balance_due: invoiceFields.totalAmount,
+      status: 'pending',
       created_by: user.id,
     }
 
-    const { data, error } = await supabase
-      .from('invoices')
-      .insert([invoiceData])
-      .select(`
-        *,
-        customer:customers(id, name, email, phone),
-        shipment:shipments(reference, weight)
-      `)
-      .single()
+    // Insert invoice using stored procedure to bypass PostgREST schema cache
+    const { data: invoiceResult, error: invoiceError } = await supabase.rpc('create_invoice_direct', {
+      invoice_data: invoiceData
+    })
 
-    if (error) {
-      console.error('Database error:', error)
-      return NextResponse.json({ error: 'Failed to create invoice' }, { status: 500 })
+    if (invoiceError) {
+      console.error('Invoice creation error:', invoiceError)
+      return NextResponse.json({ 
+        error: 'Failed to create invoice', 
+        details: invoiceError.message,
+        code: invoiceError.code 
+      }, { status: 500 })
+    }
+    
+    const invoice = invoiceResult
+
+    // Insert packages if provided
+    if (packages && packages.length > 0) {
+      const packageData = packages.map((pkg: any, index: number) => ({
+        invoice_id: invoice.id,
+        package_no: index + 1,
+        length: pkg.length,
+        width: pkg.width,
+        height: pkg.height,
+        actual_weight: pkg.actualWeight,
+        volumetric_weight: pkg.volumetricWeight,
+        description: pkg.description,
+        declared_value: pkg.declaredValue,
+        packaging_type: pkg.packagingType,
+        is_fragile: pkg.isFragile,
+      }))
+
+      const { error: packageError } = await supabase
+        .from('packages')
+        .insert(packageData)
+
+      if (packageError) {
+        console.error('Package creation error:', packageError)
+        // Rollback invoice creation if packages fail
+        await supabase.from('invoices').delete().eq('id', invoice.id)
+        return NextResponse.json({ 
+          error: 'Failed to create packages', 
+          details: packageError.message 
+        }, { status: 500 })
+      }
     }
 
-    return NextResponse.json(data, { status: 201 })
+    // Create shipment record with correct schema fields
+    const { data: shipment, error: shipmentError } = await supabase
+      .from('shipments')
+      .insert([{
+        reference: invoice.awb_no,
+        customer_id: invoice.customer_id,
+        consignee_name: invoiceFields.consigneeName,
+        consignee_phone: invoiceFields.consigneePhone,
+        consignee_address: invoiceFields.consigneeAddress,
+        origin_warehouse_id: invoiceFields.originWarehouseId || null,
+        destination_warehouse_id: invoiceFields.destinationWarehouseId || null,
+        status: 'pending',
+        transport_mode: invoiceFields.transportMode,
+        weight: invoiceFields.totalActualWeight || 0,
+        volumetric_weight: invoiceFields.totalVolumetricWeight || 0,
+        chargeable_weight: invoiceFields.chargeableWeight || 0,
+        pieces: invoiceFields.totalPieces || 1,
+        description: invoiceFields.contentDescription,
+        special_instructions: invoiceFields.specialInstructions,
+        created_by: user.id,
+      }])
+      .select()
+      .single()
+
+    if (shipmentError) {
+      console.error('Shipment creation error:', shipmentError)
+      // Rollback invoice and packages if shipment fails
+      await supabase.from('packages').delete().eq('invoice_id', invoice.id)
+      await supabase.from('invoices').delete().eq('id', invoice.id)
+      return NextResponse.json({ 
+        error: 'Failed to create shipment record', 
+        details: shipmentError.message 
+      }, { status: 500 })
+    }
+    
+    // Update invoice with shipment_id reference
+    if (shipment) {
+      await supabase
+        .from('invoices')
+        .update({ shipment_id: shipment.id })
+        .eq('id', invoice.id)
+    }
+
+    return NextResponse.json({ 
+      id: invoice.id, 
+      invoice_no: invoice.invoice_no,
+      awb_no: invoice.awb_no,
+      success: true 
+    }, { status: 201 })
   } catch (error) {
     console.error('Server error:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

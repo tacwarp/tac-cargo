@@ -24,12 +24,38 @@ export async function POST(request: NextRequest) {
       }, { status: 400 })
     }
 
-    // Find shipment by barcode or reference
-    const { data: shipment, error: shipmentError } = await supabase
+    // Find shipment by barcode or reference (using parameterized queries)
+    // First try to find by reference
+    let shipment = null
+    let shipmentError = null
+    
+    const { data: shipmentByRef, error: refError } = await supabase
       .from('shipments')
       .select('id, reference, status')
-      .or(`reference.eq.${barcode},id.in.(select shipment_id from barcodes where barcode_number.eq.${barcode})`)
-      .single()
+      .eq('reference', barcode)
+      .maybeSingle()
+    
+    if (shipmentByRef) {
+      shipment = shipmentByRef
+    } else {
+      // Try to find by barcode number
+      const { data: barcodeRecord } = await supabase
+        .from('barcodes')
+        .select('shipment_id')
+        .eq('barcode_number', barcode)
+        .maybeSingle()
+      
+      if (barcodeRecord?.shipment_id) {
+        const { data: shipmentByBarcode, error: barcodeError } = await supabase
+          .from('shipments')
+          .select('id, reference, status')
+          .eq('id', barcodeRecord.shipment_id)
+          .single()
+        
+        shipment = shipmentByBarcode
+        shipmentError = barcodeError
+      }
+    }
 
     if (shipmentError || !shipment) {
       return NextResponse.json({ 
@@ -77,10 +103,14 @@ export async function POST(request: NextRequest) {
 
     // Update shipment status if needed
     if (shipment.status !== status) {
-      await supabase
+      const { error: updateError } = await supabase
         .from('shipments')
         .update({ status })
         .eq('id', shipment.id)
+      
+      if (updateError) {
+        console.error('Failed to update shipment status:', updateError)
+      }
     }
 
     return NextResponse.json({ 

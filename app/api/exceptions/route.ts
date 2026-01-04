@@ -35,7 +35,14 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Failed to fetch exceptions' }, { status: 500 })
     }
 
-    return NextResponse.json({ exceptions: data, count: data.length })
+    // Get total count for pagination
+    let countQuery = supabase.from('shipment_exceptions').select('*', { count: 'exact', head: true })
+    if (status) {
+      countQuery = countQuery.eq('status', status)
+    }
+    const { count: totalCount } = await countQuery
+
+    return NextResponse.json({ exceptions: data, count: totalCount ?? data.length })
   } catch (error) {
     console.error('Server error:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

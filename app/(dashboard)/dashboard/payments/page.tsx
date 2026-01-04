@@ -47,10 +47,18 @@ interface Payment {
   invoice?: { reference: string; total: number; customer: { name: string } }
   amount: number
   payment_mode: 'cash' | 'upi' | 'neft' | 'cheque' | 'credit'
+  status: 'pending' | 'completed' | 'failed' | 'refunded'
   transaction_ref?: string
   notes?: string
   paid_at?: string
   created_at: string
+}
+
+const statusStyles: Record<string, string> = {
+  pending: 'bg-warning/10 text-warning border-warning/20',
+  completed: 'bg-success/10 text-success border-success/20',
+  failed: 'bg-destructive/10 text-destructive border-destructive/20',
+  refunded: 'bg-muted text-muted-foreground border-muted',
 }
 
 const methodLabels: Record<string, string> = {
@@ -166,7 +174,7 @@ export default function PaymentsPage() {
         <Card>
           <CardHeader className='flex flex-row items-center justify-between pb-2'>
             <CardTitle className='text-sm font-medium text-muted-foreground'>Pending</CardTitle>
-            <ClockIcon className='size-4 text-amber-500' />
+            <ClockIcon className='size-4 text-warning' />
           </CardHeader>
           <CardContent>
             <p className='text-2xl font-bold'>{payments.length}</p>
@@ -176,7 +184,7 @@ export default function PaymentsPage() {
         <Card>
           <CardHeader className='flex flex-row items-center justify-between pb-2'>
             <CardTitle className='text-sm font-medium text-muted-foreground'>Completed</CardTitle>
-            <CheckCircleIcon className='size-4 text-emerald-500' />
+            <CheckCircleIcon className='size-4 text-success' />
           </CardHeader>
           <CardContent>
             <p className='text-2xl font-bold'>₹29,600.50</p>
@@ -186,10 +194,10 @@ export default function PaymentsPage() {
         <Card>
           <CardHeader className='flex flex-row items-center justify-between pb-2'>
             <CardTitle className='text-sm font-medium text-muted-foreground'>Growth</CardTitle>
-            <TrendingUpIcon className='size-4 text-emerald-500' />
+            <TrendingUpIcon className='size-4 text-success' />
           </CardHeader>
           <CardContent>
-            <p className='text-2xl font-bold text-emerald-500'>+18.5%</p>
+            <p className='text-2xl font-bold text-success'>+18.5%</p>
             <p className='text-xs text-muted-foreground'>vs last month</p>
           </CardContent>
         </Card>
@@ -236,8 +244,8 @@ export default function PaymentsPage() {
                   <TableCell className='font-medium'>{formatCurrency(payment.amount)}</TableCell>
                   <TableCell className='capitalize hidden md:table-cell'>{methodLabels[payment.payment_mode] || payment.payment_mode}</TableCell>
                   <TableCell>
-                    <Badge variant='outline' className='bg-emerald-500/10 text-emerald-500 border-emerald-500/20'>
-                      Completed
+                    <Badge variant='outline' className={statusStyles[payment.status] || statusStyles.completed}>
+                      {payment.status ? payment.status.charAt(0).toUpperCase() + payment.status.slice(1) : 'Completed'}
                     </Badge>
                   </TableCell>
                   <TableCell className='hidden sm:table-cell'>{payment.paid_at ? new Date(payment.paid_at).toLocaleDateString() : new Date(payment.created_at).toLocaleDateString()}</TableCell>

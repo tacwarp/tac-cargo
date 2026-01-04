@@ -84,7 +84,7 @@ export function useCreateShipment() {
       // Map form data to database schema with defaults
       const shipmentData = {
         ...shipment,
-        weight: shipment.weight_kg || 0,
+        weight: shipment.weight || 0,
         status: 'pending' as const,
       }
       

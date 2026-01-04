@@ -69,15 +69,15 @@ const typeLabels = {
 }
 
 const priorityStyles = {
-  high: 'bg-rose-500/10 text-rose-500 border-rose-500/20',
-  medium: 'bg-amber-500/10 text-amber-500 border-amber-500/20',
-  low: 'bg-blue-500/10 text-blue-500 border-blue-500/20'
+  high: 'bg-destructive/10 text-destructive border-destructive/20',
+  medium: 'bg-warning/10 text-warning border-warning/20',
+  low: 'bg-primary/10 text-primary border-primary/20'
 }
 
 const statusStyles = {
-  open: 'bg-rose-500/10 text-rose-500 border-rose-500/20',
-  investigating: 'bg-amber-500/10 text-amber-500 border-amber-500/20',
-  resolved: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20'
+  open: 'bg-destructive/10 text-destructive border-destructive/20',
+  investigating: 'bg-warning/10 text-warning border-warning/20',
+  resolved: 'bg-success/10 text-success border-success/20'
 }
 
 export default function ExceptionsPage() {
@@ -197,7 +197,7 @@ export default function ExceptionsPage() {
         <Card>
           <CardHeader className='flex flex-row items-center justify-between pb-2'>
             <CardTitle className='text-sm font-medium text-muted-foreground'>Open Issues</CardTitle>
-            <AlertTriangleIcon className='size-4 text-rose-500' />
+            <AlertTriangleIcon className='size-4 text-destructive' />
           </CardHeader>
           <CardContent>
             <p className='text-2xl font-bold'>{stats.open}</p>
@@ -207,7 +207,7 @@ export default function ExceptionsPage() {
         <Card>
           <CardHeader className='flex flex-row items-center justify-between pb-2'>
             <CardTitle className='text-sm font-medium text-muted-foreground'>Investigating</CardTitle>
-            <ClockIcon className='size-4 text-amber-500' />
+            <ClockIcon className='size-4 text-warning' />
           </CardHeader>
           <CardContent>
             <p className='text-2xl font-bold'>{stats.investigating}</p>
@@ -217,7 +217,7 @@ export default function ExceptionsPage() {
         <Card>
           <CardHeader className='flex flex-row items-center justify-between pb-2'>
             <CardTitle className='text-sm font-medium text-muted-foreground'>Resolved</CardTitle>
-            <CheckCircleIcon className='size-4 text-emerald-500' />
+            <CheckCircleIcon className='size-4 text-success' />
           </CardHeader>
           <CardContent>
             <p className='text-2xl font-bold'>{stats.resolved}</p>
@@ -261,7 +261,7 @@ export default function ExceptionsPage() {
                   <TableCell className='font-mono text-sm'>
                     {exception.shipment?.reference || 'N/A'}
                   </TableCell>
-                  <TableCell className='capitalize'>{exception.exception_type.replace('_', ' ')}</TableCell>
+                  <TableCell className='capitalize'>{exception.exception_type.replaceAll('_', ' ')}</TableCell>
                   <TableCell className='hidden max-w-[200px] truncate md:table-cell'>
                     {exception.description}
                   </TableCell>
@@ -395,7 +395,7 @@ export default function ExceptionsPage() {
             </div>
             <div>
               <Label>Exception Type</Label>
-              <p className='text-sm capitalize'>{selectedException?.exception_type.replace('_', ' ')}</p>
+              <p className='text-sm capitalize'>{selectedException?.exception_type.replaceAll('_', ' ')}</p>
             </div>
             <div>
               <Label htmlFor='resolution_notes'>Resolution Notes</Label>

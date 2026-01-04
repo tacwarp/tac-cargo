@@ -53,8 +53,10 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json()
     
-    // Generate reference number
-    const reference = `MAN-${Date.now().toString(36).toUpperCase()}`
+    // Generate unique reference number using crypto for better uniqueness
+    const timestamp = Date.now().toString(36).toUpperCase()
+    const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase()
+    const reference = `MAN-${timestamp}-${randomPart}`
     
     const manifestData = {
       reference,

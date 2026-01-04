@@ -5,10 +5,10 @@ const statusConfig = {
   pending: { label: 'Pending', className: 'status-pending' },
   scanned: { label: 'Scanned', className: 'status-processing' },
   'in-transit': { label: 'In Transit', className: 'status-in-transit' },
-  arrived: { label: 'Arrived', className: 'bg-info/10 text-info border-info/20 shadow-[0_0_10px_hsl(var(--info)/0.2)]' },
+  arrived: { label: 'Arrived', className: 'status-arrived' },
   delivered: { label: 'Delivered', className: 'status-delivered' },
   delayed: { label: 'Delayed', className: 'status-delayed' },
-  cancelled: { label: 'Cancelled', className: 'bg-destructive/10 text-destructive border-destructive/20 shadow-[0_0_10px_hsl(var(--destructive)/0.2)]' },
+  cancelled: { label: 'Cancelled', className: 'status-cancelled' },
   exception: { label: 'Exception', className: 'status-delayed' },
   processing: { label: 'Processing', className: 'status-processing' }
 } as const

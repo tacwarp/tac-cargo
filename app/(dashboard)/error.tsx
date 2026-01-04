@@ -33,8 +33,13 @@ interface DashboardErrorProps {
  */
 export default function DashboardError({ error, reset }: DashboardErrorProps) {
   useEffect(() => {
-    // Log error to console (or error reporting service)
+    // Log error to structured logger and Sentry (if configured)
     console.error('[Dashboard Error]', error)
+    
+    // Sentry integration - captures error with context
+    if (typeof window !== 'undefined' && (window as unknown as { Sentry?: { captureException: (e: Error) => void } }).Sentry) {
+      (window as unknown as { Sentry: { captureException: (e: Error) => void } }).Sentry.captureException(error)
+    }
   }, [error])
 
   return (

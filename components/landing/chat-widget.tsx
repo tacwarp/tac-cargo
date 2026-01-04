@@ -20,18 +20,18 @@ export function ChatWidget() {
     e.preventDefault()
     const trimmedMessage = message.trim()
     if (!trimmedMessage) return
-    
+
     const userMsgId = `user-${Date.now()}`
     setMessages(prev => [...prev, { id: userMsgId, text: trimmedMessage, isUser: true }])
     setMessage('')
-    
+
     // Simulate bot response with cleanup
     timeoutRef.current = setTimeout(() => {
       const botMsgId = `bot-${Date.now()}`
-      setMessages(prev => [...prev, { 
+      setMessages(prev => [...prev, {
         id: botMsgId,
-        text: 'Thank you for your message. Our team will respond shortly.', 
-        isUser: false 
+        text: 'Thank you for your message. Our team will respond shortly.',
+        isUser: false
       }])
     }, 1000)
   }, [message])
@@ -56,7 +56,7 @@ export function ChatWidget() {
             transition={{ duration: 0.3 }}
             className="mb-4"
           >
-            <div id="chat-widget-panel" className="glass-card w-[320px] sm:w-[380px] overflow-hidden border border-white/10 shadow-2xl shadow-primary/10 rounded-2xl">
+            <div id="chat-widget-panel" className="glass-card w-[320px] sm:w-[380px] overflow-hidden border border-white/10 shadow-elevation-2 rounded-2xl">
               {/* Header */}
               <div className="bg-gradient-to-r from-primary/20 to-secondary/20 p-4 border-b border-white/5 backdrop-blur-md flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -87,13 +87,12 @@ export function ChatWidget() {
                 <ScrollArea className="flex-1 p-4">
                   <div className="flex flex-col gap-4" role="log" aria-live="polite" aria-label="Chat messages">
                     {messages.map((msg) => (
-                      <div 
-                        key={msg.id} 
-                        className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm shadow-sm ${
-                          msg.isUser 
-                            ? 'self-end rounded-tr-none bg-primary/20 border border-primary/20 text-foreground' 
+                      <div
+                        key={msg.id}
+                        className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm shadow-sm ${msg.isUser
+                            ? 'self-end rounded-tr-none bg-primary/20 border border-primary/20 text-foreground'
                             : 'self-start rounded-tl-none bg-secondary/50 border border-white/5 text-foreground/90'
-                        }`}
+                          }`}
                       >
                         <p>{msg.text}</p>
                       </div>
@@ -104,16 +103,16 @@ export function ChatWidget() {
                 {/* Input Area */}
                 <div className="p-4 border-t border-white/5 bg-white/5 backdrop-blur-md">
                   <form className="relative flex items-center" onSubmit={handleSubmit}>
-                    <Input 
-                      placeholder="Type your query..." 
+                    <Input
+                      placeholder="Type your query..."
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
-                      className="pr-12 bg-background/50 border-white/10 focus-visible:ring-primary/50 h-11 rounded-xl" 
+                      className="pr-12 bg-background/50 border-white/10 focus-visible:ring-primary/50 h-11 rounded-xl"
                       aria-label="Chat message input"
                     />
-                    <Button 
-                      type="submit" 
-                      size="icon" 
+                    <Button
+                      type="submit"
+                      size="icon"
                       className="absolute right-1 h-9 w-9 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20"
                       aria-label="Send message"
                       disabled={!message.trim()}
@@ -141,7 +140,7 @@ export function ChatWidget() {
         `}
       >
         {isOpen ? <RiCloseLine className="h-6 w-6" aria-hidden="true" /> : <RiMessage3Line className="h-6 w-6" aria-hidden="true" />}
-        
+
         {!isOpen && (
           <span className="absolute -top-1 -right-1 flex h-3 w-3">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>

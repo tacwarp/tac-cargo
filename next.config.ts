@@ -113,6 +113,11 @@ const nextConfig: NextConfig = {
         hostname: 'avatars.githubusercontent.com',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+        pathname: '/**',
+      },
     ],
     formats: ['image/avif', 'image/webp'],
   },
@@ -136,8 +141,8 @@ const nextConfig: NextConfig = {
   experimental: {
     // Enable optimized package imports for faster dev server
     optimizePackageImports: [
-      'lucide-react', 
-      'recharts', 
+      'lucide-react',
+      'recharts',
       '@remixicon/react',
       'framer-motion',
       '@radix-ui/react-icons',
