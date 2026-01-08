@@ -1,174 +1,78 @@
-'use client'
+import React from "react";
+import { createClient } from "@/lib/supabase/server";
+import { V2Header } from "../_components/v2-header";
+import { AnalyticsClient } from "./_components/analytics-client";
 
-import { PageLayout } from '@/components/dashboard/page-layout'
-import { StatCard } from '@/components/dashboard/stat-card'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import {
-  PackageIcon,
-  TruckIcon,
-  DollarSignIcon,
-  TrendingUpIcon,
-  CalendarIcon
-} from 'lucide-react'
-import {
-  Bar,
-  BarChart,
-  Line,
-  LineChart,
-  ResponsiveContainer,
-  XAxis,
-  YAxis,
-  Tooltip,
-  CartesianGrid
-} from 'recharts'
+async function getAnalyticsData() {
+    const supabase = await createClient();
+    
+    // Get shipments by date for last 30 days
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-const monthlyData = [
-  { month: 'Jan', shipments: 420, revenue: 125000 },
-  { month: 'Feb', shipments: 380, revenue: 115000 },
-  { month: 'Mar', shipments: 510, revenue: 145000 },
-  { month: 'Apr', shipments: 475, revenue: 138000 },
-  { month: 'May', shipments: 590, revenue: 168000 },
-  { month: 'Jun', shipments: 620, revenue: 185000 },
-  { month: 'Jul', shipments: 580, revenue: 172000 },
-  { month: 'Aug', shipments: 640, revenue: 195000 },
-  { month: 'Sep', shipments: 720, revenue: 215000 },
-  { month: 'Oct', shipments: 680, revenue: 205000 },
-  { month: 'Nov', shipments: 750, revenue: 225000 },
-  { month: 'Dec', shipments: 820, revenue: 248000 }
-]
+    const { data: shipments } = await supabase
+        .from("shipments")
+        .select("created_at, status, weight_kg, pieces")
+        .gte("created_at", thirtyDaysAgo.toISOString());
 
-const routeData = [
-  { route: 'Delhi', shipments: 342 },
-  { route: 'Mumbai', shipments: 285 },
-  { route: 'Kolkata', shipments: 198 },
-  { route: 'Chennai', shipments: 156 },
-  { route: 'Bangalore', shipments: 134 },
-  { route: 'Hyderabad', shipments: 112 }
-]
+    // Get invoices for revenue data
+    const { data: invoices } = await supabase
+        .from("invoices")
+        .select("total_amount, status, created_at")
+        .gte("created_at", thirtyDaysAgo.toISOString());
 
-export default function AnalyticsPage() {
-  return (
-    <PageLayout
-      title='Analytics'
-      description='Business insights and performance metrics'
-      actions={
-        <Button variant='outline'>
-          <CalendarIcon className='mr-2 size-4' />
-          Last 12 Months
-        </Button>
-      }
-    >
-      <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-4'>
-        <StatCard
-          title='Total Shipments'
-          value='7,185'
-          icon={PackageIcon}
-          trend={{ value: 15.3, isPositive: true }}
-        />
-        <StatCard
-          title='Delivery Rate'
-          value='98.5%'
-          icon={TruckIcon}
-          trend={{ value: 2.1, isPositive: true }}
-        />
-        <StatCard
-          title='Total Revenue'
-          value='₹21.36L'
-          icon={DollarSignIcon}
-          trend={{ value: 18.7, isPositive: true }}
-        />
-        <StatCard
-          title='Avg. Transit Time'
-          value='2.3 days'
-          icon={TrendingUpIcon}
-          trend={{ value: 5.2, isPositive: true }}
-        />
-      </div>
+    // Get delivery stats
+    const deliveredCount = (shipments || []).filter(s => s.status === "delivered").length;
+    const failedCount = (shipments || []).filter(s => s.status === "failed").length;
+    const totalCount = (shipments || []).length;
 
-      <div className='grid gap-6 lg:grid-cols-2'>
-        <Card>
-          <CardHeader>
-            <CardTitle>Monthly Shipments</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className='h-[300px]'>
-              <ResponsiveContainer width='100%' height='100%'>
-                <LineChart data={monthlyData}>
-                  <CartesianGrid strokeDasharray='3 3' className='stroke-border' />
-                  <XAxis dataKey='month' className='text-xs' />
-                  <YAxis className='text-xs' />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: 'hsl(var(--card))',
-                      border: '1px solid hsl(var(--border))',
-                      borderRadius: '8px'
-                    }}
-                  />
-                  <Line
-                    type='monotone'
-                    dataKey='shipments'
-                    stroke='hsl(var(--primary))'
-                    strokeWidth={2}
-                    dot={false}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
+    // Calculate totals
+    const totalWeight = (shipments || []).reduce((sum, s) => sum + (s.weight_kg || 0), 0);
+    const totalPieces = (shipments || []).reduce((sum, s) => sum + (s.pieces || 0), 0);
+    const totalRevenue = (invoices || []).filter(i => i.status === "paid").reduce((sum, i) => sum + i.total_amount, 0);
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Revenue Trend</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className='h-[300px]'>
-              <ResponsiveContainer width='100%' height='100%'>
-                <BarChart data={monthlyData}>
-                  <CartesianGrid strokeDasharray='3 3' className='stroke-border' />
-                  <XAxis dataKey='month' className='text-xs' />
-                  <YAxis className='text-xs' />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: 'hsl(var(--card))',
-                      border: '1px solid hsl(var(--border))',
-                      borderRadius: '8px'
-                    }}
-                    formatter={(value: number) => [`₹${(value / 1000).toFixed(0)}K`, 'Revenue']}
-                  />
-                  <Bar dataKey='revenue' fill='hsl(var(--primary))' radius={[4, 4, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+    // Group by date for charts
+    const shipmentsByDate: Record<string, number> = {};
+    const revenueByDate: Record<string, number> = {};
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Top Routes by Volume</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className='h-[250px]'>
-            <ResponsiveContainer width='100%' height='100%'>
-              <BarChart data={routeData} layout='vertical'>
-                <CartesianGrid strokeDasharray='3 3' className='stroke-border' />
-                <XAxis type='number' className='text-xs' />
-                <YAxis dataKey='route' type='category' className='text-xs' width={80} />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: 'hsl(var(--card))',
-                    border: '1px solid hsl(var(--border))',
-                    borderRadius: '8px'
-                  }}
-                />
-                <Bar dataKey='shipments' fill='hsl(var(--chart-2))' radius={[0, 4, 4, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </CardContent>
-      </Card>
-    </PageLayout>
-  )
+    (shipments || []).forEach(s => {
+        const date = new Date(s.created_at).toISOString().split("T")[0];
+        shipmentsByDate[date] = (shipmentsByDate[date] || 0) + 1;
+    });
+
+    (invoices || []).filter(i => i.status === "paid").forEach(i => {
+        const date = new Date(i.created_at).toISOString().split("T")[0];
+        revenueByDate[date] = (revenueByDate[date] || 0) + i.total_amount;
+    });
+
+    return {
+        summary: {
+            totalShipments: totalCount,
+            deliveredCount,
+            failedCount,
+            deliveryRate: totalCount > 0 ? Math.round((deliveredCount / totalCount) * 100) : 0,
+            totalWeight,
+            totalPieces,
+            totalRevenue,
+        },
+        charts: {
+            shipmentsByDate: Object.entries(shipmentsByDate).map(([date, count]) => ({ date, count })),
+            revenueByDate: Object.entries(revenueByDate).map(([date, amount]) => ({ date, amount })),
+        },
+    };
+}
+
+export default async function AnalyticsPage() {
+    const data = await getAnalyticsData();
+
+    return (
+        <>
+            <V2Header title="Analytics" section="Main Deck" />
+            <main className="flex-1 overflow-y-auto p-8 scroll-smooth" id="main-scroll">
+                <div className="max-w-[1600px] mx-auto pb-20">
+                    <AnalyticsClient data={data} />
+                </div>
+            </main>
+        </>
+    );
 }

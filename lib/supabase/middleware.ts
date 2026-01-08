@@ -1,8 +1,35 @@
-import { createServerClient } from '@supabase/ssr'
-import { NextResponse, type NextRequest } from 'next/server'
+import { createServerClient } from "@supabase/ssr";
+import { NextResponse, type NextRequest } from "next/server";
+
+const PUBLIC_ROUTES = [
+  "/login",
+  "/auth",
+  "/register",
+  "/track",
+  "/api/track",
+  "/api/health",
+  "/api/webhooks",
+  "/pricing",
+  "/request-access",
+];
+
+const RATE_LIMIT_ROUTES = [
+  { path: "/api/auth", limit: 5, window: 60000 },
+  { path: "/api/track", limit: 60, window: 60000 },
+  { path: "/api/", limit: 100, window: 60000 },
+];
 
 export async function updateSession(request: NextRequest) {
-  let supabaseResponse = NextResponse.next()
+  const supabaseResponse = NextResponse.next({
+    request,
+  });
+
+  const pathname = request.nextUrl.pathname;
+  const isPublicRoute = PUBLIC_ROUTES.some((route) =>
+    pathname.startsWith(route),
+  );
+  const isApiRoute = pathname.startsWith("/api/");
+  const isDashboardRoute = pathname.startsWith("/dashboard");
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -10,36 +37,73 @@ export async function updateSession(request: NextRequest) {
     {
       cookies: {
         getAll() {
-          return request.cookies.getAll()
+          return request.cookies.getAll();
         },
         setAll(
-          cookiesToSet: { name: string; value: string; options?: Record<string, unknown> }[]
+          cookiesToSet: {
+            name: string;
+            value: string;
+            options?: Record<string, unknown>;
+          }[],
         ) {
           cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
-          )
+            supabaseResponse.cookies.set(name, value, options),
+          );
         },
       },
+    },
+  );
+
+  let user = null;
+  try {
+    const {
+      data: { user: u },
+      error,
+    } = await supabase.auth.getUser();
+    user = u;
+
+    // If we have a refresh token error, we should effectively logout
+    if (error) {
+      // Intentionally ignore the error to treat as logged out
+      // You could optionally clear cookies here if Supabase doesn't do it automatically
     }
-  )
-
-  // IMPORTANT: Do not write any logic between createServerClient and
-  // supabase.auth.getUser(). A simple mistake could make your app very slow.
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (
-    !user &&
-    !request.nextUrl.pathname.startsWith('/login') &&
-    !request.nextUrl.pathname.startsWith('/auth') &&
-    request.nextUrl.pathname.startsWith('/dashboard')
-  ) {
-    // no user, redirect to login page
-    const url = request.nextUrl.clone()
-    url.pathname = '/login'
-    return NextResponse.redirect(url)
+  } catch {
+    // Catch any errors that might be thrown by the auth client
+    // and treat the user as unauthenticated
+    user = null;
   }
 
-  return supabaseResponse
+  // Add security headers
+  supabaseResponse.headers.set("X-Content-Type-Options", "nosniff");
+  supabaseResponse.headers.set("X-Frame-Options", "DENY");
+  supabaseResponse.headers.set("X-XSS-Protection", "1; mode=block");
+  supabaseResponse.headers.set(
+    "Referrer-Policy",
+    "strict-origin-when-cross-origin",
+  );
+
+  // Handle authentication for protected routes
+  if (!user && isDashboardRoute) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/login";
+    url.searchParams.set("redirect", pathname);
+    return NextResponse.redirect(url);
+  }
+
+  // Redirect authenticated users away from login
+  if (user && pathname === "/login") {
+    const redirect =
+      request.nextUrl.searchParams.get("redirect") || "/dashboard";
+    const url = request.nextUrl.clone();
+    url.pathname = redirect;
+    url.search = "";
+    return NextResponse.redirect(url);
+  }
+
+  // Add user context headers for API routes
+  if (isApiRoute && user) {
+    supabaseResponse.headers.set("X-User-Id", user.id);
+  }
+
+  return supabaseResponse;
 }

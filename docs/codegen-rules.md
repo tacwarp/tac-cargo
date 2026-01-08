@@ -1,11 +1,13 @@
 # Codegen / AI Review Rules
 
 ## Purpose
+
 This document defines the contract between AI code generators/reviewers and the TAC Cargo codebase. All AI-generated code must comply with these rules.
 
 ## Authority Level
 
 ### AI is AUTHORIZED to:
+
 1. **Refactor color usage** - Replace hardcoded colors with semantic tokens
 2. **Fix accessibility violations** - Add ARIA attributes, improve contrast
 3. **Improve type safety** - Add TypeScript types, remove `any`
@@ -18,6 +20,7 @@ This document defines the contract between AI code generators/reviewers and the 
 10. **Enforce style consistency** - Apply Tailwind conventions
 
 ### AI MUST NEVER:
+
 1. **Remove authentication** - Never bypass or disable auth checks
 2. **Expose secrets** - Never hardcode API keys or tokens
 3. **Delete data** - Never remove database records without explicit instruction
@@ -30,6 +33,7 @@ This document defines the contract between AI code generators/reviewers and the 
 10. **Modify Supabase schema** - Never alter database structure without migration
 
 ### AI SHOULD ASK BEFORE:
+
 1. **Major architectural changes** - Switching libraries, patterns
 2. **Breaking API changes** - Changing request/response formats
 3. **New dependencies** - Adding packages to package.json
@@ -40,6 +44,7 @@ This document defines the contract between AI code generators/reviewers and the 
 ## Codebase Constraints
 
 ### File Structure Rules
+
 ```
 ✅ ALLOWED:
 - Create new components in appropriate directories
@@ -56,6 +61,7 @@ This document defines the contract between AI code generators/reviewers and the 
 ```
 
 ### Naming Conventions
+
 ```typescript
 ✅ REQUIRED:
 - Components: PascalCase (UserProfile.tsx)
@@ -72,6 +78,7 @@ This document defines the contract between AI code generators/reviewers and the 
 ```
 
 ### Import Organization
+
 ```typescript
 ✅ REQUIRED ORDER:
 1. React imports
@@ -111,20 +118,22 @@ className="bg-destructive text-destructive-foreground"
 ```
 
 ### Semantic Token Reference
+
 ```typescript
 // Available tokens (see docs/tailwind-colors.md)
-background, foreground
-card, card-foreground
-primary, primary-foreground
-secondary, secondary-foreground
-muted, muted-foreground
-accent, accent-foreground
-destructive, destructive-foreground
-border, input, ring
-success, warning, info
+(background, foreground);
+(card, card - foreground);
+(primary, primary - foreground);
+(secondary, secondary - foreground);
+(muted, muted - foreground);
+(accent, accent - foreground);
+(destructive, destructive - foreground);
+(border, input, ring);
+(success, warning, info);
 ```
 
 ### Opacity Usage
+
 ```tsx
 ✅ CORRECT:
 border-border/20   // Subtle dividers
@@ -140,6 +149,7 @@ bg-black/20        // Use semantic tokens
 ## Component Architecture Rules
 
 ### Server vs Client Components
+
 ```typescript
 ✅ DEFAULT: Server Component (no directive)
 export async function DataDisplay() {
@@ -162,6 +172,7 @@ export function StaticDisplay({ data }: { data: string }) {
 ```
 
 ### Component Size Limits
+
 ```typescript
 ✅ ALLOWED:
 - UI primitives: <100 lines
@@ -174,6 +185,7 @@ export function StaticDisplay({ data }: { data: string }) {
 ```
 
 ### Props Interface Pattern
+
 ```typescript
 ✅ REQUIRED:
 interface ComponentProps {
@@ -195,6 +207,7 @@ export function Component(props) { }       // No implicit types
 ## Data Fetching Patterns
 
 ### Server Components (Preferred)
+
 ```typescript
 ✅ CORRECT:
 export default async function Page() {
@@ -215,6 +228,7 @@ export default function Page() {
 ```
 
 ### TanStack Query (Client Components)
+
 ```typescript
 ✅ CORRECT:
 'use client'
@@ -224,7 +238,7 @@ export function LiveTracker() {
     queryFn: () => fetchTracking(id),
     refetchInterval: 30000,
   })
-  
+
   if (isLoading) return <Skeleton />
   return <Display data={data} />
 }
@@ -233,6 +247,7 @@ export function LiveTracker() {
 ## API Route Standards
 
 ### Request Validation
+
 ```typescript
 ✅ REQUIRED:
 import { z } from 'zod'
@@ -244,16 +259,16 @@ const QuerySchema = z.object({
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
-  
+
   const parsed = QuerySchema.safeParse({
     id: searchParams.get('id'),
     includeHistory: searchParams.get('includeHistory') === 'true',
   })
-  
+
   if (!parsed.success) {
     return errorResponse('VALIDATION_ERROR', parsed.error.message)
   }
-  
+
   const { id, includeHistory } = parsed.data
   // ...
 }
@@ -267,6 +282,7 @@ export async function GET(request: Request) {
 ```
 
 ### Response Format
+
 ```typescript
 ✅ REQUIRED:
 import { successResponse, errorResponse } from '@/lib/api-response'
@@ -290,6 +306,7 @@ export async function GET() {
 ## Authentication Enforcement
 
 ### Route Protection
+
 ```typescript
 ✅ REQUIRED:
 import { createClient } from '@/lib/supabase/server'
@@ -298,11 +315,11 @@ import { redirect } from 'next/navigation'
 export default async function ProtectedPage() {
   const supabase = createClient()
   const { data: { user }, error } = await supabase.auth.getUser()
-  
+
   if (error || !user) {
     redirect('/login')
   }
-  
+
   return <Dashboard user={user} />
 }
 
@@ -314,17 +331,18 @@ export default async function ProtectedPage() {
 ```
 
 ### Server Actions
+
 ```typescript
 ✅ REQUIRED:
 'use server'
 export async function updateData(id: string) {
   const supabase = createClient()
   const { data: { user }, error } = await supabase.auth.getUser()
-  
+
   if (error || !user) {
     return { success: false, error: { code: 'UNAUTHORIZED', message: 'Authentication required' } }
   }
-  
+
   // Proceed with authenticated action
 }
 
@@ -339,6 +357,7 @@ export async function updateData(id: string) {
 ## Type Safety Standards
 
 ### Strict TypeScript
+
 ```typescript
 ✅ REQUIRED:
 interface User {
@@ -358,6 +377,7 @@ function processUser(user: any): any {
 ```
 
 ### Zod Validation
+
 ```typescript
 ✅ REQUIRED for user input:
 import { z } from 'zod'
@@ -373,6 +393,7 @@ type User = z.infer<typeof UserSchema>
 ## Error Handling Requirements
 
 ### Try-Catch Blocks
+
 ```typescript
 ✅ REQUIRED:
 async function fetchData() {
@@ -396,6 +417,7 @@ async function fetchData() {
 ```
 
 ### Error Boundaries
+
 ```tsx
 ✅ REQUIRED for data-heavy components:
 import { ErrorBoundary } from '@/components/error-boundary'
@@ -411,6 +433,7 @@ import { ErrorBoundary } from '@/components/error-boundary'
 ## Performance Standards
 
 ### Image Optimization
+
 ```tsx
 ✅ REQUIRED:
 import Image from 'next/image'
@@ -428,6 +451,7 @@ import Image from 'next/image'
 ```
 
 ### Code Splitting
+
 ```tsx
 ✅ REQUIRED for heavy components:
 import dynamic from 'next/dynamic'
@@ -444,6 +468,7 @@ import { HeavyChart } from './heavy-chart' // No lazy loading
 ## Accessibility Requirements
 
 ### Semantic HTML
+
 ```tsx
 ✅ REQUIRED:
 <button onClick={handleClick}>Action</button>
@@ -456,6 +481,7 @@ import { HeavyChart } from './heavy-chart' // No lazy loading
 ```
 
 ### ARIA Attributes
+
 ```tsx
 ✅ REQUIRED:
 <button
@@ -475,6 +501,7 @@ import { HeavyChart } from './heavy-chart' // No lazy loading
 ## Output Format Expectations
 
 ### Code Generation
+
 ```typescript
 ✅ EXPECTED OUTPUT:
 // 1. Imports organized
@@ -493,19 +520,24 @@ import { HeavyChart } from './heavy-chart' // No lazy loading
 ```
 
 ### Explanation Format
+
 ```markdown
 ✅ EXPECTED:
+
 ## Changes Made
+
 - Added TypeScript types for User interface
 - Implemented error boundary around data table
 - Replaced hardcoded colors with semantic tokens
 - Added ARIA labels to icon buttons
 
 ## Files Modified
+
 - components/user-table.tsx
 - types/user.ts
 
 ## Testing
+
 - Verified in both light and dark themes
 - Tested keyboard navigation
 - Checked accessibility with axe DevTools
@@ -517,18 +549,21 @@ Made some changes to improve the code quality and fix bugs.
 ## Review Depth Requirements
 
 ### Shallow Review (Syntax/Style)
+
 - Check naming conventions
 - Verify import organization
 - Ensure no hardcoded colors
 - Validate file structure
 
 ### Medium Review (Logic/Patterns)
+
 - Verify component architecture (server vs client)
 - Check data fetching patterns
 - Validate error handling
 - Review type safety
 
 ### Deep Review (Security/Performance)
+
 - Audit authentication enforcement
 - Check for SQL injection risks
 - Validate input sanitization
@@ -538,6 +573,7 @@ Made some changes to improve the code quality and fix bugs.
 ## Refactoring Permissions
 
 ### Automatic (No Approval Needed)
+
 1. Color system fixes (hardcoded → semantic tokens)
 2. Type safety improvements (any → typed)
 3. Import organization
@@ -548,6 +584,7 @@ Made some changes to improve the code quality and fix bugs.
 8. Documentation updates
 
 ### Requires Context (Clarify Intent)
+
 1. Component extraction
 2. State management changes
 3. API route modifications
@@ -555,6 +592,7 @@ Made some changes to improve the code quality and fix bugs.
 5. Cache strategy changes
 
 ### Requires Approval (Breaking Changes)
+
 1. Dependency additions/removals
 2. Authentication flow changes
 3. API contract changes
@@ -565,13 +603,16 @@ Made some changes to improve the code quality and fix bugs.
 ## AI-Generated Code as First Draft
 
 ### Assumption
+
 **All AI-generated code is a first draft** and must be:
+
 1. Reviewed by human developer
 2. Tested in development environment
 3. Validated against these rules
 4. Integrated incrementally
 
 ### Human Review Checklist
+
 - [ ] Follows file naming conventions
 - [ ] Uses semantic color tokens only
 - [ ] Implements proper error handling
@@ -586,17 +627,20 @@ Made some changes to improve the code quality and fix bugs.
 ## Enforcement Mechanism
 
 ### Linting
+
 ```bash
 npm run lint # ESLint checks
 npx tsc --noEmit # TypeScript checks
 ```
 
 ### Pre-commit Hooks (Future)
+
 ```bash
 npm install --save-dev husky lint-staged
 ```
 
 ### CI/CD Checks (Future)
+
 - TypeScript compilation
 - ESLint validation
 - Test suite execution
@@ -606,6 +650,7 @@ npm install --save-dev husky lint-staged
 ## Summary
 
 ### Golden Rules
+
 1. **Colors**: Semantic tokens only, never hardcoded
 2. **Types**: Strict TypeScript, no `any`
 3. **Auth**: Always validate, never bypass
@@ -615,6 +660,7 @@ npm install --save-dev husky lint-staged
 7. **Security**: Validate input, sanitize output
 
 ### When in Doubt
+
 - **Check documentation** (`docs/`)
 - **Follow existing patterns** (grep codebase)
 - **Ask for clarification** (don't guess)

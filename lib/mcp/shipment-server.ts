@@ -11,8 +11,8 @@ import {
 } from "@modelcontextprotocol/sdk/types.js";
 import * as Sentry from "@sentry/nextjs";
 import { createClient } from "@/lib/supabase/server";
-import { fileURLToPath } from 'url';
-import path from 'path';
+import { fileURLToPath } from "url";
+import path from "path";
 
 /**
  * Initialize Sentry for MCP server monitoring
@@ -20,8 +20,8 @@ import path from 'path';
 Sentry.init({
   dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
   tracesSampleRate: 1.0,
-  environment: process.env.NODE_ENV || 'development',
-  release: process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA || 'development',
+  environment: process.env.NODE_ENV || "development",
+  release: process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA || "development",
 });
 
 /**
@@ -36,7 +36,7 @@ const server = new Server(
     capabilities: {
       tools: {},
     },
-  }
+  },
 );
 
 /**
@@ -67,7 +67,8 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           properties: {
             limit: {
               type: "number",
-              description: "Maximum number of shipments to return (default: 10)",
+              description:
+                "Maximum number of shipments to return (default: 10)",
               default: 10,
             },
           },
@@ -124,7 +125,9 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           case "query_shipment": {
             const reference = args?.reference;
             if (typeof reference !== "string" || !reference.trim()) {
-              throw new Error("query_shipment requires a valid 'reference' string argument");
+              throw new Error(
+                "query_shipment requires a valid 'reference' string argument",
+              );
             }
             return await queryShipment(reference);
           }
@@ -132,7 +135,9 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           case "list_recent_shipments": {
             const limit = typeof args?.limit === "number" ? args.limit : 10;
             if (limit < 1 || limit > 100) {
-              throw new Error("list_recent_shipments 'limit' must be between 1 and 100");
+              throw new Error(
+                "list_recent_shipments 'limit' must be between 1 and 100",
+              );
             }
             return await listRecentShipments(limit);
           }
@@ -140,7 +145,9 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           case "get_shipment_status": {
             const reference = args?.reference;
             if (typeof reference !== "string" || !reference.trim()) {
-              throw new Error("get_shipment_status requires a valid 'reference' string argument");
+              throw new Error(
+                "get_shipment_status requires a valid 'reference' string argument",
+              );
             }
             return await getShipmentStatus(reference);
           }
@@ -164,7 +171,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         // Re-throw for MCP error handling
         throw error;
       }
-    }
+    },
   );
 });
 
@@ -182,12 +189,14 @@ async function queryShipment(reference: string) {
 
       const { data, error } = await supabase
         .from("shipments")
-        .select(`
+        .select(
+          `
           *,
           origin_warehouse:warehouses!origin_warehouse_id(code, name, city, state),
           destination_warehouse:warehouses!destination_warehouse_id(code, name, city, state),
           customer:customers(name, email)
-        `)
+        `,
+        )
         .eq("reference", reference)
         .single();
 
@@ -207,7 +216,7 @@ async function queryShipment(reference: string) {
           },
         ],
       };
-    }
+    },
   );
 }
 
@@ -244,7 +253,7 @@ async function listRecentShipments(limit: number = 10) {
           },
         ],
       };
-    }
+    },
   );
 }
 
@@ -278,16 +287,20 @@ async function getShipmentStatus(reference: string) {
         content: [
           {
             type: "text",
-            text: JSON.stringify({
-              reference: data.reference,
-              status: data.status,
-              eta: data.eta,
-              delivered_at: data.delivered_at,
-            }, null, 2),
+            text: JSON.stringify(
+              {
+                reference: data.reference,
+                status: data.status,
+                eta: data.eta,
+                delivered_at: data.delivered_at,
+              },
+              null,
+              2,
+            ),
           },
         ],
       };
-    }
+    },
   );
 }
 
@@ -305,7 +318,9 @@ async function main() {
       level: "info",
     });
 
-    console.error("TAC Cargo MCP Shipment Server running with Sentry monitoring");
+    console.error(
+      "TAC Cargo MCP Shipment Server running with Sentry monitoring",
+    );
   } catch (error) {
     Sentry.captureException(error, {
       tags: {
@@ -321,7 +336,7 @@ async function main() {
 
 // Start server if run directly (ES module compatible, cross-platform)
 const currentFilePath = fileURLToPath(import.meta.url);
-const executedFilePath = process.argv[1] ? path.resolve(process.argv[1]) : '';
+const executedFilePath = process.argv[1] ? path.resolve(process.argv[1]) : "";
 
 // Strict path comparison - only match exact file path to prevent unintended execution
 // Normalize both paths to handle Windows vs Unix path separators

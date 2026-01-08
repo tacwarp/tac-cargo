@@ -1,10 +1,11 @@
-'use client'
+"use client";
 
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { shipmentSchema, type ShipmentFormData } from '@/lib/schemas/shipment'
-import { useCreateShipment } from '@/lib/queries/shipments'
-import { Button } from '@/components/ui/button'
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { shipmentSchema, type ShipmentFormData } from "@/lib/schemas/shipment";
+import { useCreateShipment } from "@/lib/queries/shipments";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -13,46 +14,46 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { Textarea } from '@/components/ui/textarea'
-import { toast } from 'sonner'
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
 
 interface CreateShipmentFormProps {
-  onSuccess?: () => void
+  onSuccess?: () => void;
 }
 
 export function CreateShipmentForm({ onSuccess }: CreateShipmentFormProps) {
-  const createShipment = useCreateShipment()
+  const createShipment = useCreateShipment();
 
   const form = useForm<ShipmentFormData>({
     resolver: zodResolver(shipmentSchema),
     defaultValues: {
-      transport_mode: 'surface',
+      transport_mode: "surface",
       pieces: 1,
-      consignee_email: '',
+      consignee_email: "",
     },
-  })
+  });
 
-  const onSubmit = async (data: ShipmentFormData) => {
+  const onSubmit = async (values: z.infer<typeof shipmentSchema>) => {
     try {
-      await createShipment.mutateAsync(data as any)
-      toast.success('Shipment created successfully')
-      form.reset()
-      onSuccess?.()
-    } catch (error: any) {
-      toast.error('Failed to create shipment', {
-        description: error.message,
-      })
+      await createShipment.mutateAsync(values);
+      toast.success("Shipment created successfully");
+      form.reset();
+      onSuccess?.();
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to create shipment";
+      toast.error(errorMessage);
     }
-  }
+  };
 
   return (
     <Form {...form}>
@@ -81,7 +82,10 @@ export function CreateShipmentForm({ onSuccess }: CreateShipmentFormProps) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Transport Mode</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select mode" />
@@ -180,7 +184,11 @@ export function CreateShipmentForm({ onSuccess }: CreateShipmentFormProps) {
                 <FormItem>
                   <FormLabel>Email (Optional)</FormLabel>
                   <FormControl>
-                    <Input type="email" placeholder="john@example.com" {...field} />
+                    <Input
+                      type="email"
+                      placeholder="john@example.com"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -257,7 +265,7 @@ export function CreateShipmentForm({ onSuccess }: CreateShipmentFormProps) {
                 <Textarea
                   placeholder="Additional notes..."
                   {...field}
-                  value={field.value || ''}
+                  value={field.value || ""}
                 />
               </FormControl>
               <FormMessage />
@@ -270,10 +278,10 @@ export function CreateShipmentForm({ onSuccess }: CreateShipmentFormProps) {
             Reset
           </Button>
           <Button type="submit" disabled={createShipment.isPending}>
-            {createShipment.isPending ? 'Creating...' : 'Create Shipment'}
+            {createShipment.isPending ? "Creating..." : "Create Shipment"}
           </Button>
         </div>
       </form>
     </Form>
-  )
+  );
 }

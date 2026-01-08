@@ -19,7 +19,7 @@ export class TacCargoMcpClient {
       },
       {
         capabilities: {},
-      }
+      },
     );
   }
 
@@ -57,7 +57,7 @@ export class TacCargoMcpClient {
           });
           throw error;
         }
-      }
+      },
     );
   }
 
@@ -81,18 +81,31 @@ export class TacCargoMcpClient {
           });
 
           // Validate content structure before type assertion
-          if (!result.content || !Array.isArray(result.content) || result.content.length === 0) {
+          if (
+            !result.content ||
+            !Array.isArray(result.content) ||
+            result.content.length === 0
+          ) {
             throw new Error("Invalid MCP response: empty or missing content");
           }
-          
+
           const firstContent = result.content[0];
-          if (typeof firstContent !== 'object' || firstContent === null || 
-              !('type' in firstContent) || !('text' in firstContent) ||
-              typeof (firstContent as { text: unknown }).text !== 'string') {
-            throw new Error("Invalid MCP response: malformed content structure");
+          if (
+            typeof firstContent !== "object" ||
+            firstContent === null ||
+            !("type" in firstContent) ||
+            !("text" in firstContent) ||
+            typeof (firstContent as { text: unknown }).text !== "string"
+          ) {
+            throw new Error(
+              "Invalid MCP response: malformed content structure",
+            );
           }
-          
-          const content = result.content as Array<{ type: string; text: string }>;
+
+          const content = result.content as Array<{
+            type: string;
+            text: string;
+          }>;
           return JSON.parse(content[0].text);
         } catch (error) {
           Sentry.captureException(error, {
@@ -103,7 +116,7 @@ export class TacCargoMcpClient {
           });
           throw error;
         }
-      }
+      },
     );
   }
 
@@ -126,7 +139,10 @@ export class TacCargoMcpClient {
             arguments: { limit },
           });
 
-          const content = result.content as Array<{ type: string; text: string }>;
+          const content = result.content as Array<{
+            type: string;
+            text: string;
+          }>;
           if (!content || !Array.isArray(content) || content.length === 0) {
             throw new Error("Invalid MCP response: empty or missing content");
           }
@@ -139,7 +155,7 @@ export class TacCargoMcpClient {
           });
           throw error;
         }
-      }
+      },
     );
   }
 
@@ -162,7 +178,10 @@ export class TacCargoMcpClient {
             arguments: { reference },
           });
 
-          const content = result.content as Array<{ type: string; text: string }>;
+          const content = result.content as Array<{
+            type: string;
+            text: string;
+          }>;
           if (!content || !Array.isArray(content) || content.length === 0) {
             throw new Error("Invalid MCP response: empty or missing content");
           }
@@ -176,7 +195,7 @@ export class TacCargoMcpClient {
           });
           throw error;
         }
-      }
+      },
     );
   }
 

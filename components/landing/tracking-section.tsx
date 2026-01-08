@@ -2,7 +2,12 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { RiSearchLine, RiMapPinLine, RiFileListLine, RiLoader4Line } from "@remixicon/react";
+import {
+  RiSearchLine,
+  RiMapPinLine,
+  RiFileListLine,
+  RiLoader4Line,
+} from "@remixicon/react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -31,27 +36,29 @@ export function TrackingSection() {
   };
 
   return (
-    <section id="tracking" className="py-24 relative overflow-hidden bg-background">
+    <section
+      id="tracking"
+      className="bg-background relative overflow-hidden py-24"
+    >
       {/* Background grid pattern */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] bg-[size:24px_24px]" />
 
       {/* Ambient Glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
+      <div className="bg-primary/5 pointer-events-none absolute top-1/2 left-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[100px]" />
 
-      <div className="container mx-auto px-4 relative z-10">
-        <div className="max-w-3xl mx-auto">
-
+      <div className="relative z-10 container mx-auto px-4">
+        <div className="mx-auto max-w-3xl">
           {/* Section Header */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center space-y-4 mb-10"
+            className="mb-10 space-y-4 text-center"
           >
-            <h2 className="text-3xl md:text-5xl font-bold tracking-tight">
+            <h2 className="text-3xl font-bold tracking-tight md:text-5xl">
               Global Tracking <span className="text-primary">Protocol</span>
             </h2>
-            <p className="text-lg text-muted-foreground font-light">
+            <p className="text-muted-foreground text-lg font-light">
               Real-time telemetry for your high-value consignments.
             </p>
           </motion.div>
@@ -62,19 +69,30 @@ export function TrackingSection() {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="bg-card/50 backdrop-blur-xl rounded-xl border border-border shadow-2xl p-8"
+            className="border-border dark:bg-card/40 dark:shadow-elevation-2 rounded-xl p-0 transition-all sm:p-8 dark:border dark:backdrop-blur-xl"
           >
-
             {/* Tabs */}
-            <div className="flex justify-center mb-8">
-              <Tabs defaultValue="gps" onValueChange={(v: string) => setTrackingMode(v as "gps" | "custody")} className="w-auto">
-                <TabsList className="grid w-full grid-cols-2 bg-secondary/50">
-                  <TabsTrigger value="gps" className="flex items-center gap-2 px-6">
-                    <RiMapPinLine className="w-4 h-4" />
+            <div className="mb-8 flex justify-center">
+              <Tabs
+                defaultValue="gps"
+                onValueChange={(v: string) =>
+                  setTrackingMode(v as "gps" | "custody")
+                }
+                className="w-auto"
+              >
+                <TabsList className="bg-secondary/50 grid w-full grid-cols-2">
+                  <TabsTrigger
+                    value="gps"
+                    className="flex items-center gap-2 px-6"
+                  >
+                    <RiMapPinLine className="h-4 w-4" />
                     GPS Telemetry
                   </TabsTrigger>
-                  <TabsTrigger value="custody" className="flex items-center gap-2 px-6">
-                    <RiFileListLine className="w-4 h-4" />
+                  <TabsTrigger
+                    value="custody"
+                    className="flex items-center gap-2 px-6"
+                  >
+                    <RiFileListLine className="h-4 w-4" />
                     Chain of Custody
                   </TabsTrigger>
                 </TabsList>
@@ -82,43 +100,59 @@ export function TrackingSection() {
             </div>
 
             {/* Input Group */}
-            <div className="flex flex-col sm:flex-row gap-3 max-w-2xl mx-auto items-stretch">
-              <div className="relative flex-1 group">
-                <RiSearchLine className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
+            <div className="mx-auto flex max-w-2xl flex-col items-stretch gap-3 sm:flex-row">
+              <div className="group relative flex-1">
+                <RiSearchLine className="text-muted-foreground group-focus-within:text-primary absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 transition-colors" />
                 <Input
                   placeholder="ENTER AWB NUMBER (E.G. TAC-02531)"
-                  className="pl-10 h-12 uppercase font-mono tracking-wider border-input bg-background/50 focus-visible:ring-primary"
+                  className="border-input bg-background/50 focus-visible:border-primary h-14 rounded-sm pl-10 font-mono tracking-wider uppercase transition-all focus-visible:border-2 focus-visible:ring-0"
                   value={trackingNumber}
                   onChange={(e) => setTrackingNumber(e.target.value)}
                 />
               </div>
               <Button
                 size="lg"
-                className="h-12 px-8 font-bold tracking-wide shrink-0"
+                className="h-14 shrink-0 rounded-sm px-8 font-bold tracking-wide"
                 onClick={handleSearch}
                 disabled={isSearching || !trackingNumber}
-                aria-label={isSearching ? "Searching shipment" : "Trace shipment"}
+                aria-label={
+                  isSearching ? "Searching shipment" : "Trace shipment"
+                }
               >
-                {isSearching ? <RiLoader4Line className="w-5 h-5 animate-spin" /> : "TRACE"}
+                {isSearching ? (
+                  <RiLoader4Line className="h-5 w-5 animate-spin" />
+                ) : (
+                  "TRACE"
+                )}
               </Button>
             </div>
 
-            {/* Recent Queries */}
-            <div className="flex flex-wrap items-center justify-center gap-3 mt-8">
-              <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest">Recent Queries:</span>
-              {['TAC-02531', 'DEL-98234', 'IMP-45621'].map((example) => (
-                <Badge
-                  key={example}
-                  variant="secondary"
-                  className="font-mono text-[10px] cursor-pointer hover:bg-primary/10 hover:text-primary transition-colors"
-                  onClick={() => setTrackingNumber(example)}
-                  aria-label={`Search for example tracking number ${example}`}
-                >
-                  {example}
-                </Badge>
-              ))}
+            {/* Recent Queries - Scrollable */}
+            <div className="mt-8 flex flex-col gap-2">
+              <span className="text-muted-foreground px-1 font-mono text-[10px] tracking-widest uppercase">
+                Recent Access:
+              </span>
+              <div className="scrollbar-hide mask-linear-fade -mx-4 flex items-center gap-3 overflow-x-auto px-4 pb-2">
+                {[
+                  "TAC-02531",
+                  "DEL-98234",
+                  "IMP-45621",
+                  "BOM-88219",
+                  "NYC-10293",
+                  "LHR-99283",
+                ].map((example) => (
+                  <Badge
+                    key={example}
+                    variant="outline"
+                    className="hover:bg-primary/10 hover:text-primary hover:border-primary/50 shrink-0 cursor-pointer rounded-sm px-3 py-1.5 font-mono text-[10px] transition-all"
+                    onClick={() => setTrackingNumber(example)}
+                    aria-label={`Search for example tracking number ${example}`}
+                  >
+                    {example}
+                  </Badge>
+                ))}
+              </div>
             </div>
-
           </motion.div>
 
           {/* Status Indicator */}
@@ -129,37 +163,48 @@ export function TrackingSection() {
             transition={{ delay: 0.6 }}
             className="mt-8 text-center"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 backdrop-blur-sm">
+            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-4 py-1.5 backdrop-blur-sm">
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
               </span>
-              <span className="text-[10px] font-mono text-emerald-500 tracking-widest font-semibold">SATELLITE UPLINK ACTIVE</span>
+              <span className="font-mono text-[10px] font-semibold tracking-widest text-emerald-500">
+                SATELLITE UPLINK ACTIVE
+              </span>
             </div>
           </motion.div>
 
           {/* Tracking Result Modal */}
           {/* TODO: Replace with actual API data from useTracking hook for production */}
           <Dialog open={showResult} onOpenChange={setShowResult}>
-            <DialogContent className="sm:max-w-md bg-transparent border-none shadow-none p-0" aria-describedby={undefined}>
-              <DialogTitle className="sr-only">Tracking Information for {trackingNumber}</DialogTitle>
+            <DialogContent
+              className="border-none bg-transparent p-0 shadow-none sm:max-w-md"
+              aria-describedby={undefined}
+            >
+              <DialogTitle className="sr-only">
+                Tracking Information for {trackingNumber}
+              </DialogTitle>
               <PackageTrackerCard
                 status="In Transit"
                 packageNumber={trackingNumber}
                 destination="Imphal, MN"
-                destinationFlag={<span className="text-xl" role="img" aria-label="India flag">🇮🇳</span>}
-                date={`Expected: ${new Date().toLocaleDateString('en-US', { weekday: 'long' })}, 4:00 PM`}
+                destinationFlag={
+                  <span className="text-xl" role="img" aria-label="India flag">
+                    🇮🇳
+                  </span>
+                }
+                date={`Expected: ${new Date().toLocaleDateString("en-US", { weekday: "long" })}, 4:00 PM`}
                 qrCodeValue={`https://tac.logistics/track/${encodeURIComponent(trackingNumber)}`}
                 packageImage={
-                  <div className="w-20 h-20 relative">
+                  <div className="relative h-20 w-20">
                     <LottieContainer
                       src="/lottie/parcel.json"
-                      className="w-full h-full"
+                      className="h-full w-full"
                       loop={true}
                     />
                   </div>
                 }
-                className="w-full border-primary/20 bg-background/95 backdrop-blur-xl shadow-2xl"
+                className="border-primary/20 bg-background/95 dark:shadow-elevation-2 w-full shadow-none backdrop-blur-xl"
               />
             </DialogContent>
           </Dialog>

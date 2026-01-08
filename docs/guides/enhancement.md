@@ -6,7 +6,7 @@ Modes: Dark (primary), Light (secondary)
 Compatibility: Tailwind CSS, shadcn/ui, Radix, charts, tables
 
 1. Visual Analysis (From Screenshots)
-Observed Design Characteristics
+   Observed Design Characteristics
 
 Strong surface layering (app shell → cards → charts)
 
@@ -53,33 +53,33 @@ Charts Are Isolated
 Chart colors NEVER reused for UI chrome.
 
 3. Global Token Semantics
-Category	Purpose
-background / foreground	App shell
-card / popover	Elevated surfaces
-primary	Main action & focus
-secondary / muted	Supporting UI
-accent	Informational emphasis
-destructive	Errors & danger
-chart-*	Data visualization
-sidebar-*	Navigation system
+   Category Purpose
+   background / foreground App shell
+   card / popover Elevated surfaces
+   primary Main action & focus
+   secondary / muted Supporting UI
+   accent Informational emphasis
+   destructive Errors & danger
+   chart-_ Data visualization
+   sidebar-_ Navigation system
 4. global.css (Tailwind + shadcn Compatible)
-4.1 Base Layer
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+   4.1 Base Layer
+   @tailwind base;
+   @tailwind components;
+   @tailwind utilities;
 
 @layer base {
-  :root {
-    color-scheme: dark;
-  }
+:root {
+color-scheme: dark;
+}
 }
 
 4.2 Dark Mode (Default)
 @layer base {
-  :root {
-    /* Base */
-    --background: oklch(0.17 0.01 270);
-    --foreground: oklch(0.96 0.00 0);
+:root {
+/_ Base _/
+--background: oklch(0.17 0.01 270);
+--foreground: oklch(0.96 0.00 0);
 
     /* Surfaces */
     --card: oklch(0.20 0.01 270);
@@ -127,13 +127,14 @@ sidebar-*	Navigation system
     --sidebar-accent-foreground: var(--primary);
     --sidebar-border: var(--border);
     --sidebar-ring: var(--primary);
-  }
+
+}
 }
 
 4.3 Light Mode
 @layer base {
-  .light {
-    color-scheme: light;
+.light {
+color-scheme: light;
 
     --background: oklch(0.99 0.00 0);
     --foreground: oklch(0.20 0.01 270);
@@ -177,27 +178,28 @@ sidebar-*	Navigation system
     --sidebar-accent-foreground: var(--primary);
     --sidebar-border: var(--border);
     --sidebar-ring: var(--primary);
-  }
+
+}
 }
 
 5. tokens.json (Design ↔ Code Sync)
-{
-  "background": { "dark": "oklch(0.17 0.01 270)", "light": "oklch(0.99 0 0)" },
-  "foreground": { "dark": "oklch(0.96 0 0)", "light": "oklch(0.20 0.01 270)" },
+   {
+   "background": { "dark": "oklch(0.17 0.01 270)", "light": "oklch(0.99 0 0)" },
+   "foreground": { "dark": "oklch(0.96 0 0)", "light": "oklch(0.20 0.01 270)" },
 
-  "primary": { "dark": "oklch(0.62 0.22 285)", "light": "oklch(0.60 0.22 285)" },
-  "primary-foreground": { "dark": "oklch(1 0 0)", "light": "oklch(1 0 0)" },
+"primary": { "dark": "oklch(0.62 0.22 285)", "light": "oklch(0.60 0.22 285)" },
+"primary-foreground": { "dark": "oklch(1 0 0)", "light": "oklch(1 0 0)" },
 
-  "card": { "dark": "oklch(0.20 0.01 270)", "light": "oklch(0.98 0 0)" },
-  "border": { "dark": "oklch(0.30 0.01 270)", "light": "oklch(0.88 0.01 270)" },
+"card": { "dark": "oklch(0.20 0.01 270)", "light": "oklch(0.98 0 0)" },
+"border": { "dark": "oklch(0.30 0.01 270)", "light": "oklch(0.88 0.01 270)" },
 
-  "chart": {
-    "1": "oklch(0.75 0.18 145)",
-    "2": "oklch(0.62 0.22 285)",
-    "3": "oklch(0.75 0.14 25)",
-    "4": "oklch(0.65 0.18 250)",
-    "5": "oklch(0.70 0.01 270)"
-  }
+"chart": {
+"1": "oklch(0.75 0.18 145)",
+"2": "oklch(0.62 0.22 285)",
+"3": "oklch(0.75 0.14 25)",
+"4": "oklch(0.65 0.18 250)",
+"5": "oklch(0.70 0.01 270)"
+}
 }
 
 6. Tailwind Usage Example
@@ -207,12 +209,11 @@ sidebar-*	Navigation system
 </Card>
 
 7. Chart Usage Rule
-colors={[
-  "var(--chart-1)",
-  "var(--chart-2)",
-  "var(--chart-3)"
-]}
-
+   colors={[
+   "var(--chart-1)",
+   "var(--chart-2)",
+   "var(--chart-3)"
+   ]}
 
 Never hardcode gradients.
 
@@ -239,27 +240,27 @@ shadcn-compatible, no Figma references
 This is ready to drop into a serious Next.js / shadcn stack.
 
 1. tailwind.config.ts (Token-Wired)
-import type { Config } from "tailwindcss"
+   import type { Config } from "tailwindcss"
 
 const config: Config = {
-  darkMode: ["class"],
-  content: [
-    "./app/**/*.{ts,tsx}",
-    "./components/**/*.{ts,tsx}",
-    "./src/**/*.{ts,tsx}"
-  ],
-  theme: {
-    container: {
-      center: true,
-      padding: "2rem",
-      screens: {
-        "2xl": "1440px"
-      }
-    },
-    extend: {
-      colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+darkMode: ["class"],
+content: [
+"./app/**/*.{ts,tsx}",
+"./components/**/*.{ts,tsx}",
+"./src/**/*.{ts,tsx}"
+],
+theme: {
+container: {
+center: true,
+padding: "2rem",
+screens: {
+"2xl": "1440px"
+}
+},
+extend: {
+colors: {
+background: "var(--background)",
+foreground: "var(--foreground)",
 
         card: {
           DEFAULT: "var(--card)",
@@ -326,8 +327,9 @@ const config: Config = {
         sm: "0.375rem"
       }
     }
-  },
-  plugins: [require("tailwindcss-animate")]
+
+},
+plugins: [require("tailwindcss-animate")]
 }
 
 export default config
@@ -338,13 +340,13 @@ Charts in your screenshots clearly use soft vertical gradients, not flat fills.
 
 2.1 Gradient Tokens (global.css)
 @layer base {
-  :root {
-    /* Chart gradients (top → bottom) */
-    --chart-1-gradient: linear-gradient(
-      180deg,
-      oklch(0.78 0.18 145 / 0.55),
-      oklch(0.78 0.18 145 / 0.05)
-    );
+:root {
+/_ Chart gradients (top → bottom) _/
+--chart-1-gradient: linear-gradient(
+180deg,
+oklch(0.78 0.18 145 / 0.55),
+oklch(0.78 0.18 145 / 0.05)
+);
 
     --chart-2-gradient: linear-gradient(
       180deg,
@@ -363,20 +365,22 @@ Charts in your screenshots clearly use soft vertical gradients, not flat fills.
       oklch(0.65 0.18 250 / 0.55),
       oklch(0.65 0.18 250 / 0.05)
     );
-  }
+
+}
 }
 
 2.2 Tailwind Utility Mapping (Optional but Recommended)
 extend: {
-  backgroundImage: {
-    "chart-1": "var(--chart-1-gradient)",
-    "chart-2": "var(--chart-2-gradient)",
-    "chart-3": "var(--chart-3-gradient)",
-    "chart-4": "var(--chart-4-gradient)"
-  }
+backgroundImage: {
+"chart-1": "var(--chart-1-gradient)",
+"chart-2": "var(--chart-2-gradient)",
+"chart-3": "var(--chart-3-gradient)",
+"chart-4": "var(--chart-4-gradient)"
+}
 }
 
 Usage
+
 <div className="bg-chart-2 h-full w-full rounded-lg" />
 
 3. Motion System (Enterprise-Grade, Not Flashy)
@@ -395,32 +399,33 @@ Motion communicates state change, not delight
 
 3.2 Motion Tokens (global.css)
 @layer base {
-  :root {
-    --ease-standard: cubic-bezier(0.2, 0, 0, 1);
-    --ease-emphasized: cubic-bezier(0.3, 0, 0, 1);
+:root {
+--ease-standard: cubic-bezier(0.2, 0, 0, 1);
+--ease-emphasized: cubic-bezier(0.3, 0, 0, 1);
 
     --duration-fast: 120ms;
     --duration-base: 180ms;
     --duration-slow: 260ms;
-  }
+
+}
 }
 
 3.3 Tailwind Animation Extensions
 extend: {
-  transitionTimingFunction: {
-    standard: "var(--ease-standard)",
-    emphasized: "var(--ease-emphasized)"
-  },
-  transitionDuration: {
-    fast: "var(--duration-fast)",
-    base: "var(--duration-base)",
-    slow: "var(--duration-slow)"
-  }
+transitionTimingFunction: {
+standard: "var(--ease-standard)",
+emphasized: "var(--ease-emphasized)"
+},
+transitionDuration: {
+fast: "var(--duration-fast)",
+base: "var(--duration-base)",
+slow: "var(--duration-slow)"
+}
 }
 
 Usage
 <button className="transition-all duration-base ease-standard hover:bg-accent">
-  Add Shipment
+Add Shipment
 </button>
 
 4. Elevation System (Depth Without Shadows Abuse)
@@ -429,29 +434,29 @@ Your screenshots rely on layer contrast, not heavy shadows.
 
 4.1 Elevation Tokens
 @layer base {
-  :root {
-    --elevation-1: 0 1px 2px oklch(0 0 0 / 0.25);
-    --elevation-2: 0 4px 12px oklch(0 0 0 / 0.35);
-    --elevation-3: 0 8px 24px oklch(0 0 0 / 0.45);
-  }
+:root {
+--elevation-1: 0 1px 2px oklch(0 0 0 / 0.25);
+--elevation-2: 0 4px 12px oklch(0 0 0 / 0.35);
+--elevation-3: 0 8px 24px oklch(0 0 0 / 0.45);
+}
 }
 
 4.2 Tailwind Mapping
 extend: {
-  boxShadow: {
-    "elevation-1": "var(--elevation-1)",
-    "elevation-2": "var(--elevation-2)",
-    "elevation-3": "var(--elevation-3)"
-  }
+boxShadow: {
+"elevation-1": "var(--elevation-1)",
+"elevation-2": "var(--elevation-2)",
+"elevation-3": "var(--elevation-3)"
+}
 }
 
 Usage Rules
-Level	Usage
-elevation-1	Cards, tables
-elevation-2	Dropdowns, popovers
-elevation-3	Modals, command palette
+Level Usage
+elevation-1 Cards, tables
+elevation-2 Dropdowns, popovers
+elevation-3 Modals, command palette
 <Card className="shadow-elevation-1 hover:shadow-elevation-2 transition-shadow duration-base">
-  KPI Card
+KPI Card
 </Card>
 
 5. Final Enforcement Rules
@@ -491,43 +496,45 @@ All are token-driven, Tailwind-wired, and aligned with the screenshots and enter
 Cargo dashboards live and die by at-a-glance comprehension. KPIs must surface signal without visual aggression.
 
 1.1 KPI Semantic Rules
-Element	Rule
-KPI Value	Highest contrast, never muted
-KPI Label	Muted foreground
-Delta / Trend	Color + icon only
-Status	Never color the number itself
+Element Rule
+KPI Value Highest contrast, never muted
+KPI Label Muted foreground
+Delta / Trend Color + icon only
+Status Never color the number itself
 
 Never apply primary color directly to the KPI number.
 
 1.2 KPI Tokens (global.css)
 @layer base {
-  :root {
-    --kpi-positive: oklch(0.75 0.18 145);
-    --kpi-negative: oklch(0.68 0.20 25);
-    --kpi-neutral: oklch(0.70 0.01 270);
+:root {
+--kpi-positive: oklch(0.75 0.18 145);
+--kpi-negative: oklch(0.68 0.20 25);
+--kpi-neutral: oklch(0.70 0.01 270);
 
     --kpi-glow-positive: oklch(0.75 0.18 145 / 0.25);
     --kpi-glow-negative: oklch(0.68 0.20 25 / 0.25);
-  }
+
+}
 }
 
 1.3 Tailwind Wiring
 extend: {
-  colors: {
-    kpi: {
-      positive: "var(--kpi-positive)",
-      negative: "var(--kpi-negative)",
-      neutral: "var(--kpi-neutral)"
-    }
-  },
-  boxShadow: {
-    "kpi-positive": "0 0 0 1px var(--kpi-glow-positive)",
-    "kpi-negative": "0 0 0 1px var(--kpi-glow-negative)"
-  }
+colors: {
+kpi: {
+positive: "var(--kpi-positive)",
+negative: "var(--kpi-negative)",
+neutral: "var(--kpi-neutral)"
+}
+},
+boxShadow: {
+"kpi-positive": "0 0 0 1px var(--kpi-glow-positive)",
+"kpi-negative": "0 0 0 1px var(--kpi-glow-negative)"
+}
 }
 
 1.4 KPI Usage Pattern
 <Card className="shadow-elevation-1">
+
   <p className="text-muted-foreground text-sm">Total Revenue</p>
 
   <p className="text-3xl font-semibold tracking-tight">
@@ -545,49 +552,48 @@ extend: {
 Cargo operations are state machines. Colors must map to logistics truth, not UI aesthetics.
 
 2.1 Canonical Cargo States
-State	Meaning
-pending	Invoice created, not processed
-scanned	Barcode scanned
-in_transit	Moving between hubs
-arrived	At destination hub
-delivered	Final delivery complete
-delayed	SLA breach
-cancelled	Shipment void
+State Meaning
+pending Invoice created, not processed
+scanned Barcode scanned
+in_transit Moving between hubs
+arrived At destination hub
+delivered Final delivery complete
+delayed SLA breach
+cancelled Shipment void
 2.2 State Tokens (global.css)
 @layer base {
-  :root {
-    --state-pending: oklch(0.70 0.01 270);
-    --state-scanned: oklch(0.60 0.18 250);
-    --state-in-transit: oklch(0.62 0.22 285);
-    --state-arrived: oklch(0.75 0.18 145);
-    --state-delivered: oklch(0.78 0.20 145);
-    --state-delayed: oklch(0.75 0.14 25);
-    --state-cancelled: oklch(0.68 0.20 25);
-  }
+:root {
+--state-pending: oklch(0.70 0.01 270);
+--state-scanned: oklch(0.60 0.18 250);
+--state-in-transit: oklch(0.62 0.22 285);
+--state-arrived: oklch(0.75 0.18 145);
+--state-delivered: oklch(0.78 0.20 145);
+--state-delayed: oklch(0.75 0.14 25);
+--state-cancelled: oklch(0.68 0.20 25);
+}
 }
 
 2.3 Tailwind Mapping
 extend: {
-  colors: {
-    state: {
-      pending: "var(--state-pending)",
-      scanned: "var(--state-scanned)",
-      transit: "var(--state-in-transit)",
-      arrived: "var(--state-arrived)",
-      delivered: "var(--state-delivered)",
-      delayed: "var(--state-delayed)",
-      cancelled: "var(--state-cancelled)"
-    }
-  }
+colors: {
+state: {
+pending: "var(--state-pending)",
+scanned: "var(--state-scanned)",
+transit: "var(--state-in-transit)",
+arrived: "var(--state-arrived)",
+delivered: "var(--state-delivered)",
+delayed: "var(--state-delayed)",
+cancelled: "var(--state-cancelled)"
+}
+}
 }
 
 2.4 Badge Usage (Strict)
 <Badge
-  className="bg-state-transit/15 text-state-transit border border-state-transit/30"
->
-  In Transit
-</Badge>
+className="bg-state-transit/15 text-state-transit border border-state-transit/30"
 
+> In Transit
+> </Badge>
 
 Rules:
 
@@ -602,31 +608,33 @@ Never use primary for states
 Cargo tables handle thousands of rows. Density must be deliberate.
 
 3.1 Density Levels
-Density	Use Case
-compact	Warehouse scanning
-standard	Admin dashboard
-comfortable	Reports / review
+Density Use Case
+compact Warehouse scanning
+standard Admin dashboard
+comfortable Reports / review
 3.2 Density Tokens
 @layer base {
-  :root {
-    --row-compact: 2.25rem;
-    --row-standard: 2.75rem;
-    --row-comfortable: 3.25rem;
+:root {
+--row-compact: 2.25rem;
+--row-standard: 2.75rem;
+--row-comfortable: 3.25rem;
 
     --cell-padding-x: 0.75rem;
-  }
+
+}
 }
 
 3.3 Tailwind Utilities
 extend: {
-  spacing: {
-    "row-compact": "var(--row-compact)",
-    "row-standard": "var(--row-standard)",
-    "row-comfortable": "var(--row-comfortable)"
-  }
+spacing: {
+"row-compact": "var(--row-compact)",
+"row-standard": "var(--row-standard)",
+"row-comfortable": "var(--row-comfortable)"
+}
 }
 
 3.4 Table Implementation Pattern
+
 <tr className="h-row-standard border-b border-border hover:bg-muted/40">
   <td className="px-3 text-sm">AWB-10923</td>
   <td className="px-3 text-sm text-muted-foreground">Delhi → Imphal</td>
@@ -646,7 +654,7 @@ Selected row uses accent/30
 Active row uses left inset indicator (not full color fill)
 
 .table-row-active {
-  box-shadow: inset 3px 0 0 var(--primary);
+box-shadow: inset 3px 0 0 var(--primary);
 }
 
 5. Enforcement Checklist (Cargo-Grade)
@@ -694,37 +702,37 @@ All layers remain token-driven, Tailwind-wired, and OKLCH-safe.
 Barcode workflows are high-frequency, error-intolerant interactions. Visual rules must prioritize speed + confirmation.
 
 1.1 Scan State Model
-State	Meaning
-idle	Scanner ready
-scanning	Actively reading
-success	Valid scan
-duplicate	Already scanned
-error	Invalid / unreadable
-offline	Cached locally
+State Meaning
+idle Scanner ready
+scanning Actively reading
+success Valid scan
+duplicate Already scanned
+error Invalid / unreadable
+offline Cached locally
 1.2 Scan Tokens (global.css)
 @layer base {
-  :root {
-    --scan-idle: oklch(0.70 0.01 270);
-    --scan-active: oklch(0.62 0.22 285);
-    --scan-success: oklch(0.78 0.20 145);
-    --scan-duplicate: oklch(0.75 0.14 25);
-    --scan-error: oklch(0.68 0.20 25);
-    --scan-offline: oklch(0.55 0.01 270);
-  }
+:root {
+--scan-idle: oklch(0.70 0.01 270);
+--scan-active: oklch(0.62 0.22 285);
+--scan-success: oklch(0.78 0.20 145);
+--scan-duplicate: oklch(0.75 0.14 25);
+--scan-error: oklch(0.68 0.20 25);
+--scan-offline: oklch(0.55 0.01 270);
+}
 }
 
 1.3 Tailwind Wiring
 extend: {
-  colors: {
-    scan: {
-      idle: "var(--scan-idle)",
-      active: "var(--scan-active)",
-      success: "var(--scan-success)",
-      duplicate: "var(--scan-duplicate)",
-      error: "var(--scan-error)",
-      offline: "var(--scan-offline)"
-    }
-  }
+colors: {
+scan: {
+idle: "var(--scan-idle)",
+active: "var(--scan-active)",
+success: "var(--scan-success)",
+duplicate: "var(--scan-duplicate)",
+error: "var(--scan-error)",
+offline: "var(--scan-offline)"
+}
+}
 }
 
 1.4 Scan Feedback Rules
@@ -756,16 +764,17 @@ Monochrome fallback
 
 2.1 Print Token Layer
 @media print {
-  :root {
-    --background: oklch(1 0 0);
-    --foreground: oklch(0.15 0 0);
+:root {
+--background: oklch(1 0 0);
+--foreground: oklch(0.15 0 0);
 
     --border: oklch(0.65 0 0);
     --muted-foreground: oklch(0.35 0 0);
 
     --primary: oklch(0.15 0 0);
     --accent: oklch(0.15 0 0);
-  }
+
+}
 }
 
 2.2 Thermal Label Rules
@@ -779,20 +788,19 @@ Pure black text
 Borders ≥ 1px
 
 .label {
-  background: white;
-  color: black;
-  border: 1px solid black;
+background: white;
+color: black;
+border: 1px solid black;
 }
-
 
 Barcode contrast must be 100% black on white.
 
 2.3 Invoice Emphasis Hierarchy
-Element	Weight
-AWB Number	Bold, largest
-Sender / Receiver	Medium
-Line items	Regular
-Terms	Small, muted
+Element Weight
+AWB Number Bold, largest
+Sender / Receiver Medium
+Line items Regular
+Terms Small, muted
 
 Never use color to encode invoice meaning.
 
@@ -802,24 +810,24 @@ Cargo ops must work in warehouses with unstable connectivity.
 
 3.1 Offline Tokens
 @layer base {
-  :root {
-    --offline-bg: oklch(0.55 0.01 270);
-    --offline-fg: oklch(0.98 0 0);
+:root {
+--offline-bg: oklch(0.55 0.01 270);
+--offline-fg: oklch(0.98 0 0);
 
     --syncing-bg: oklch(0.62 0.22 285);
     --synced-bg: oklch(0.78 0.20 145);
-  }
+
+}
 }
 
 3.2 Visual Rules
-State	Behavior
-Offline	Banner only, no blocking
-Syncing	Spinner + text
-Synced	Silent success
+State Behavior
+Offline Banner only, no blocking
+Syncing Spinner + text
+Synced Silent success
 <Badge className="bg-offline-bg text-offline-fg">
-  Offline – data cached
+Offline – data cached
 </Badge>
-
 
 Never show error modals for offline transitions.
 
@@ -828,19 +836,19 @@ Never show error modals for offline transitions.
 Color usage must respect operational authority.
 
 4.1 Role Matrix
-Role	Privileges
-Admin	Full system
-Ops	Scan, manifest, dispatch
-Finance	Invoice, payments
-Viewer	Read-only
+Role Privileges
+Admin Full system
+Ops Scan, manifest, dispatch
+Finance Invoice, payments
+Viewer Read-only
 4.2 Role Accent Tokens
 @layer base {
-  :root {
-    --role-admin: oklch(0.62 0.22 285);
-    --role-ops: oklch(0.65 0.18 250);
-    --role-finance: oklch(0.75 0.18 145);
-    --role-viewer: oklch(0.70 0.01 270);
-  }
+:root {
+--role-admin: oklch(0.62 0.22 285);
+--role-ops: oklch(0.65 0.18 250);
+--role-finance: oklch(0.75 0.18 145);
+--role-viewer: oklch(0.70 0.01 270);
+}
 }
 
 4.3 Usage Rule
@@ -895,7 +903,7 @@ Print & thermal output
 
 Role-based governance
 
-This is production-equivalent to internal tools at Stripe, Amazon Logistics, or DHL, adapted for your domain. and  SLA Breach & Time-Based Visual Logic
+This is production-equivalent to internal tools at Stripe, Amazon Logistics, or DHL, adapted for your domain. and SLA Breach & Time-Based Visual Logic
 
 Route / Hub Map Color System
 
@@ -910,31 +918,31 @@ All layers are tokenized, Tailwind-wired, and operationally realistic.
 Cargo operations are time-critical. SLA visuals must escalate predictably, not emotionally.
 
 1.1 SLA States (Time-Driven)
-State	Condition
-on_time	Within SLA
-warning	≥ 70% SLA elapsed
-at_risk	≥ 90% SLA elapsed
-breached	SLA exceeded
+State Condition
+on_time Within SLA
+warning ≥ 70% SLA elapsed
+at_risk ≥ 90% SLA elapsed
+breached SLA exceeded
 1.2 SLA Tokens (global.css)
 @layer base {
-  :root {
-    --sla-on-time: oklch(0.78 0.20 145);
-    --sla-warning: oklch(0.80 0.14 85);
-    --sla-risk: oklch(0.75 0.14 25);
-    --sla-breached: oklch(0.68 0.20 25);
-  }
+:root {
+--sla-on-time: oklch(0.78 0.20 145);
+--sla-warning: oklch(0.80 0.14 85);
+--sla-risk: oklch(0.75 0.14 25);
+--sla-breached: oklch(0.68 0.20 25);
+}
 }
 
 1.3 Tailwind Mapping
 extend: {
-  colors: {
-    sla: {
-      ok: "var(--sla-on-time)",
-      warning: "var(--sla-warning)",
-      risk: "var(--sla-risk)",
-      breached: "var(--sla-breached)"
-    }
-  }
+colors: {
+sla: {
+ok: "var(--sla-on-time)",
+warning: "var(--sla-warning)",
+risk: "var(--sla-risk)",
+breached: "var(--sla-breached)"
+}
+}
 }
 
 1.4 SLA Usage Rules
@@ -958,23 +966,24 @@ Breach uses color + icon, not animation
 Maps must remain readable under zoom, overlays, and dense routes.
 
 2.1 Map Semantics
-Element	Rule
-Base map	Neutral grayscale
-Routes	Primary spectrum
-Hubs	Status-driven
-Selected route	Primary emphasis
-Delayed route	SLA risk colors
+Element Rule
+Base map Neutral grayscale
+Routes Primary spectrum
+Hubs Status-driven
+Selected route Primary emphasis
+Delayed route SLA risk colors
 2.2 Map Tokens
 @layer base {
-  :root {
-    --map-base: oklch(0.45 0.01 270);
-    --map-route-primary: oklch(0.62 0.22 285);
-    --map-route-secondary: oklch(0.65 0.18 250);
+:root {
+--map-base: oklch(0.45 0.01 270);
+--map-route-primary: oklch(0.62 0.22 285);
+--map-route-secondary: oklch(0.65 0.18 250);
 
     --map-hub-active: oklch(0.78 0.20 145);
     --map-hub-idle: oklch(0.70 0.01 270);
     --map-hub-delayed: oklch(0.75 0.14 25);
-  }
+
+}
 }
 
 2.3 Interaction Rules
@@ -992,25 +1001,24 @@ stroke: "var(--map-route-primary)"
 This system is designed to pass WCAG AA by default and allow AAA in critical views.
 
 3.1 Contrast Guarantees
-Token Pair	Ratio
-foreground / background	≥ 12:1
-muted-foreground / background	≥ 4.5:1
-primary / background	≥ 4.5:1
-destructive / background	≥ 4.5:1
+Token Pair Ratio
+foreground / background ≥ 12:1
+muted-foreground / background ≥ 4.5:1
+primary / background ≥ 4.5:1
+destructive / background ≥ 4.5:1
 3.2 Accessibility Tokens
 @layer base {
-  :root {
-    --focus-outline: oklch(0.62 0.22 285);
-    --focus-width: 2px;
-  }
+:root {
+--focus-outline: oklch(0.62 0.22 285);
+--focus-width: 2px;
+}
 }
 
 3.3 Focus Rule (Keyboard)
 :focus-visible {
-  outline: var(--focus-width) solid var(--focus-outline);
-  outline-offset: 2px;
+outline: var(--focus-width) solid var(--focus-outline);
+outline-offset: 2px;
 }
-
 
 Rules:
 
@@ -1040,17 +1048,16 @@ destructive colors
 
 4.2 Tenant Token Layer
 [data-tenant="acme"] {
-  --primary: oklch(0.62 0.22 285);
+--primary: oklch(0.62 0.22 285);
 }
 
 [data-tenant="logix"] {
-  --primary: oklch(0.65 0.18 250);
+--primary: oklch(0.65 0.18 250);
 }
 
 [data-tenant="aero"] {
-  --primary: oklch(0.75 0.18 145);
+--primary: oklch(0.75 0.18 145);
 }
-
 
 Applied at <html> or root layout level.
 
@@ -1108,23 +1115,23 @@ Audit logs must be readable, neutral, and legally defensible.
 No decorative color. No emotional emphasis.
 
 1.1 Audit Event Types
-Type	Meaning
-create	Record created
-update	Data changed
-delete	Record removed
-scan	Barcode scanned
-auth	Login / permission
-system	Automated action
+Type Meaning
+create Record created
+update Data changed
+delete Record removed
+scan Barcode scanned
+auth Login / permission
+system Automated action
 1.2 Audit Tokens
 @layer base {
-  :root {
-    --audit-create: oklch(0.75 0.18 145);
-    --audit-update: oklch(0.62 0.22 285);
-    --audit-delete: oklch(0.68 0.20 25);
-    --audit-scan: oklch(0.65 0.18 250);
-    --audit-auth: oklch(0.70 0.01 270);
-    --audit-system: oklch(0.55 0.01 270);
-  }
+:root {
+--audit-create: oklch(0.75 0.18 145);
+--audit-update: oklch(0.62 0.22 285);
+--audit-delete: oklch(0.68 0.20 25);
+--audit-scan: oklch(0.65 0.18 250);
+--audit-auth: oklch(0.70 0.01 270);
+--audit-system: oklch(0.55 0.01 270);
+}
 }
 
 1.3 Usage Rules
@@ -1148,31 +1155,31 @@ No backgrounds, no badges
 Notifications must be actionable, not noisy.
 
 2.1 Priority Levels
-Level	Behavior
-info	Silent
-success	Silent
-warning	Badge
-critical	Banner + badge
+Level Behavior
+info Silent
+success Silent
+warning Badge
+critical Banner + badge
 2.2 Notification Tokens
 @layer base {
-  :root {
-    --notify-info: oklch(0.65 0.18 250);
-    --notify-success: oklch(0.78 0.20 145);
-    --notify-warning: oklch(0.80 0.14 85);
-    --notify-critical: oklch(0.68 0.20 25);
-  }
+:root {
+--notify-info: oklch(0.65 0.18 250);
+--notify-success: oklch(0.78 0.20 145);
+--notify-warning: oklch(0.80 0.14 85);
+--notify-critical: oklch(0.68 0.20 25);
+}
 }
 
 2.3 Tailwind Mapping
 extend: {
-  colors: {
-    notify: {
-      info: "var(--notify-info)",
-      success: "var(--notify-success)",
-      warning: "var(--notify-warning)",
-      critical: "var(--notify-critical)"
-    }
-  }
+colors: {
+notify: {
+info: "var(--notify-info)",
+success: "var(--notify-success)",
+warning: "var(--notify-warning)",
+critical: "var(--notify-critical)"
+}
+}
 }
 
 2.4 Rules
@@ -1198,18 +1205,20 @@ Barcode scanning
 8–10 hour shifts
 
 3.1 Warehouse Mode Activation
+
 <html class="warehouse">
 
 3.2 Warehouse Overrides
 @layer base {
-  .warehouse {
-    --background: oklch(0.10 0.01 270);
-    --card: oklch(0.14 0.01 270);
-    --border: oklch(0.25 0.01 270);
+.warehouse {
+--background: oklch(0.10 0.01 270);
+--card: oklch(0.14 0.01 270);
+--border: oklch(0.25 0.01 270);
 
     --primary: oklch(0.70 0.22 285);
     --ring: oklch(0.78 0.22 285);
-  }
+
+}
 }
 
 3.3 Warehouse Rules
@@ -1227,28 +1236,28 @@ Higher contrast borders
 Mobile ops prioritize speed over density.
 
 4.1 Compression Levels
-Level	Context
-xs	Barcode scanning
-sm	Delivery confirmation
-md	Supervisor review
+Level Context
+xs Barcode scanning
+sm Delivery confirmation
+md Supervisor review
 4.2 Mobile Tokens
 @layer base {
-  :root {
-    --tap-target: 44px;
-    --mobile-row: 3.5rem;
-    --mobile-font: 0.95rem;
-  }
+:root {
+--tap-target: 44px;
+--mobile-row: 3.5rem;
+--mobile-font: 0.95rem;
+}
 }
 
 4.3 Tailwind Wiring
 extend: {
-  spacing: {
-    tap: "var(--tap-target)",
-    "row-mobile": "var(--mobile-row)"
-  },
-  fontSize: {
-    mobile: "var(--mobile-font)"
-  }
+spacing: {
+tap: "var(--tap-target)",
+"row-mobile": "var(--mobile-row)"
+},
+fontSize: {
+mobile: "var(--mobile-font)"
+}
 }
 
 4.4 Mobile Rules
@@ -1313,9 +1322,11 @@ Engineering onboarding & review checklist
 No Figma. No ambiguity. Ready for production.
 
 1. design-system.md (Canonical)
+
 # Cargo Dashboard Design System
 
 ## Purpose
+
 Provide a deterministic, accessible, and scalable visual system for cargo logistics software.
 All UI must consume semantic tokens. No exceptions.
 
@@ -1324,11 +1335,13 @@ All UI must consume semantic tokens. No exceptions.
 ## Foundations
 
 ### Color
+
 - All colors are semantic CSS variables.
 - OKLCH is the source format.
 - Dark mode is default; light mode mirrors semantics.
 
 Disallowed:
+
 - Hex values in components
 - Opacity-based text fading
 - Per-page overrides
@@ -1336,17 +1349,19 @@ Disallowed:
 ---
 
 ## Surfaces & Elevation
+
 Use elevation tokens only.
 
-| Token | Usage |
-|---|---|
-| elevation-1 | Cards, tables |
+| Token       | Usage               |
+| ----------- | ------------------- |
+| elevation-1 | Cards, tables       |
 | elevation-2 | Popovers, dropdowns |
-| elevation-3 | Modals |
+| elevation-3 | Modals              |
 
 ---
 
 ## Motion
+
 Motion communicates state change only.
 
 - Durations: `fast | base | slow`
@@ -1356,6 +1371,7 @@ Motion communicates state change only.
 ---
 
 ## Typography
+
 - Primary text: `foreground`
 - Secondary text: `muted-foreground`
 - KPIs are never colorized
@@ -1363,6 +1379,7 @@ Motion communicates state change only.
 ---
 
 ## States
+
 Logistics truth > aesthetics.
 
 - Shipment states use `state-*`
@@ -1373,6 +1390,7 @@ Logistics truth > aesthetics.
 ---
 
 ## Tables
+
 - Density via tokens only
 - Hover affects background only
 - Active row uses inset indicator
@@ -1380,6 +1398,7 @@ Logistics truth > aesthetics.
 ---
 
 ## Charts
+
 - Colors via `chart-*`
 - Gradients via `--chart-*-gradient`
 - No UI colors reused
@@ -1387,6 +1406,7 @@ Logistics truth > aesthetics.
 ---
 
 ## Accessibility
+
 - WCAG AA minimum
 - Focus-visible required
 - Charts require textual summaries
@@ -1394,55 +1414,55 @@ Logistics truth > aesthetics.
 ---
 
 ## Tenancy
+
 - Tenants override brand tokens only
 - States, SLA, destructive are locked
 
 ---
 
 ## Enforcement
+
 Any violation blocks merge.
 
 2. Lint & CI Enforcement
-2.1 Stylelint (Colors & Motion)
-// stylelint.config.cjs
-module.exports = {
-  rules: {
-    "declaration-property-value-disallowed-list": {
-      color: ["/^#/"],
-      "transition-duration": ["/\\d+ms/"],
-      "transition-timing-function": ["ease", "ease-in-out"]
-    }
-  }
-}
+   2.1 Stylelint (Colors & Motion)
+   // stylelint.config.cjs
+   module.exports = {
+   rules: {
+   "declaration-property-value-disallowed-list": {
+   color: ["/^#/"],
+   "transition-duration": ["/\\d+ms/"],
+   "transition-timing-function": ["ease", "ease-in-out"]
+   }
+   }
+   }
 
 2.2 ESLint (Tailwind Token Enforcement)
 // eslint.rules.js
 module.exports = {
-  rules: {
-    "no-restricted-syntax": [
-      "error",
-      {
-        selector: "Literal[value=/^#([0-9a-f]{3}){1,2}$/i]",
-        message: "Use semantic color tokens only."
-      }
-    ]
-  }
+rules: {
+"no-restricted-syntax": [
+"error",
+{
+selector: "Literal[value=/^#([0-9a-f]{3}){1,2}$/i]",
+message: "Use semantic color tokens only."
+}
+]
+}
 }
 
 2.3 CI Gate (Required)
+
 # .github/workflows/design-system.yml
+
 name: Design System Guard
 
 on: [pull_request]
 
 jobs:
-  guard:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - run: npm run lint
-      - run: npm run stylelint
-
+guard:
+runs-on: ubuntu-latest
+steps: - uses: actions/checkout@v4 - run: npm run lint - run: npm run stylelint
 
 Merge is blocked if:
 
@@ -1453,7 +1473,7 @@ Non-token motion used
 Elevation violated
 
 3. Engineering Onboarding (Drop-in)
-3.1 First-Day Rules
+   3.1 First-Day Rules
 
 Read design-system.md
 
@@ -1467,34 +1487,36 @@ If a token is missing → extend the system
 
 Before requesting review:
 
- No hex colors
+No hex colors
 
- Uses semantic tokens
+Uses semantic tokens
 
- Motion uses duration + easing tokens
+Motion uses duration + easing tokens
 
- Elevation matches component role
+Elevation matches component role
 
- Table density respected
+Table density respected
 
- Offline & error states handled
+Offline & error states handled
 
- Keyboard focus visible
+Keyboard focus visible
 
 3.3 Component Authoring Template
-/*
+/\*
 Component Rules:
+
 - Semantic tokens only
 - No hardcoded motion
 - Elevation via tokens
-*/
+  \*/
 
 export function Component() {
-  return (
-    <div className="bg-card text-card-foreground shadow-elevation-1">
-      ...
-    </div>
-  )
+return (
+
+<div className="bg-card text-card-foreground shadow-elevation-1">
+...
+</div>
+)
 }
 
 FINAL STATE

@@ -9,9 +9,11 @@ TAC Cargo now has a fully configured MCP (Model Context Protocol) server with co
 ## 📦 What Was Created
 
 ### 1. MCP Server
+
 **File:** `@/lib/mcp/shipment-server.ts:1-300`
 
 **Features:**
+
 - ✅ Shipment query tools
 - ✅ Sentry error tracking
 - ✅ Performance monitoring with spans
@@ -19,23 +21,28 @@ TAC Cargo now has a fully configured MCP (Model Context Protocol) server with co
 - ✅ Full context capture
 
 **Available Tools:**
+
 1. `query_shipment` - Get full shipment details by reference
 2. `list_recent_shipments` - List recent shipments with limit
 3. `get_shipment_status` - Get current status of a shipment
 
 ### 2. MCP Client
+
 **File:** `@/lib/mcp/client.ts:1-170`
 
 **Features:**
+
 - ✅ Client interface for MCP server
 - ✅ Sentry monitoring for all operations
 - ✅ Connection management
 - ✅ Error handling with context
 
 ### 3. Test API Endpoint
+
 **File:** `@/app/api/mcp/test/route.ts:1-80`
 
 **Features:**
+
 - ✅ HTTP interface to test MCP server
 - ✅ Sentry monitoring
 - ✅ Multiple action support
@@ -90,6 +97,7 @@ http://localhost:3000/api/mcp/test?action=list&limit=10
 ```
 
 **Expected Response:**
+
 ```json
 {
   "success": true,
@@ -112,6 +120,7 @@ curl "http://localhost:3000/api/mcp/test?action=query&reference=SHP-2024-001"
 ```
 
 **Expected Response:**
+
 ```json
 {
   "success": true,
@@ -146,6 +155,7 @@ curl "http://localhost:3000/api/mcp/test?action=status&reference=SHP-2024-001"
 ```
 
 **Expected Response:**
+
 ```json
 {
   "success": true,
@@ -166,16 +176,19 @@ curl "http://localhost:3000/api/mcp/test?action=status&reference=SHP-2024-001"
 ### What's Being Tracked
 
 #### 1. MCP Server Operations
+
 - **Tool calls** - Each tool execution is tracked
 - **Database queries** - Supabase queries monitored
 - **Errors** - All exceptions captured with context
 
 #### 2. Performance Metrics
+
 - **Spans** - Individual operation timing
 - **Transactions** - Complete request flow
 - **Database query duration**
 
 #### 3. Context Capture
+
 - **Tool names** - Which tool was called
 - **Arguments** - Input parameters
 - **Shipment references** - Tracking specific shipments
@@ -291,9 +304,9 @@ SENTRY_PROJECT=tac-cargo
 ```typescript
 Sentry.init({
   dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
-  tracesSampleRate: 1.0,  // 100% for testing
-  environment: process.env.NODE_ENV || 'development',
-  release: process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA || 'development',
+  tracesSampleRate: 1.0, // 100% for testing
+  environment: process.env.NODE_ENV || "development",
+  release: process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA || "development",
 });
 ```
 
@@ -303,12 +316,12 @@ Sentry.init({
 
 ### Expected Metrics
 
-| Operation | Expected Duration | Sentry Op |
-|-----------|------------------|-----------|
-| Client Connect | < 100ms | `mcp.client.connect` |
-| Tool Call | < 500ms | `mcp.tool.call` |
-| Database Query | < 200ms | `db.query` |
-| Full Request | < 1000ms | `http.server` |
+| Operation      | Expected Duration | Sentry Op            |
+| -------------- | ----------------- | -------------------- |
+| Client Connect | < 100ms           | `mcp.client.connect` |
+| Tool Call      | < 500ms           | `mcp.tool.call`      |
+| Database Query | < 200ms           | `db.query`           |
+| Full Request   | < 1000ms          | `http.server`        |
 
 ### Monitoring in Sentry
 
@@ -331,6 +344,7 @@ Sentry.init({
 **Error:** `Cannot find module 'dist/lib/mcp/shipment-server.js'`
 
 **Solution:**
+
 ```bash
 # Build the MCP server first
 npm run mcp:build
@@ -341,6 +355,7 @@ npm run mcp:build
 **Error:** `Failed to query shipment: ...`
 
 **Solution:**
+
 - Verify Supabase credentials in `.env.local`
 - Check database tables exist
 - Ensure RLS policies allow access
@@ -348,11 +363,13 @@ npm run mcp:build
 ### Issue: No Sentry Events
 
 **Possible Causes:**
+
 1. DSN not configured
 2. Sentry blocked by ad-blocker
 3. Network issues
 
 **Solution:**
+
 ```bash
 # Verify DSN
 echo $NEXT_PUBLIC_SENTRY_DSN
@@ -413,6 +430,7 @@ if (status.status === "delivered") {
 **Description:** Get full shipment details by reference
 
 **Input:**
+
 ```json
 {
   "reference": "SHP-2024-001"
@@ -420,6 +438,7 @@ if (status.status === "delivered") {
 ```
 
 **Output:**
+
 ```json
 {
   "reference": "SHP-2024-001",
@@ -435,6 +454,7 @@ if (status.status === "delivered") {
 **Description:** List recent shipments with optional limit
 
 **Input:**
+
 ```json
 {
   "limit": 10
@@ -442,6 +462,7 @@ if (status.status === "delivered") {
 ```
 
 **Output:**
+
 ```json
 [
   {
@@ -458,6 +479,7 @@ if (status.status === "delivered") {
 **Description:** Get current status of a shipment
 
 **Input:**
+
 ```json
 {
   "reference": "SHP-2024-001"
@@ -465,6 +487,7 @@ if (status.status === "delivered") {
 ```
 
 **Output:**
+
 ```json
 {
   "reference": "SHP-2024-001",
@@ -495,6 +518,7 @@ if (status.status === "delivered") {
 ### 1. Test All Endpoints
 
 Visit each test URL and verify responses:
+
 - List shipments
 - Query specific shipment
 - Get shipment status
@@ -504,6 +528,7 @@ Visit each test URL and verify responses:
 Visit: https://sentry.io/organizations/your-org/performance/
 
 Look for:
+
 - MCP transactions
 - Performance spans
 - Breadcrumbs
@@ -512,6 +537,7 @@ Look for:
 ### 3. Trigger Errors (Optional)
 
 Test error handling:
+
 ```bash
 # Query non-existent shipment
 curl "http://localhost:3000/api/mcp/test?action=query&reference=INVALID"
@@ -526,6 +552,7 @@ Verify error appears in Sentry with proper context.
 **Status:** ✅ MCP Server Configured with Sentry
 
 **What's Working:**
+
 - MCP server with 3 shipment tools
 - Sentry monitoring for all operations
 - Performance tracking with spans
@@ -533,12 +560,14 @@ Verify error appears in Sentry with proper context.
 - API endpoint for testing
 
 **What to Test:**
+
 - List recent shipments
 - Query specific shipments
 - Get shipment status
 - Verify Sentry captures events
 
 **Documentation:**
+
 - `MCP_SENTRY_SETUP.md` - This file
 - `SENTRY_MCP_STATUS.md` - MCP overview
 - `SENTRY_SETUP.md` - General Sentry setup

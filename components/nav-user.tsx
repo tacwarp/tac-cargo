@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { useRouter } from "next/navigation"
+import * as React from "react";
+import { useRouter } from "next/navigation";
 import {
   BadgeCheck,
   Bell,
@@ -9,14 +9,10 @@ import {
   CreditCard,
   LogOut,
   Sparkles,
-} from "lucide-react"
-import { signOutUser } from "@/lib/auth-helpers"
+} from "lucide-react";
+import { signOutUser } from "@/lib/auth-helpers";
 
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,44 +21,44 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Skeleton } from "@/components/ui/skeleton"
+} from "@/components/ui/dropdown-menu";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 
 export function NavUser({
   user,
 }: {
   user: {
-    name: string
-    email: string
-    avatar: string
-  }
+    name: string;
+    email: string;
+    avatar: string;
+  };
 }) {
-  const { isMobile } = useSidebar()
-  const [mounted, setMounted] = React.useState(false)
-  const router = useRouter()
+  const { isMobile } = useSidebar();
+  const [mounted, setMounted] = React.useState(false);
+  const router = useRouter();
 
   React.useEffect(() => {
-    setMounted(true)
-  }, [])
+    setMounted(true);
+  }, []);
 
   const handleSignOut = async () => {
     // Use robust sign-out with forced local cleanup
     // This prevents authentication state inconsistency even if server sign-out fails
-    const result = await signOutUser()
+    const result = await signOutUser();
 
     // Always redirect to login regardless of result
     // Local cleanup is guaranteed to have been performed
-    router.push('/login')
+    router.push("/login");
 
     // Note: If result.success is false, the server session may still exist
     // but local state is cleared, preventing access to protected routes
-  }
+  };
 
   if (!mounted) {
     return (
@@ -77,7 +73,7 @@ export function NavUser({
           </div>
         </SidebarMenuItem>
       </SidebarMenu>
-    )
+    );
   }
 
   return (
@@ -87,24 +83,30 @@ export function NavUser({
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
-              className="data-[state=open]:bg-primary/5 h-12 border-t border-border/10 rounded-none hover:bg-muted/30 transition-all duration-300"
+              className="data-[state=open]:bg-primary/5 border-border/10 hover:bg-muted/30 h-12 rounded-none border-t transition-all duration-300"
             >
               <div className="relative">
                 <Avatar className="h-8 w-8 rounded-md border border-white/10">
                   <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-md bg-secondary text-[10px]">AD</AvatarFallback>
+                  <AvatarFallback className="bg-secondary rounded-md text-[10px]">
+                    AD
+                  </AvatarFallback>
                 </Avatar>
-                <div className="absolute -bottom-0.5 -right-0.5 size-2 rounded-full border-2 border-background bg-success" />
+                <div className="border-background bg-success absolute -right-0.5 -bottom-0.5 size-2 rounded-full border-2" />
               </div>
-              <div className="grid flex-1 text-left ml-1">
-                <span className="truncate text-xs font-bold text-foreground uppercase tracking-tight">{user.name}</span>
-                <span className="truncate text-[10px] font-medium text-muted-foreground/60 uppercase tracking-tighter">{user.email}</span>
+              <div className="ml-1 grid flex-1 text-left">
+                <span className="text-foreground truncate text-xs font-bold tracking-tight uppercase">
+                  {user.name}
+                </span>
+                <span className="text-muted-foreground/60 truncate text-[10px] font-medium tracking-tighter uppercase">
+                  {user.email}
+                </span>
               </div>
               <ChevronsUpDown className="ml-auto size-3 opacity-40" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-md glass-card noise-overlay border-border/20 shadow-glow-primary/10"
+            className="glass-card noise-overlay border-border/20 shadow-glow-primary/10 w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-md"
             side={isMobile ? "bottom" : "right"}
             align="end"
             sideOffset={4}
@@ -113,33 +115,39 @@ export function NavUser({
               <div className="flex items-center gap-3 px-3 py-3 text-left">
                 <Avatar className="h-8 w-8 rounded-md border border-white/10">
                   <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-md bg-secondary text-[10px]">AD</AvatarFallback>
+                  <AvatarFallback className="bg-secondary rounded-md text-[10px]">
+                    AD
+                  </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left">
-                  <span className="truncate text-xs font-bold text-foreground uppercase tracking-tight">{user.name}</span>
-                  <span className="truncate text-[10px] font-medium text-muted-foreground/60 uppercase tracking-tighter">{user.email}</span>
+                  <span className="text-foreground truncate text-xs font-bold tracking-tight uppercase">
+                    {user.name}
+                  </span>
+                  <span className="text-muted-foreground/60 truncate text-[10px] font-medium tracking-tighter uppercase">
+                    {user.email}
+                  </span>
                 </div>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator className="bg-border/10" />
             <DropdownMenuGroup className="p-1">
-              <DropdownMenuItem className="text-[11px] font-bold uppercase tracking-widest px-3 py-2 focus:bg-primary/10 focus:text-primary transition-colors cursor-pointer">
-                <Sparkles className="size-3.5 mr-2 text-primary" />
+              <DropdownMenuItem className="focus:bg-primary/10 focus:text-primary cursor-pointer px-3 py-2 text-[11px] font-bold tracking-widest uppercase transition-colors">
+                <Sparkles className="text-primary mr-2 size-3.5" />
                 Management Console
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator className="bg-border/10" />
             <DropdownMenuGroup className="p-1">
-              <DropdownMenuItem className="text-[11px] font-bold uppercase tracking-widest px-3 py-2 focus:bg-primary/10 transition-colors cursor-pointer">
-                <BadgeCheck className="size-3.5 mr-2 opacity-60" />
+              <DropdownMenuItem className="focus:bg-primary/10 cursor-pointer px-3 py-2 text-[11px] font-bold tracking-widest uppercase transition-colors">
+                <BadgeCheck className="mr-2 size-3.5 opacity-60" />
                 Profile Settings
               </DropdownMenuItem>
-              <DropdownMenuItem className="text-[11px] font-bold uppercase tracking-widest px-3 py-2 focus:bg-primary/10 transition-colors cursor-pointer">
-                <CreditCard className="size-3.5 mr-2 opacity-60" />
+              <DropdownMenuItem className="focus:bg-primary/10 cursor-pointer px-3 py-2 text-[11px] font-bold tracking-widest uppercase transition-colors">
+                <CreditCard className="mr-2 size-3.5 opacity-60" />
                 Access Keys
               </DropdownMenuItem>
-              <DropdownMenuItem className="text-[11px] font-bold uppercase tracking-widest px-3 py-2 focus:bg-primary/10 transition-colors cursor-pointer">
-                <Bell className="size-3.5 mr-2 opacity-60" />
+              <DropdownMenuItem className="focus:bg-primary/10 cursor-pointer px-3 py-2 text-[11px] font-bold tracking-widest uppercase transition-colors">
+                <Bell className="mr-2 size-3.5 opacity-60" />
                 Alert Logs
               </DropdownMenuItem>
             </DropdownMenuGroup>
@@ -147,9 +155,9 @@ export function NavUser({
             <div className="p-1">
               <DropdownMenuItem
                 onClick={handleSignOut}
-                className="text-[11px] font-bold uppercase tracking-widest px-3 py-2 text-destructive focus:bg-destructive/10 focus:text-destructive transition-colors cursor-pointer"
+                className="text-destructive focus:bg-destructive/10 focus:text-destructive cursor-pointer px-3 py-2 text-[11px] font-bold tracking-widest uppercase transition-colors"
               >
-                <LogOut className="size-3.5 mr-2" />
+                <LogOut className="mr-2 size-3.5" />
                 Terminate Session
               </DropdownMenuItem>
             </div>
@@ -157,5 +165,5 @@ export function NavUser({
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
-  )
+  );
 }

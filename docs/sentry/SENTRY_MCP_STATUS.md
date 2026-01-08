@@ -3,11 +3,14 @@
 ## Current Status
 
 ### ✅ Installed
+
 - `@modelcontextprotocol/sdk` package is installed
 - Sentry is configured and working
 
 ### ⏳ Not Yet Active
+
 The MCP SDK is installed but **not actively monitoring** because:
+
 - No MCP servers are currently running in your application
 - MCP integration requires actual MCP servers to monitor
 
@@ -18,6 +21,7 @@ The MCP SDK is installed but **not actively monitoring** because:
 **Model Context Protocol (MCP)** is a protocol for AI assistants to interact with external tools and data sources through servers.
 
 **Use Cases:**
+
 - Database query servers
 - File system access servers
 - API integration servers
@@ -28,6 +32,7 @@ The MCP SDK is installed but **not actively monitoring** because:
 ## When to Use Sentry MCP Monitoring
 
 Use Sentry MCP monitoring when you:
+
 1. Add MCP servers to your application
 2. Want to track MCP server performance
 3. Need to debug MCP server errors
@@ -38,6 +43,7 @@ Use Sentry MCP monitoring when you:
 ## How Sentry MCP Monitoring Works
 
 When you add an MCP server, Sentry automatically tracks:
+
 - **Server startup/shutdown**
 - **Tool executions**
 - **Resource requests**
@@ -59,7 +65,7 @@ import * as Sentry from "@sentry/nextjs";
 Sentry.init({
   dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
   tracesSampleRate: 1.0,
-  environment: process.env.NODE_ENV || 'development',
+  environment: process.env.NODE_ENV || "development",
 });
 
 // Create MCP server
@@ -73,7 +79,7 @@ const server = new Server(
       tools: {},
       resources: {},
     },
-  }
+  },
 );
 
 // Wrap tool handler with Sentry
@@ -86,8 +92,11 @@ server.setRequestHandler("tools/call", async (request) => {
     async () => {
       try {
         // Your tool logic here
-        const result = await executeTool(request.params.name, request.params.arguments);
-        
+        const result = await executeTool(
+          request.params.name,
+          request.params.arguments,
+        );
+
         return {
           content: [
             {
@@ -106,7 +115,7 @@ server.setRequestHandler("tools/call", async (request) => {
         });
         throw error;
       }
-    }
+    },
   );
 });
 
@@ -114,7 +123,7 @@ server.setRequestHandler("tools/call", async (request) => {
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  
+
   console.log("MCP server running with Sentry monitoring");
 }
 
@@ -132,12 +141,14 @@ main().catch((error) => {
 Your application **does not currently use MCP servers**, so there's nothing to monitor yet.
 
 ### What You Have
+
 - ✅ Sentry fully configured
 - ✅ Error tracking working
 - ✅ Performance monitoring enabled
 - ✅ MCP SDK installed (ready for future use)
 
 ### What You Don't Have (Yet)
+
 - ❌ No MCP servers running
 - ❌ No MCP tools defined
 - ❌ No MCP resources configured
@@ -187,16 +198,16 @@ server.setRequestHandler("tools/call", async (request) => {
       async () => {
         try {
           const { reference } = request.params.arguments;
-          
+
           const supabase = await createClient();
           const { data, error } = await supabase
             .from("shipments")
             .select("*")
             .eq("reference", reference)
             .single();
-          
+
           if (error) throw error;
-          
+
           return {
             content: [
               {
@@ -214,7 +225,7 @@ server.setRequestHandler("tools/call", async (request) => {
           });
           throw error;
         }
-      }
+      },
     );
   }
 });
@@ -225,16 +236,20 @@ server.setRequestHandler("tools/call", async (request) => {
 ## Testing Sentry MCP (When You Add MCP Servers)
 
 ### 1. Create MCP Server
+
 Add an MCP server to your application (like the examples above)
 
 ### 2. Wrap Operations with Sentry
+
 Use `Sentry.startSpan()` for performance tracking
 Use `Sentry.captureException()` for error tracking
 
 ### 3. Trigger MCP Operations
+
 Call your MCP tools/resources
 
 ### 4. Verify in Sentry Dashboard
+
 - Check Performance tab for MCP spans
 - Check Issues tab for MCP errors
 - Look for tags: `mcp_server`, `tool_name`
@@ -244,17 +259,20 @@ Call your MCP tools/resources
 ## Summary
 
 **Current Status:**
+
 - ✅ Sentry is fully working
 - ✅ MCP SDK is installed
 - ⏳ No MCP servers to monitor yet
 
 **To Test MCP Monitoring:**
+
 1. Add an MCP server to your application
 2. Wrap operations with Sentry spans
 3. Trigger operations
 4. Check Sentry dashboard
 
 **For Now:**
+
 - Your Sentry integration is complete and working
 - MCP monitoring will activate when you add MCP servers
 - The SDK is ready for future use

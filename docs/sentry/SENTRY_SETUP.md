@@ -22,9 +22,11 @@ Sentry is now fully integrated into TAC Cargo for comprehensive error tracking, 
 ## 🔧 Configuration Files
 
 ### 1. **Sentry Client Configuration**
+
 **File:** `@/sentry.client.config.ts:1-60`
 
 **Features:**
+
 - Error tracking for browser-side code
 - Session replay (10% sample rate, 100% on errors)
 - Performance monitoring (100% trace sample rate)
@@ -32,6 +34,7 @@ Sentry is now fully integrated into TAC Cargo for comprehensive error tracking, 
 - Ignores common browser extension errors
 
 **Configuration:**
+
 ```typescript
 Sentry.init({
   dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
@@ -46,9 +49,11 @@ Sentry.init({
 ---
 
 ### 2. **Sentry Server Configuration**
+
 **File:** `@/sentry.server.config.ts:1-30`
 
 **Features:**
+
 - Error tracking for server-side code
 - Performance monitoring for API routes
 - Ignores network-related errors (ECONNRESET, EPIPE, ETIMEDOUT)
@@ -56,27 +61,33 @@ Sentry.init({
 ---
 
 ### 3. **Sentry Edge Configuration**
+
 **File:** `@/sentry.edge.config.ts:1-20`
 
 **Features:**
+
 - Error tracking for Edge Runtime (middleware, edge functions)
 - Lightweight configuration for edge environments
 
 ---
 
 ### 4. **Instrumentation Hook**
+
 **File:** `@/instrumentation.ts:1-15`
 
 **Purpose:**
+
 - Initializes Sentry when the Next.js server starts
 - Automatically loads correct config based on runtime (Node.js vs Edge)
 
 ---
 
 ### 5. **Next.js Configuration**
+
 **File:** `@/next.config.ts:7,153-203`
 
 **Sentry Features Enabled:**
+
 - Source map upload for better stack traces
 - React component annotation for debugging
 - Tunnel route (`/monitoring`) to bypass ad-blockers
@@ -84,6 +95,7 @@ Sentry.init({
 - Tree-shaking of Sentry logger statements
 
 **Configuration:**
+
 ```typescript
 export default withSentryConfig(nextConfig, {
   org: process.env.SENTRY_ORG,
@@ -187,27 +199,32 @@ Visit: https://sentry.io/organizations/your-org/issues/
 ## 📊 Features Enabled
 
 ### ✅ Error Tracking
+
 - **Client-side errors:** Captured automatically
 - **Server-side errors:** Captured in API routes and server components
 - **Edge errors:** Captured in middleware and edge functions
 
 ### ✅ Performance Monitoring
+
 - **Traces:** 100% of transactions sampled
 - **API routes:** Automatic instrumentation
 - **Database queries:** Captured with Supabase integration
 - **External requests:** Tracked automatically
 
 ### ✅ Session Replay
+
 - **On errors:** 100% of sessions with errors recorded
 - **Random sampling:** 10% of normal sessions recorded
 - **Privacy:** All text and media masked by default
 
 ### ✅ Release Tracking
+
 - **Automatic:** Uses Git commit SHA from Vercel
 - **Manual:** Set `NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA` env var
 - **Source maps:** Uploaded automatically during build
 
 ### ✅ Breadcrumbs
+
 - **Navigation:** Page transitions tracked
 - **Console logs:** Captured as breadcrumbs
 - **Network requests:** HTTP requests logged
@@ -227,13 +244,16 @@ If you add MCP servers to your application, wrap them with Sentry:
 import { McpServer } from "@modelcontextprotocol/sdk";
 import * as Sentry from "@sentry/nextjs";
 
-const server = Sentry.wrapMcpServerWithSentry(new McpServer({
-  name: "my-mcp-server",
-  version: "1.0.0",
-}));
+const server = Sentry.wrapMcpServerWithSentry(
+  new McpServer({
+    name: "my-mcp-server",
+    version: "1.0.0",
+  }),
+);
 ```
 
 **Benefits:**
+
 - Trace complete MCP request flows
 - Debug resource requests and server responses
 - Identify performance bottlenecks
@@ -296,10 +316,10 @@ try {
     op: "db.query",
     description: "Fetch shipment data",
   });
-  
+
   // Database query
   span.finish();
-  
+
   transaction.setStatus("ok");
 } catch (error) {
   transaction.setStatus("internal_error");
@@ -331,12 +351,14 @@ Sentry.setUser({
 **Enabled:** `sendDefaultPii: true`
 
 **What's Collected:**
+
 - User IP addresses
 - User-agent strings
 - Request URLs (sanitized)
 - User IDs (if set)
 
 **Not Collected:**
+
 - Passwords (automatically redacted)
 - API keys (automatically redacted)
 - Credit card numbers (automatically redacted)
@@ -344,6 +366,7 @@ Sentry.setUser({
 ### Data Scrubbing
 
 Sentry automatically scrubs sensitive data:
+
 - `password`, `passwd`, `secret`, `api_key`, `apikey`, `access_token`
 - Credit card patterns
 - Social security numbers
@@ -351,6 +374,7 @@ Sentry automatically scrubs sensitive data:
 ### Additional Scrubbing
 
 Add custom patterns in Sentry dashboard:
+
 1. Go to: https://sentry.io/settings/your-org/projects/tac-cargo/security-and-privacy/
 2. Add data scrubbing rules
 
@@ -405,7 +429,7 @@ Add custom patterns in Sentry dashboard:
 Releases are automatically created using Git commit SHA:
 
 ```typescript
-release: process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA || 'development'
+release: process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA || "development";
 ```
 
 ### Manual Release Creation
@@ -453,7 +477,7 @@ export default function TestSentry() {
 ```typescript
 // app/api/test-sentry/route.ts
 export async function GET() {
-  throw new Error('Server-side test error')
+  throw new Error("Server-side test error");
 }
 ```
 
@@ -469,10 +493,10 @@ export async function GET() {
     op: "test",
   });
 
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+
   transaction.finish();
-  
+
   return Response.json({ success: true });
 }
 ```
@@ -492,6 +516,7 @@ export async function GET() {
 **Issue:** Stack traces show minified code
 
 **Solution:**
+
 ```bash
 # Check environment variables
 echo $SENTRY_AUTH_TOKEN
@@ -510,6 +535,7 @@ sentry-cli info
 **Issue:** Errors not captured
 
 **Solution:**
+
 1. Check DSN is correct in `.env.local`
 2. Verify `NEXT_PUBLIC_SENTRY_DSN` is set
 3. Check browser console for Sentry initialization errors
@@ -520,6 +546,7 @@ sentry-cli info
 **Issue:** Too many events captured
 
 **Solution:**
+
 ```typescript
 // Reduce sample rates in sentry.client.config.ts
 tracesSampleRate: 0.1,  // 10% of transactions
@@ -531,6 +558,7 @@ replaysSessionSampleRate: 0.01,  // 1% of sessions
 **Issue:** `/monitoring` route conflicts with middleware
 
 **Solution:**
+
 ```typescript
 // In next.config.ts, change tunnel route
 tunnelRoute: "/sentry-tunnel",
@@ -541,12 +569,14 @@ tunnelRoute: "/sentry-tunnel",
 ## 📚 Additional Resources
 
 ### Documentation
+
 - **Sentry Next.js:** https://docs.sentry.io/platforms/javascript/guides/nextjs/
 - **Sentry CLI:** https://docs.sentry.io/cli/
 - **Performance Monitoring:** https://docs.sentry.io/product/performance/
 - **Session Replay:** https://docs.sentry.io/product/session-replay/
 
 ### Sentry Dashboard Links
+
 - **Project Settings:** https://sentry.io/settings/your-org/projects/tac-cargo/
 - **Client Keys:** https://sentry.io/settings/your-org/projects/tac-cargo/keys/
 - **Alerts:** https://sentry.io/organizations/your-org/alerts/rules/
@@ -576,6 +606,7 @@ tunnelRoute: "/sentry-tunnel",
 ## 🎯 Next Steps
 
 1. **Add Credentials:**
+
    ```bash
    # Edit .env.local
    SENTRY_ORG=your-org-slug
@@ -583,6 +614,7 @@ tunnelRoute: "/sentry-tunnel",
    ```
 
 2. **Build Application:**
+
    ```bash
    npm run build
    ```

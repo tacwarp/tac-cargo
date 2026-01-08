@@ -1,6 +1,18 @@
 "use client";
 
-import { Star, Quote, User, Briefcase, Building2, Store, Truck, MapPin, Wheat, Anchor, Activity } from "lucide-react";
+import {
+  Star,
+  Quote,
+  User,
+  Briefcase,
+  Building2,
+  Store,
+  Truck,
+  MapPin,
+  Wheat,
+  Anchor,
+  Activity,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const testimonials = [
@@ -71,33 +83,40 @@ const testimonials = [
 
 export function Testimonials() {
   return (
-    <section className="relative py-24 bg-background border-t border-border overflow-hidden">
-      <div className="container mx-auto max-w-[1400px] px-6 relative z-10">
-
+    <section className="bg-background border-border relative overflow-hidden border-t py-24">
+      <div className="relative z-10 container mx-auto max-w-[1400px] px-6">
         {/* Header */}
         <div className="mb-12 text-center">
-          <span className="text-sm font-medium text-primary mb-2 block animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <span className="text-primary animate-in fade-in slide-in-from-bottom-4 mb-2 block text-sm font-medium duration-500">
             Regional Success
           </span>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight text-foreground mb-6 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
+          <h2 className="text-foreground animate-in fade-in slide-in-from-bottom-4 mb-6 text-3xl font-semibold tracking-tight delay-100 duration-700 sm:text-4xl md:text-5xl">
             Trusted by teams across <br className="hidden md:block" />
             Manipur and beyond.
           </h2>
 
           {/* Social Proof Badge */}
-          <div className="inline-flex items-center gap-2 rounded-full border px-3 py-1.5 border-white/10 bg-white/5 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200 backdrop-blur-sm">
+          <div className="animate-in fade-in slide-in-from-bottom-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 backdrop-blur-sm delay-200 duration-700">
             <span className="inline-flex items-center -space-x-2">
               {[User, User, User, User].map((Icon, i) => (
-                <div key={i} className="h-6 w-6 rounded-full ring-2 ring-background bg-muted flex items-center justify-center">
-                  <Icon className="w-3 h-3 text-muted-foreground" />
+                <div
+                  key={i}
+                  className="ring-background bg-muted flex h-6 w-6 items-center justify-center rounded-full ring-2"
+                >
+                  <Icon className="text-muted-foreground h-3 w-3" />
                 </div>
               ))}
             </span>
-            <span className="ml-2 inline-flex items-center gap-1 text-sm text-muted-foreground">
+            <span className="text-muted-foreground ml-2 inline-flex items-center gap-1 text-sm">
               {[1, 2, 3, 4, 5].map((_, i) => (
-                <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                <Star
+                  key={i}
+                  className="h-3.5 w-3.5 fill-amber-400 text-amber-400"
+                />
               ))}
-              <span className="ml-1 font-medium text-foreground">5.0 • Local Partners</span>
+              <span className="text-foreground ml-1 font-medium">
+                5.0 • Local Partners
+              </span>
             </span>
           </div>
         </div>
@@ -106,39 +125,58 @@ export function Testimonials() {
         <div
           role="region"
           aria-label="Customer testimonials"
-          className="grid grid-cols-1 md:grid-cols-3 gap-6 h-[600px] sm:h-[700px] md:h-[800px] overflow-hidden relative"
+          className="relative grid h-[600px] grid-cols-1 gap-6 overflow-hidden sm:h-[700px] md:h-[800px] md:grid-cols-3"
           style={{
-            maskImage: "linear-gradient(to bottom, transparent, black 10%, black 90%, transparent)",
-            WebkitMaskImage: "linear-gradient(to bottom, transparent, black 10%, black 90%, transparent)"
+            maskImage:
+              "linear-gradient(to bottom, transparent, black 10%, black 90%, transparent)",
+            WebkitMaskImage:
+              "linear-gradient(to bottom, transparent, black 10%, black 90%, transparent)",
           }}
         >
           {testimonials.map((column, colIndex) => (
-            <div key={colIndex} className="relative w-full h-full overflow-hidden" aria-hidden={colIndex > 0 ? "true" : undefined}>
+            <div
+              key={colIndex}
+              className="relative h-full w-full overflow-hidden"
+              aria-hidden={colIndex > 0 ? "true" : undefined}
+            >
               {/* Doubled for seamless loop - Adjust animation duration/direction */}
               <div
                 className={cn(
-                  "flex flex-col gap-6 absolute w-full",
-                  colIndex % 2 === 0 ? "animate-scroll-up" : "animate-scroll-down"
+                  "absolute flex w-full flex-col gap-6",
+                  colIndex % 2 === 0
+                    ? "animate-scroll-up"
+                    : "animate-scroll-down",
                 )}
               >
-                {[...column, ...column, ...column, ...column].map((item, i) => { // Quadrupled for smoother infinite scroll on large screens
+                {[...column, ...column, ...column, ...column].map((item, i) => {
+                  // Quadrupled for smoother infinite scroll on large screens
                   const Icon = item.icon;
                   return (
                     <article
                       key={`${item.name}-${i}`}
-                      className="p-6 rounded-2xl border border-white/5 bg-card/40 backdrop-blur-sm hover:bg-card/60 transition-colors group"
+                      className="bg-card/40 hover:bg-card/60 group rounded-2xl border border-white/5 p-6 backdrop-blur-sm transition-colors"
                     >
-                      <blockquote className="text-base sm:text-lg text-muted-foreground/90 mb-6 relative">
-                        <Quote className="w-4 h-4 text-primary/40 mb-2 inline-block mr-2" aria-hidden="true" />
-                        "{item.text}"
+                      <blockquote className="text-muted-foreground/90 relative mb-6 text-base sm:text-lg">
+                        <Quote
+                          className="text-primary/40 mr-2 mb-2 inline-block h-4 w-4"
+                          aria-hidden="true"
+                        />
+                        &quot;{item.text}&quot;
                       </blockquote>
                       <footer className="flex items-center gap-3">
-                        <div className="h-10 w-10 rounded-full ring-2 ring-white/5 group-hover:ring-primary/20 transition-all bg-primary/10 flex items-center justify-center" aria-hidden="true">
-                          <Icon className="w-5 h-5 text-primary" />
+                        <div
+                          className="group-hover:ring-primary/20 bg-primary/10 flex h-10 w-10 items-center justify-center rounded-full ring-2 ring-white/5 transition-all"
+                          aria-hidden="true"
+                        >
+                          <Icon className="text-primary h-5 w-5" />
                         </div>
                         <div>
-                          <cite className="text-sm font-semibold text-foreground not-italic">{item.name}</cite>
-                          <div className="text-xs text-muted-foreground">{item.role}</div>
+                          <cite className="text-foreground text-sm font-semibold not-italic">
+                            {item.name}
+                          </cite>
+                          <div className="text-muted-foreground text-xs">
+                            {item.role}
+                          </div>
                         </div>
                       </footer>
                     </article>
@@ -148,7 +186,6 @@ export function Testimonials() {
             </div>
           ))}
         </div>
-
       </div>
     </section>
   );

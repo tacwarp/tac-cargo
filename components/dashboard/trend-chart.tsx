@@ -1,6 +1,6 @@
-'use client'
+"use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   LineChart,
   Line,
@@ -10,24 +10,24 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-} from 'recharts'
-import { format } from 'date-fns'
+} from "recharts";
+import { format } from "date-fns";
 
 interface TrendChartProps {
   data: Array<{
-    date: string
-    total: number
-    delivered: number
-    pending: number
-  }>
-  loading?: boolean
+    date: string;
+    total: number;
+    delivered: number;
+    pending: number;
+  }>;
+  loading?: boolean;
 }
 
 export function TrendChart({ data, loading }: TrendChartProps) {
   const formattedData = data?.map((item) => ({
     ...item,
-    date: format(new Date(item.date), 'MMM dd'),
-  }))
+    date: format(new Date(item.date), "MMM dd"),
+  }));
 
   if (loading) {
     return (
@@ -36,10 +36,10 @@ export function TrendChart({ data, loading }: TrendChartProps) {
           <CardTitle>7-Day Trend</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="h-[300px] bg-muted animate-pulse rounded" />
+          <div className="bg-muted h-[300px] animate-pulse rounded" />
         </CardContent>
       </Card>
-    )
+    );
   }
 
   return (
@@ -50,7 +50,7 @@ export function TrendChart({ data, loading }: TrendChartProps) {
       <CardContent>
         <ResponsiveContainer width="100%" height={300}>
           <LineChart data={formattedData}>
-            <CartesianGrid strokeDasharray="3 3" />
+            <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.1} />
             <XAxis dataKey="date" />
             <YAxis />
             <Tooltip />
@@ -58,27 +58,33 @@ export function TrendChart({ data, loading }: TrendChartProps) {
             <Line
               type="monotone"
               dataKey="total"
-              stroke="#8b5cf6"
+              stroke="hsl(var(--primary))"
               strokeWidth={2}
               name="Total"
+              dot={false}
+              activeDot={{ r: 6, fill: "hsl(var(--primary))" }}
             />
             <Line
               type="monotone"
               dataKey="delivered"
-              stroke="#10b981"
+              stroke="hsl(var(--success))"
               strokeWidth={2}
               name="Delivered"
+              dot={false}
+              activeDot={{ r: 6, fill: "hsl(var(--success))" }}
             />
             <Line
               type="monotone"
               dataKey="pending"
-              stroke="#f59e0b"
+              stroke="hsl(var(--warning))"
               strokeWidth={2}
               name="Pending"
+              dot={false}
+              activeDot={{ r: 6, fill: "hsl(var(--warning))" }}
             />
           </LineChart>
         </ResponsiveContainer>
       </CardContent>
     </Card>
-  )
+  );
 }

@@ -1,12 +1,12 @@
-'use client'
+"use client";
 
-import { motion, HTMLMotionProps } from 'framer-motion'
-import { cn } from '@/lib/utils'
+import { motion, HTMLMotionProps } from "framer-motion";
+import { cn } from "@/lib/utils";
 
-interface ThemeSafeAnimationProps extends HTMLMotionProps<'div'> {
-  children: React.ReactNode
-  shimmer?: boolean
-  pauseInDark?: boolean
+interface ThemeSafeAnimationProps extends HTMLMotionProps<"div"> {
+  children: React.ReactNode;
+  shimmer?: boolean;
+  pauseInDark?: boolean;
 }
 
 export function ThemeSafeAnimation({
@@ -19,14 +19,15 @@ export function ThemeSafeAnimation({
   return (
     <motion.div
       className={cn(
-        pauseInDark && 'dark:[animation-play-state:paused] dark:hover:[animation-play-state:running]',
-        shimmer && 'dark:bg-none dark:[&::after]:hidden',
-        className
+        pauseInDark &&
+          "dark:[animation-play-state:paused] dark:hover:[animation-play-state:running]",
+        shimmer && "dark:bg-none dark:[&::after]:hidden",
+        className,
       )}
-      data-shimmer-disabled={shimmer ? 'true' : undefined}
+      data-shimmer-disabled={shimmer ? "true" : undefined}
       {...props}
     >
       {children}
     </motion.div>
-  )
+  );
 }
