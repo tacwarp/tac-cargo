@@ -1,185 +1,44 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { toast } from 'sonner'
-import { PageLayout } from '@/components/dashboard/page-layout'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import { MessageSquareIcon, SendIcon, Loader2Icon, StarIcon } from 'lucide-react'
+import React from "react";
+import { V2Header } from "../_components/v2-header";
+import { Frown, Meh, Smile } from "lucide-react";
 
-export default function FeedbackPage() {
-  const [submitting, setSubmitting] = useState(false)
-  const [rating, setRating] = useState(0)
-  const [formData, setFormData] = useState({
-    category: '',
-    subject: '',
-    message: '',
-  })
+export default function V2FeedbackPage() {
+    return (
+        <>
+            <V2Header title="Feedback" section="Management" />
+            <main className="flex-1 overflow-y-auto p-6 scroll-smooth" id="main-scroll">
+                <div className="max-w-lg mx-auto text-center mt-20">
+                    <h2 className="text-2xl font-bold text-foreground mb-8">How is your experience?</h2>
 
-  const handleSubmit = async () => {
-    if (!formData.category || !formData.subject || !formData.message) {
-      toast.error('Please fill all required fields')
-      return
-    }
+                    <div className="flex justify-center gap-8 mb-10">
+                        <button className="flex flex-col items-center gap-3 group">
+                            <div className="w-16 h-16 rounded-full border border-border flex items-center justify-center text-3xl group-hover:bg-destructive/20 group-hover:border-destructive group-hover:shadow-[0_0_20px_-5px_var(--destructive)] transition-all bg-card">
+                                <Frown className="text-muted-foreground group-hover:text-destructive w-8 h-8 transition-colors" />
+                            </div>
+                            <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider group-hover:text-destructive transition-colors">Bad</span>
+                        </button>
+                        <button className="flex flex-col items-center gap-3 group">
+                            <div className="w-16 h-16 rounded-full border border-border flex items-center justify-center text-3xl group-hover:bg-warning/20 group-hover:border-warning group-hover:shadow-[0_0_20px_-5px_var(--warning)] transition-all bg-card">
+                                <Meh className="text-muted-foreground group-hover:text-warning w-8 h-8 transition-colors" />
+                            </div>
+                            <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider group-hover:text-warning transition-colors">Okay</span>
+                        </button>
+                        <button className="flex flex-col items-center gap-3 group">
+                            <div className="w-16 h-16 rounded-full border border-border flex items-center justify-center text-3xl group-hover:bg-success/20 group-hover:border-success group-hover:shadow-[0_0_20px_-5px_var(--success)] transition-all bg-card">
+                                <Smile className="text-muted-foreground group-hover:text-success w-8 h-8 transition-colors" />
+                            </div>
+                            <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider group-hover:text-success transition-colors">Good</span>
+                        </button>
+                    </div>
 
-    setSubmitting(true)
-    try {
-      const response = await fetch('/api/feedback', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...formData,
-          rating: rating || null,
-        }),
-      })
-      
-      if (!response.ok) {
-        throw new Error('Failed to submit feedback')
-      }
-      
-      toast.success('Feedback submitted successfully! Thank you for your input.')
-      setFormData({ category: '', subject: '', message: '' })
-      setRating(0)
-    } catch {
-      toast.error('Failed to submit feedback')
-    } finally {
-      setSubmitting(false)
-    }
-  }
-
-  return (
-    <PageLayout
-      title='Feedback'
-      description='Help us improve TAC Cargo with your valuable feedback'
-    >
-      <div className='grid gap-6 lg:grid-cols-3'>
-        <div className='lg:col-span-2'>
-          <Card>
-            <CardHeader>
-              <CardTitle className='flex items-center gap-2'>
-                <MessageSquareIcon className='size-5' />
-                Submit Feedback
-              </CardTitle>
-              <CardDescription>
-                Share your experience, report issues, or suggest improvements
-              </CardDescription>
-            </CardHeader>
-            <CardContent className='space-y-6'>
-              <div>
-                <Label htmlFor='category'>Category</Label>
-                <Select
-                  value={formData.category}
-                  onValueChange={value => setFormData({ ...formData, category: value })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder='Select category' />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value='bug'>Bug Report</SelectItem>
-                    <SelectItem value='feature'>Feature Request</SelectItem>
-                    <SelectItem value='improvement'>Improvement</SelectItem>
-                    <SelectItem value='general'>General Feedback</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label htmlFor='subject'>Subject</Label>
-                <Input
-                  id='subject'
-                  value={formData.subject}
-                  onChange={e => setFormData({ ...formData, subject: e.target.value })}
-                  placeholder='Brief description of your feedback'
-                />
-              </div>
-
-              <div>
-                <Label>Rating (Optional)</Label>
-                <div className='flex gap-1 mt-2'>
-                  {[1, 2, 3, 4, 5].map(star => (
-                    <button
-                      key={star}
-                      type='button'
-                      onClick={() => setRating(star)}
-                      className='p-1 hover:scale-110 transition-transform'
-                    >
-                      <StarIcon
-                        className={`size-6 ${
-                          star <= rating
-                            ? 'fill-amber-400 text-amber-400'
-                            : 'text-muted-foreground'
-                        }`}
-                      />
-                    </button>
-                  ))}
+                    <div className="bg-card/50 p-6 rounded-2xl border border-border">
+                        <textarea placeholder="Tell us more about your experience..." className="w-full bg-background border border-border rounded-xl p-4 text-sm text-foreground h-32 focus:border-primary outline-none resize-none mb-4 placeholder:text-muted-foreground transition-colors"></textarea>
+                        <button className="w-full bg-primary text-primary-foreground py-3 rounded-xl text-sm font-bold hover:bg-primary/90 transition-colors shadow-lg">Send Feedback</button>
+                    </div>
                 </div>
-              </div>
-
-              <div>
-                <Label htmlFor='message'>Message</Label>
-                <Textarea
-                  id='message'
-                  value={formData.message}
-                  onChange={e => setFormData({ ...formData, message: e.target.value })}
-                  placeholder='Describe your feedback in detail...'
-                  rows={6}
-                />
-              </div>
-
-              <Button onClick={handleSubmit} disabled={submitting} className='w-full'>
-                {submitting ? (
-                  <>
-                    <Loader2Icon className='mr-2 size-4 animate-spin' />
-                    Submitting...
-                  </>
-                ) : (
-                  <>
-                    <SendIcon className='mr-2 size-4' />
-                    Submit Feedback
-                  </>
-                )}
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className='space-y-6'>
-          <Card>
-            <CardHeader>
-              <CardTitle className='text-base'>Quick Tips</CardTitle>
-            </CardHeader>
-            <CardContent className='text-sm text-muted-foreground space-y-3'>
-              <p>For bug reports, please include:</p>
-              <ul className='list-disc list-inside space-y-1'>
-                <li>Steps to reproduce the issue</li>
-                <li>Expected vs actual behavior</li>
-                <li>Browser and device info</li>
-              </ul>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className='text-base'>Contact Support</CardTitle>
-            </CardHeader>
-            <CardContent className='text-sm text-muted-foreground space-y-2'>
-              <p>For urgent issues, contact us directly:</p>
-              <p className='font-medium text-foreground'>support@taccargo.com</p>
-              <p className='font-medium text-foreground'>+91 1800-XXX-XXXX</p>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    </PageLayout>
-  )
+            </main>
+        </>
+    );
 }

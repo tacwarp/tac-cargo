@@ -1,192 +1,52 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { toast } from 'sonner'
-import { PageLayout } from '@/components/dashboard/page-layout'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import { MailIcon, PhoneIcon, MessageSquareIcon, Loader2Icon } from 'lucide-react'
+import React from "react";
+import { V2Header } from "../_components/v2-header";
+import { Search, BookOpen, MessageCircle, ShieldCheck } from "lucide-react";
 
-export default function SupportPage() {
-  const [loading, setLoading] = useState(false)
-  const [formData, setFormData] = useState({
-    subject: '',
-    category: '',
-    priority: 'medium',
-    message: '',
-  })
+export default function V2SupportPage() {
+    return (
+        <>
+            <V2Header title="Support" section="Management" />
+            <main className="flex-1 overflow-y-auto p-6 scroll-smooth" id="main-scroll">
+                <div className="max-w-4xl mx-auto mt-16">
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    
-    if (!formData.subject || !formData.category || !formData.message) {
-      toast.error('Please fill all required fields')
-      return
-    }
+                    <div className="text-center mb-16">
+                        <h1 className="text-4xl font-bold text-foreground mb-4 tracking-tight">How can we help today?</h1>
+                        <div className="max-w-lg mx-auto relative mt-8">
+                            <Search className="absolute left-4 top-3.5 text-muted-foreground w-5 h-5" />
+                            <input type="text" placeholder="Search documentation, guides, or ask a question..." className="w-full bg-card/50 border border-border rounded-full pl-12 pr-6 py-3 text-sm text-foreground focus:border-primary focus:ring-1 focus:ring-primary/50 outline-none backdrop-blur-sm transition-all shadow-xl" />
+                        </div>
+                    </div>
 
-    setLoading(true)
-    try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      toast.success('Support ticket submitted successfully')
-      setFormData({ subject: '', category: '', priority: 'medium', message: '' })
-    } catch (error) {
-      toast.error('Failed to submit support ticket')
-    } finally {
-      setLoading(false)
-    }
-  }
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <a href="#" className="group p-6 rounded-2xl border border-border bg-card/30 hover:bg-card hover:border-primary/30 transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/5">
+                            <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
+                                <BookOpen className="text-primary w-6 h-6" />
+                            </div>
+                            <h3 className="text-base font-semibold text-foreground mb-2">Documentation</h3>
+                            <p className="text-xs text-muted-foreground leading-relaxed">Comprehensive guides for API integration, Dashboard usage, and tracking systems.</p>
+                        </a>
 
-  return (
-    <PageLayout
-      title='Support'
-      description='Get help with your TAC Cargo account'
-    >
-      <div className='grid gap-6 lg:grid-cols-3'>
-        <div className='lg:col-span-2'>
-          <Card>
-            <CardHeader>
-              <CardTitle>Submit Support Ticket</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleSubmit} className='space-y-6'>
-                <div>
-                  <Label htmlFor='subject'>Subject *</Label>
-                  <Input
-                    id='subject'
-                    value={formData.subject}
-                    onChange={e => setFormData({ ...formData, subject: e.target.value })}
-                    placeholder='Brief description of your issue'
-                    required
-                  />
+                        <a href="#" className="group p-6 rounded-2xl border border-border bg-card/30 hover:bg-card hover:border-primary/30 transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/5">
+                            <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
+                                <MessageCircle className="text-primary w-6 h-6" />
+                            </div>
+                            <h3 className="text-base font-semibold text-foreground mb-2">Live Chat</h3>
+                            <p className="text-xs text-muted-foreground leading-relaxed">Connect with our support team instantly. Available 24/7 for critical shipment issues.</p>
+                        </a>
+
+                        <a href="#" className="group p-6 rounded-2xl border border-border bg-card/30 hover:bg-card hover:border-primary/30 transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/5">
+                            <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
+                                <ShieldCheck className="text-primary w-6 h-6" />
+                            </div>
+                            <h3 className="text-base font-semibold text-foreground mb-2">System Status</h3>
+                            <p className="text-xs text-muted-foreground leading-relaxed">Current system uptime: 99.99%. View active incidents and scheduled maintenance.</p>
+                        </a>
+                    </div>
+
                 </div>
-
-                <div className='grid gap-4 md:grid-cols-2'>
-                  <div>
-                    <Label htmlFor='category'>Category *</Label>
-                    <Select
-                      value={formData.category}
-                      onValueChange={value => setFormData({ ...formData, category: value })}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder='Select category' />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value='technical'>Technical Issue</SelectItem>
-                        <SelectItem value='billing'>Billing</SelectItem>
-                        <SelectItem value='shipment'>Shipment Inquiry</SelectItem>
-                        <SelectItem value='account'>Account Management</SelectItem>
-                        <SelectItem value='other'>Other</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <Label htmlFor='priority'>Priority</Label>
-                    <Select
-                      value={formData.priority}
-                      onValueChange={value => setFormData({ ...formData, priority: value })}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value='low'>Low</SelectItem>
-                        <SelectItem value='medium'>Medium</SelectItem>
-                        <SelectItem value='high'>High</SelectItem>
-                        <SelectItem value='urgent'>Urgent</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-
-                <div>
-                  <Label htmlFor='message'>Message *</Label>
-                  <Textarea
-                    id='message'
-                    value={formData.message}
-                    onChange={e => setFormData({ ...formData, message: e.target.value })}
-                    placeholder='Describe your issue in detail...'
-                    rows={6}
-                    required
-                  />
-                </div>
-
-                <Button type='submit' disabled={loading} className='w-full'>
-                  {loading ? (
-                    <>
-                      <Loader2Icon className='mr-2 size-4 animate-spin' />
-                      Submitting...
-                    </>
-                  ) : (
-                    <>
-                      <MessageSquareIcon className='mr-2 size-4' />
-                      Submit Ticket
-                    </>
-                  )}
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className='space-y-6'>
-          <Card>
-            <CardHeader>
-              <CardTitle>Contact Information</CardTitle>
-            </CardHeader>
-            <CardContent className='space-y-4'>
-              <div className='flex items-start gap-3'>
-                <MailIcon className='size-5 text-muted-foreground mt-0.5' />
-                <div>
-                  <p className='font-medium'>Email Support</p>
-                  <p className='text-sm text-muted-foreground'>support@taccargo.com</p>
-                  <p className='text-xs text-muted-foreground mt-1'>Response within 24 hours</p>
-                </div>
-              </div>
-
-              <div className='flex items-start gap-3'>
-                <PhoneIcon className='size-5 text-muted-foreground mt-0.5' />
-                <div>
-                  <p className='font-medium'>Phone Support</p>
-                  <p className='text-sm text-muted-foreground'>+91 1800 123 4567</p>
-                  <p className='text-xs text-muted-foreground mt-1'>Mon-Fri, 9 AM - 6 PM IST</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Quick Links</CardTitle>
-            </CardHeader>
-            <CardContent className='space-y-2'>
-              <Button variant='ghost' className='w-full justify-start' asChild>
-                <a href='#'>Documentation</a>
-              </Button>
-              <Button variant='ghost' className='w-full justify-start' asChild>
-                <a href='#'>FAQ</a>
-              </Button>
-              <Button variant='ghost' className='w-full justify-start' asChild>
-                <a href='#'>Video Tutorials</a>
-              </Button>
-              <Button variant='ghost' className='w-full justify-start' asChild>
-                <a href='#'>API Reference</a>
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    </PageLayout>
-  )
+            </main>
+        </>
+    );
 }

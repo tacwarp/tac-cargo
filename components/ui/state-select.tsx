@@ -1,6 +1,6 @@
-'use client'
+"use client";
 
-import * as React from 'react'
+import * as React from "react";
 import {
   Select,
   SelectContent,
@@ -9,56 +9,56 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
+} from "@/components/ui/select";
 
-const PRIORITY_STATES = ['Manipur', 'Delhi']
+const PRIORITY_STATES = ["Manipur", "Delhi"];
 
 const ALL_STATES = [
-  'Andhra Pradesh',
-  'Arunachal Pradesh',
-  'Assam',
-  'Bihar',
-  'Chhattisgarh',
-  'Delhi',
-  'Goa',
-  'Gujarat',
-  'Haryana',
-  'Himachal Pradesh',
-  'Jharkhand',
-  'Karnataka',
-  'Kerala',
-  'Madhya Pradesh',
-  'Maharashtra',
-  'Manipur',
-  'Meghalaya',
-  'Mizoram',
-  'Nagaland',
-  'Odisha',
-  'Punjab',
-  'Rajasthan',
-  'Sikkim',
-  'Tamil Nadu',
-  'Telangana',
-  'Tripura',
-  'Uttar Pradesh',
-  'Uttarakhand',
-  'West Bengal',
-]
+  "Andhra Pradesh",
+  "Arunachal Pradesh",
+  "Assam",
+  "Bihar",
+  "Chhattisgarh",
+  "Delhi",
+  "Goa",
+  "Gujarat",
+  "Haryana",
+  "Himachal Pradesh",
+  "Jharkhand",
+  "Karnataka",
+  "Kerala",
+  "Madhya Pradesh",
+  "Maharashtra",
+  "Manipur",
+  "Meghalaya",
+  "Mizoram",
+  "Nagaland",
+  "Odisha",
+  "Punjab",
+  "Rajasthan",
+  "Sikkim",
+  "Tamil Nadu",
+  "Telangana",
+  "Tripura",
+  "Uttar Pradesh",
+  "Uttarakhand",
+  "West Bengal",
+];
 
-const OTHER_STATES = ALL_STATES.filter(s => !PRIORITY_STATES.includes(s))
+const OTHER_STATES = ALL_STATES.filter((s) => !PRIORITY_STATES.includes(s));
 
 interface StateSelectProps {
-  value?: string
-  onValueChange?: (value: string) => void
-  placeholder?: string
-  disabled?: boolean
+  value?: string;
+  onValueChange?: (value: string) => void;
+  placeholder?: string;
+  disabled?: boolean;
 }
 
 export function StateSelect({
   value,
   onValueChange,
-  placeholder = 'Select state',
-  disabled = false
+  placeholder = "Select state",
+  disabled = false,
 }: StateSelectProps) {
   return (
     <Select value={value} onValueChange={onValueChange} disabled={disabled}>
@@ -67,16 +67,20 @@ export function StateSelect({
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
-          <SelectLabel className='text-xs text-primary'>Frequently Used</SelectLabel>
-          {PRIORITY_STATES.map(state => (
-            <SelectItem key={state} value={state} className='font-medium'>
+          <SelectLabel className="text-primary text-xs">
+            Frequently Used
+          </SelectLabel>
+          {PRIORITY_STATES.map((state) => (
+            <SelectItem key={state} value={state} className="font-medium">
               {state}
             </SelectItem>
           ))}
         </SelectGroup>
         <SelectGroup>
-          <SelectLabel className='text-xs text-muted-foreground'>All States</SelectLabel>
-          {OTHER_STATES.map(state => (
+          <SelectLabel className="text-muted-foreground text-xs">
+            All States
+          </SelectLabel>
+          {OTHER_STATES.map((state) => (
             <SelectItem key={state} value={state}>
               {state}
             </SelectItem>
@@ -84,5 +88,5 @@ export function StateSelect({
         </SelectGroup>
       </SelectContent>
     </Select>
-  )
+  );
 }

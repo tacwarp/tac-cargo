@@ -1,6 +1,7 @@
 # File System & Folder Architecture
 
 ## Root Structure
+
 ```
 tac-cargo/
 ├── app/                    # Next.js App Router
@@ -22,6 +23,7 @@ tac-cargo/
 ## `/app` Structure (App Router)
 
 ### Route Groups
+
 ```
 app/
 ├── (dashboard)/            # Authenticated dashboard layout
@@ -58,6 +60,7 @@ app/
 ```
 
 ### Layout Hierarchy
+
 ```
 Root Layout (app/layout.tsx)
   ├─ Landing Page (app/page.tsx)
@@ -69,6 +72,7 @@ Root Layout (app/layout.tsx)
 ## `/components` Structure
 
 ### Organization by Purpose
+
 ```
 components/
 ├── ui/                     # shadcn/ui primitives (copy-paste)
@@ -131,22 +135,26 @@ components/
 ### Component Categories
 
 #### 1. UI Primitives (`components/ui/`)
+
 - **Source**: shadcn/ui (Radix UI + Tailwind)
 - **Customization**: Allowed via class overrides
 - **Ownership**: Managed via `npx shadcn add`
 - **Modification**: Avoid direct edits; wrap if needed
 
 #### 2. Feature Components (`components/dashboard/`, `components/landing/`)
+
 - **Purpose**: Business logic and data presentation
 - **Server/Client**: Mixed (mark 'use client' when needed)
 - **Imports**: Can import from `ui/` and `lib/`
 
 #### 3. Layout Components (`app-shell.tsx`, `app-sidebar.tsx`)
+
 - **Purpose**: Page structure and navigation
 - **Server/Client**: Server Components by default
 - **State**: Minimal; delegate to children
 
 #### 4. Pre-built Blocks (`shadcn-studio/blocks/`)
+
 - **Source**: shadcn Studio (community blocks)
 - **Usage**: Copy-paste starting points
 - **Customization**: Full editing allowed
@@ -175,6 +183,7 @@ lib/
 ```
 
 ### Library Rules
+
 - **Pure functions only**: No side effects
 - **Tree-shakeable**: Named exports
 - **Type-safe**: Full TypeScript coverage
@@ -189,6 +198,7 @@ hooks/
 ```
 
 ### Hook Rules
+
 - Prefix with `use`
 - Client-side only ('use client' directive)
 - Return stable references (useMemo, useCallback)
@@ -204,6 +214,7 @@ types/
 ```
 
 ### Type Rules
+
 - **No enums**: Use union types or const objects
 - **No interfaces for data**: Use type aliases
 - **Interfaces for components**: React component props only
@@ -227,6 +238,7 @@ public/
 ```
 
 ### Asset Rules
+
 - **Images**: WebP/AVIF format, optimized <100KB
 - **Lottie**: JSON files, minified
 - **Icons**: SVG preferred, fonts as fallback
@@ -245,30 +257,36 @@ database/
 ## File Naming Conventions
 
 ### Components
+
 - **Format**: `kebab-case.tsx`
 - **Examples**: `app-header.tsx`, `stats-overview.tsx`
 
 ### Pages (App Router)
+
 - **Format**: `page.tsx` (mandatory)
 - **Layout**: `layout.tsx` (mandatory)
 - **Loading**: `loading.tsx` (optional)
 - **Error**: `error.tsx` (optional)
 
 ### API Routes
+
 - **Format**: `route.ts` (mandatory)
 - **Path**: Matches endpoint URL
 
 ### Utilities
+
 - **Format**: `kebab-case.ts`
 - **Examples**: `auth-helpers.ts`, `design-tokens.ts`
 
 ### Types
+
 - **Format**: `kebab-case.ts`
 - **Example**: `tracking.ts`
 
 ## Adding New Files
 
 ### New Page
+
 ```bash
 # 1. Create page file
 app/[route]/page.tsx
@@ -284,6 +302,7 @@ app/[route]/error.tsx
 ```
 
 ### New Component
+
 ```bash
 # 1. Determine category
 components/[category]/[component-name].tsx
@@ -296,6 +315,7 @@ export function ComponentName() { ... }
 ```
 
 ### New Utility
+
 ```bash
 # 1. Create in lib/
 lib/[utility-name].ts
@@ -305,6 +325,7 @@ export function utilityFunction() { ... }
 ```
 
 ### New API Route
+
 ```bash
 # 1. Create route handler
 app/api/[endpoint]/route.ts
@@ -317,6 +338,7 @@ export async function POST(req: Request) { ... }
 ## Import Path Aliases
 
 ### Configured Paths
+
 ```json
 {
   "@/*": ["./*"]
@@ -324,43 +346,48 @@ export async function POST(req: Request) { ... }
 ```
 
 ### Usage Examples
+
 ```tsx
 // Components
-import { Button } from '@/components/ui/button'
-import { AppHeader } from '@/components/dashboard/app-header'
+import { Button } from "@/components/ui/button";
+import { AppHeader } from "@/components/dashboard/app-header";
 
 // Utilities
-import { cn } from '@/lib/utils'
-import { createClient } from '@/lib/supabase/server'
+import { cn } from "@/lib/utils";
+import { createClient } from "@/lib/supabase/server";
 
 // Types
-import type { Shipment } from '@/types/tracking'
+import type { Shipment } from "@/types/tracking";
 
 // Hooks
-import { useTracking } from '@/hooks/use-tracking'
+import { useTracking } from "@/hooks/use-tracking";
 ```
 
 ## Rules for File Organization
 
 ### ✅ Do
+
 - Group by feature/domain, not technical layer
 - Keep related files close together
 - Use consistent naming within a category
 - Co-locate tests with source files (future)
 
 ### ❌ Don't
+
 - Create deeply nested folders (max 3 levels)
 - Use barrel exports (`index.ts`)
 - Mix server and client code in same file
 - Create "utils" dumping grounds
 
 ## File Size Constraints
+
 - **Components**: <300 lines (split if larger)
 - **Pages**: <200 lines (extract components)
 - **Utilities**: <150 lines (single responsibility)
 - **Types**: <500 lines (split by domain)
 
 ## Git Ignore
+
 ```
 .next/
 node_modules/
@@ -372,6 +399,7 @@ tsconfig.tsbuildinfo
 ```
 
 ## Build Artifacts
+
 - `.next/` - Next.js build output
 - `tsconfig.tsbuildinfo` - TypeScript incremental build cache
 - Generated by build process, never committed

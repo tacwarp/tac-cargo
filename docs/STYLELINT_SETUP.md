@@ -7,6 +7,7 @@ Stylelint has been configured to maintain CSS quality and consistency across the
 ## Why Stylelint?
 
 After the CodeRabbit review, we identified several CSS issues:
+
 - Duplicate custom properties (`--elevation-*`)
 - Self-referential CSS variables (`--tracking-normal`)
 - Potential for inconsistent naming conventions
@@ -20,22 +21,26 @@ npm install
 ```
 
 Dependencies added:
+
 - `stylelint@^16.12.0`
 - `stylelint-config-standard@^36.0.1`
 
 ## Usage
 
 ### Lint CSS files
+
 ```bash
 npm run lint:css
 ```
 
 ### Auto-fix CSS issues
+
 ```bash
 npm run lint:css:fix
 ```
 
 ### Run all linters
+
 ```bash
 npm run lint        # JavaScript/TypeScript
 npm run lint:css    # CSS
@@ -46,6 +51,7 @@ npm run lint:css    # CSS
 ### `stylelint.config.mjs`
 
 Key rules configured:
+
 - **Duplicate prevention**: No duplicate properties or custom properties
 - **Naming convention**: Kebab-case for custom properties (e.g., `--primary-color`)
 - **Tailwind v4 support**: Allows `@layer`, `@theme`, `@custom-variant` directives
@@ -57,6 +63,7 @@ Key rules configured:
 ### `.stylelintignore`
 
 Ignored directories:
+
 - `node_modules/`
 - `.next/`
 - `dist/`
@@ -69,18 +76,22 @@ Ignored directories:
 The configuration enforces consistency across 100+ CSS custom properties:
 
 ### Color System
+
 - All colors use `oklch()` notation
 - Custom properties follow kebab-case: `--primary`, `--primary-hover`, `--primary-foreground`
 
 ### Typography
+
 - Font sizes: `--font-size-hero`, `--font-size-kpi`, `--font-size-body`
 - Tracking: `--tracking-normal`, `--tracking-wide`, `--tracking-tight`
 
 ### Shadows & Elevation
+
 - Shadow system: `--shadow-sm`, `--shadow-md`, `--shadow-lg`, `--shadow-xl`, `--shadow-2xl`
 - Elevation tokens: `--elevation-1`, `--elevation-2`, `--elevation-3`
 
 ### Spacing
+
 - Bento grid: `--bento-gap`, `--bento-radius`
 - Border radius: `--radius`
 
@@ -98,6 +109,7 @@ Add to your CI pipeline:
 Install the [Stylelint extension](https://marketplace.visualstudio.com/items?itemName=stylelint.vscode-stylelint) for real-time linting in the editor.
 
 Add to `.vscode/settings.json`:
+
 ```json
 {
   "stylelint.validate": ["css"],
@@ -110,10 +122,13 @@ Add to `.vscode/settings.json`:
 ## Common Issues
 
 ### Issue: "Unknown at-rule @layer"
+
 **Solution**: Already configured to ignore Tailwind v4 directives.
 
 ### Issue: "Expected custom property to be kebab-case"
+
 **Solution**: Rename custom properties to use kebab-case:
+
 ```css
 /* ❌ Bad */
 --primaryColor: red;
@@ -124,7 +139,9 @@ Add to `.vscode/settings.json`:
 ```
 
 ### Issue: "Unexpected function rgb"
+
 **Solution**: Use `oklch()` notation instead:
+
 ```css
 /* ❌ Bad */
 color: rgb(255, 0, 0);

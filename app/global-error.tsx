@@ -1,55 +1,66 @@
-'use client'
+"use client";
 
 /**
  * @fileoverview Global error boundary for the root layout
  * @module app/global-error
- * 
+ *
  * Catches errors that occur in the root layout or above.
  * Must include its own html and body tags.
  */
 
-import { useEffect } from 'react'
-import { AlertTriangle, RefreshCw } from 'lucide-react'
+import { useEffect } from "react";
+import { AlertTriangle, RefreshCw } from "lucide-react";
 
 /**
  * Global error component props
  */
 interface GlobalErrorProps {
   /** The error that was thrown */
-  error: Error & { digest?: string }
+  error: Error & { digest?: string };
   /** Function to attempt recovery by re-rendering */
-  reset: () => void
+  reset: () => void;
 }
 
 /**
  * Global error boundary component.
- * 
+ *
  * This component catches errors that occur in the root layout
  * and provides a fallback UI for the entire application.
- * 
+ *
  * @param {GlobalErrorProps} props - Component props
  */
 export default function GlobalError({ error, reset }: GlobalErrorProps) {
   useEffect(() => {
     // Log error to console and Sentry (if configured)
-    console.error('[Global Error]', error)
-    
+    console.error("[Global Error]", error);
+
     // Sentry integration - captures critical error
-    if (typeof window !== 'undefined' && (window as unknown as { Sentry?: { captureException: (e: Error, opts?: object) => void } }).Sentry) {
-      (window as unknown as { Sentry: { captureException: (e: Error, opts?: object) => void } }).Sentry.captureException(error, {
-        level: 'fatal',
-        tags: { errorBoundary: 'global' }
-      })
+    if (
+      typeof window !== "undefined" &&
+      (
+        window as unknown as {
+          Sentry?: { captureException: (e: Error, opts?: object) => void };
+        }
+      ).Sentry
+    ) {
+      (
+        window as unknown as {
+          Sentry: { captureException: (e: Error, opts?: object) => void };
+        }
+      ).Sentry.captureException(error, {
+        level: "fatal",
+        tags: { errorBoundary: "global" },
+      });
     }
-  }, [error])
+  }, [error]);
 
   return (
     <html lang="en">
       <body className="bg-background text-foreground">
         <div className="flex min-h-screen flex-col items-center justify-center gap-8 p-8">
           {/* Error icon */}
-          <div className="flex h-24 w-24 items-center justify-center rounded-full bg-destructive/10">
-            <AlertTriangle className="h-12 w-12 text-destructive" />
+          <div className="bg-destructive/10 flex h-24 w-24 items-center justify-center rounded-full">
+            <AlertTriangle className="text-destructive h-12 w-12" />
           </div>
 
           {/* Error message */}
@@ -58,22 +69,22 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
               Critical Error
             </h1>
             <p className="text-muted-foreground">
-              A critical error occurred and the application couldn&apos;t recover. 
-              Please try refreshing the page.
+              A critical error occurred and the application couldn&apos;t
+              recover. Please try refreshing the page.
             </p>
           </div>
 
           {/* Error details (development only) */}
-          {process.env.NODE_ENV === 'development' && (
-            <div className="w-full max-w-lg rounded-lg border border-destructive/20 bg-destructive/5 p-4">
-              <p className="mb-2 font-mono text-xs font-medium text-destructive">
+          {process.env.NODE_ENV === "development" && (
+            <div className="border-destructive/20 bg-destructive/5 w-full max-w-lg rounded-lg border p-4">
+              <p className="text-destructive mb-2 font-mono text-xs font-medium">
                 Error Details:
               </p>
-              <pre className="overflow-auto whitespace-pre-wrap font-mono text-xs text-muted-foreground">
+              <pre className="text-muted-foreground overflow-auto font-mono text-xs whitespace-pre-wrap">
                 {error.message}
               </pre>
               {error.digest && (
-                <p className="mt-2 font-mono text-xs text-muted-foreground/60">
+                <p className="text-muted-foreground/60 mt-2 font-mono text-xs">
                   Digest: {error.digest}
                 </p>
               )}
@@ -83,17 +94,17 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
           {/* Reset button */}
           <button
             onClick={reset}
-            className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center gap-2 rounded-lg px-6 py-3 font-medium transition-colors"
           >
             <RefreshCw className="h-4 w-4" />
             Try Again
           </button>
 
           {/* Support info */}
-          <p className="text-sm text-muted-foreground">
-            If this problem persists, please contact{' '}
-            <a 
-              href="mailto:support@taccargo.com" 
+          <p className="text-muted-foreground text-sm">
+            If this problem persists, please contact{" "}
+            <a
+              href="mailto:support@taccargo.com"
               className="text-foreground underline-offset-4 hover:underline"
             >
               support@taccargo.com
@@ -102,5 +113,5 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
         </div>
       </body>
     </html>
-  )
+  );
 }

@@ -1,57 +1,70 @@
-'use client'
+"use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
-import { RiMoneyRupeeCircleLine, RiTimeLine, RiCheckboxCircleLine, RiAlertLine } from '@remixicon/react'
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
+import {
+  RiMoneyRupeeCircleLine,
+  RiTimeLine,
+  RiCheckboxCircleLine,
+  RiAlertLine,
+} from "@remixicon/react";
 
 interface InvoiceAnalyticsProps {
   data: {
-    totalRevenue: number
-    outstanding: number
-    paidCount: number
-    overdueCount: number
-    monthlyData: Array<{ month: string; revenue: number }>
-  }
+    totalRevenue: number;
+    outstanding: number;
+    paidCount: number;
+    overdueCount: number;
+    monthlyData: Array<{ month: string; revenue: number }>;
+  };
 }
 
 export function InvoiceAnalytics({ data }: InvoiceAnalyticsProps) {
-  const formatCurrency = (value: number) => 
-    new Intl.NumberFormat('en-IN', { 
-      style: 'currency', 
-      currency: 'INR',
-      maximumFractionDigits: 0 
-    }).format(value)
+  const formatCurrency = (value: number) =>
+    new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+      maximumFractionDigits: 0,
+    }).format(value);
 
   const stats = [
     {
-      title: 'Total Revenue',
+      title: "Total Revenue",
       value: formatCurrency(data.totalRevenue),
       icon: RiMoneyRupeeCircleLine,
-      color: 'text-primary',
-      bgColor: 'bg-primary/10',
+      color: "text-primary",
+      bgColor: "bg-primary/10",
     },
     {
-      title: 'Outstanding',
+      title: "Outstanding",
       value: formatCurrency(data.outstanding),
       icon: RiTimeLine,
-      color: 'text-amber-600',
-      bgColor: 'bg-amber-50 dark:bg-amber-950/20',
+      color: "text-warning",
+      bgColor: "bg-warning/10",
     },
     {
-      title: 'Paid Invoices',
+      title: "Paid Invoices",
       value: data.paidCount.toString(),
       icon: RiCheckboxCircleLine,
-      color: 'text-emerald-600',
-      bgColor: 'bg-emerald-50 dark:bg-emerald-950/20',
+      color: "text-success",
+      bgColor: "bg-success/10",
     },
     {
-      title: 'Overdue',
+      title: "Overdue",
       value: data.overdueCount.toString(),
       icon: RiAlertLine,
-      color: 'text-destructive',
-      bgColor: 'bg-destructive/10',
+      color: "text-destructive",
+      bgColor: "bg-destructive/10",
     },
-  ]
+  ];
 
   return (
     <div className="space-y-6">
@@ -60,7 +73,7 @@ export function InvoiceAnalytics({ data }: InvoiceAnalyticsProps) {
         {stats.map((stat) => (
           <Card key={stat.title} className="relative overflow-hidden">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
+              <CardTitle className="text-muted-foreground text-sm font-medium">
                 {stat.title}
               </CardTitle>
               <div className={`rounded-lg p-2 ${stat.bgColor}`}>
@@ -68,7 +81,9 @@ export function InvoiceAnalytics({ data }: InvoiceAnalyticsProps) {
               </div>
             </CardHeader>
             <CardContent>
-              <div className={`text-2xl font-bold tracking-tight ${stat.color}`}>
+              <div
+                className={`text-2xl font-bold tracking-tight ${stat.color}`}
+              >
                 {stat.value}
               </div>
             </CardContent>
@@ -79,42 +94,50 @@ export function InvoiceAnalytics({ data }: InvoiceAnalyticsProps) {
       {/* Revenue Chart */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg font-semibold">Monthly Revenue</CardTitle>
+          <CardTitle className="text-lg font-semibold">
+            Monthly Revenue
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="h-80">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={data.monthlyData} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
-                <CartesianGrid 
-                  strokeDasharray="3 3" 
+              <BarChart
+                data={data.monthlyData}
+                margin={{ top: 10, right: 10, left: 10, bottom: 0 }}
+              >
+                <CartesianGrid
+                  strokeDasharray="3 3"
                   vertical={false}
-                  stroke="hsl(var(--border))"
+                  stroke="var(--border)"
                 />
-                <XAxis 
-                  dataKey="month" 
+                <XAxis
+                  dataKey="month"
                   axisLine={false}
                   tickLine={false}
-                  tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                  tick={{ fill: "var(--muted-foreground)", fontSize: 12 }}
                 />
-                <YAxis 
+                <YAxis
                   axisLine={false}
                   tickLine={false}
-                  tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                  tick={{ fill: "var(--muted-foreground)", fontSize: 12 }}
                   tickFormatter={(value) => `₹${(value / 1000).toFixed(0)}k`}
                 />
-                <Tooltip 
-                  formatter={(value: number) => [formatCurrency(value), 'Revenue']}
+                <Tooltip
+                  formatter={(value: number) => [
+                    formatCurrency(value),
+                    "Revenue",
+                  ]}
                   contentStyle={{
-                    backgroundColor: 'hsl(var(--popover))',
-                    border: '1px solid hsl(var(--border))',
-                    borderRadius: '8px',
-                    boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+                    backgroundColor: "var(--popover)",
+                    border: "1px solid var(--border)",
+                    borderRadius: "8px",
+                    boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
                   }}
-                  labelStyle={{ color: 'hsl(var(--foreground))' }}
+                  labelStyle={{ color: "var(--foreground)" }}
                 />
-                <Bar 
-                  dataKey="revenue" 
-                  fill="hsl(var(--primary))" 
+                <Bar
+                  dataKey="revenue"
+                  fill="var(--primary)"
                   radius={[4, 4, 0, 0]}
                   maxBarSize={48}
                 />
@@ -124,7 +147,7 @@ export function InvoiceAnalytics({ data }: InvoiceAnalyticsProps) {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
 
-export default InvoiceAnalytics
+export default InvoiceAnalytics;

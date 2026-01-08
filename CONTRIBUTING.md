@@ -39,10 +39,10 @@ npm run dev
 
 ### Environment Variables
 
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL | Yes |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anonymous key | Yes |
+| Variable                        | Description            | Required |
+| ------------------------------- | ---------------------- | -------- |
+| `NEXT_PUBLIC_SUPABASE_URL`      | Supabase project URL   | Yes      |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anonymous key | Yes      |
 
 ## Code Standards
 
@@ -57,19 +57,19 @@ npm run dev
 
 All functions, components, and modules must include JSDoc documentation:
 
-```typescript
+````typescript
 /**
  * Brief description of the function.
- * 
+ *
  * @param {ParamType} paramName - Description of the parameter
  * @returns {ReturnType} Description of return value
- * 
+ *
  * @example
  * ```tsx
  * const result = myFunction(arg)
  * ```
  */
-```
+````
 
 ### React Components
 

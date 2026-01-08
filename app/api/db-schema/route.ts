@@ -1,87 +1,86 @@
-import { NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
-import { createClient as createServerClient } from '@/lib/supabase/server'
+import { NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
+import { createClient as createServerClient } from "@/lib/supabase/server";
 
 export async function GET() {
   try {
     // Validate environment variables
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-    
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+    if (!supabaseServiceKey) {
+      return NextResponse.json(
+        { error: "Service role key required for schema inspection" },
+        { status: 500 },
+      );
+    }
+
     if (!supabaseUrl || !supabaseServiceKey) {
-      return NextResponse.json({ error: 'Server configuration error' }, { status: 500 })
+      return NextResponse.json(
+        { error: "Server configuration error" },
+        { status: 500 },
+      );
     }
 
     // Require authentication to prevent unauthorized schema inspection
-    const authClient = await createServerClient()
-    const { data: { user }, error: authError } = await authClient.auth.getUser()
-    
+    const authClient = await createServerClient();
+    const {
+      data: { user },
+      error: authError,
+    } = await authClient.auth.getUser();
+
     if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const supabase = createClient(supabaseUrl, supabaseServiceKey)
+    // Check admin role
+    const { data: profile } = await authClient
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .single();
 
-    // Get actual shipments data to see columns
-    const { data: shipments, error: shipmentsError } = await supabase
-      .from('shipments')
-      .select('id, reference, status')
-      .limit(3)
+    if (profile?.role !== "admin") {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
 
-    // Check invoices table structure
-    const { data: invoices, error: invoicesError } = await supabase
-      .from('invoices')
-      .select('*')
-      .limit(1)
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Check if shipment_exceptions exists
-    const { data: exceptions, error: exceptionsError } = await supabase
-      .from('shipment_exceptions')
-      .select('*')
-      .limit(1)
+    const checkTable = async (tableName: string) => {
+      const { data, error } = await supabase
+        .from(tableName)
+        .select("*")
+        .limit(1);
 
-    // Check if payments exists
-    const { data: payments, error: paymentsError } = await supabase
-      .from('payments')
-      .select('*')
-      .limit(1)
+      return {
+        exists: !error,
+        sample: data?.[0] ? Object.keys(data[0]) : null,
+        error: error?.message,
+      };
+    };
 
-    // Check profiles
-    const { data: profiles, error: profilesError } = await supabase
-      .from('profiles')
-      .select('*')
-      .limit(1)
+    const tablesToCheck = [
+      "shipments",
+      "invoices",
+      "shipment_exceptions",
+      "payments",
+      "profiles",
+    ];
 
-    return NextResponse.json({
-      tables: {
-        shipments: {
-          exists: !shipmentsError?.message?.includes('does not exist'),
-          sample: shipments?.[0] ? Object.keys(shipments[0]) : null,
-          error: shipmentsError?.message
-        },
-        invoices: {
-          exists: !invoicesError?.message?.includes('does not exist'),
-          sample: invoices?.[0] ? Object.keys(invoices[0]) : null,
-          error: invoicesError?.message
-        },
-        shipment_exceptions: {
-          exists: !exceptionsError?.message?.includes('does not exist'),
-          sample: exceptions?.[0] ? Object.keys(exceptions[0]) : null,
-          error: exceptionsError?.message
-        },
-        payments: {
-          exists: !paymentsError?.message?.includes('does not exist'),
-          sample: payments?.[0] ? Object.keys(payments[0]) : null,
-          error: paymentsError?.message
-        },
-        profiles: {
-          exists: !profilesError?.message?.includes('does not exist'),
-          sample: profiles?.[0] ? Object.keys(profiles[0]) : null,
-          error: profilesError?.message
-        }
-      }
-    })
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    // Run checks in parallel
+    const results = await Promise.all(
+      tablesToCheck.map(async (table) => {
+        return [table, await checkTable(table)] as const;
+      }),
+    );
+
+    const tables = Object.fromEntries(results);
+
+    return NextResponse.json({ tables });
+  } catch (error: unknown) {
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Unknown error" },
+      { status: 500 },
+    );
   }
 }

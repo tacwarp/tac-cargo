@@ -1,203 +1,128 @@
-import { PageLayout } from '@/components/dashboard/page-layout'
-import { StatCard } from '@/components/dashboard/stat-card'
-import { ShipmentTrendsChart } from '@/components/dashboard/charts/shipment-trends-chart'
-import { ActivityFeed } from '@/components/dashboard/widgets/activity-feed'
-import { QuickActions } from '@/components/dashboard/widgets/quick-actions'
-import ProductInsightsCard from '@/components/shadcn-studio/blocks/widget-product-insights'
-import TotalEarningCard from '@/components/shadcn-studio/blocks/widget-total-earning'
-import TransactionDatatable, { type Item } from '@/components/shadcn-studio/blocks/datatable-transaction'
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import {
-  RiBox3Line,
-  RiTruckLine,
-  RiAddLine,
-  RiPlaneLine,
-  RiTimeLine,
-  RiCheckboxCircleLine,
-  RiFlashlightLine,
-} from '@remixicon/react'
-import Link from 'next/link'
+import React from "react";
+import Link from "next/link";
+import { createClient } from "@/lib/supabase/server";
+import { Plus } from "lucide-react";
+import { V2Header } from "./_components/v2-header";
+import { OverviewClient } from "./_components/overview-client";
 
-const earningData = [
-  {
-    icon: <RiPlaneLine className='size-6 text-primary' />,
-    platform: 'Air Cargo',
-    technologies: 'International',
-    earnings: '₹8,56,926',
-    progressPercentage: 75
-  },
-  {
-    icon: <RiTruckLine className='size-6 text-primary' />,
-    platform: 'Surface',
-    technologies: 'Domestic',
-    earnings: '₹4,65,031',
-    progressPercentage: 45
-  }
-]
+async function getDashboardStats() {
+    const supabase = await createClient();
 
-const transactionData: Item[] = [
-  {
-    id: '1',
-    avatar: 'https://cdn.shadcnstudio.com/ss-assets/avatar/avatar-1.png',
-    avatarFallback: 'AC',
-    name: 'ABC Corporation',
-    amount: 31600.0,
-    status: 'paid',
-    email: 'finance@abc-corp.com',
-    paidBy: 'mastercard'
-  },
-  {
-    id: '2',
-    avatar: 'https://cdn.shadcnstudio.com/ss-assets/avatar/avatar-2.png',
-    avatarFallback: 'XL',
-    name: 'XYZ Logistics',
-    amount: 25340.0,
-    status: 'pending',
-    email: 'ops@xyz-logistics.com',
-    paidBy: 'visa'
-  },
-  {
-    id: '3',
-    avatar: 'https://cdn.shadcnstudio.com/ss-assets/avatar/avatar-3.png',
-    avatarFallback: 'ME',
-    name: 'Metro Express',
-    amount: 85200.0,
-    status: 'paid',
-    email: 'billing@metro-express.in',
-    paidBy: 'mastercard'
-  },
-  {
-    id: '4',
-    avatar: 'https://cdn.shadcnstudio.com/ss-assets/avatar/avatar-4.png',
-    avatarFallback: 'QS',
-    name: 'Quick Ship Co',
-    amount: 88900.0,
-    status: 'pending',
-    email: 'accounts@quickship.com',
-    paidBy: 'visa'
-  }
-]
+    // Shipment counts by status
+    const statuses = ["pending", "picked_up", "in_transit", "out_for_delivery", "delivered", "failed"] as const;
+    const shipmentCounts: Record<string, number> = {};
 
-export default function DashboardPage() {
-  return (
-    <PageLayout
-      title='Operations Control'
-      description='Mission-critical overview of TAC Cargo logistics'
-      badge='Live'
-      actions={
-        <Button asChild className="btn-primary h-9 px-4">
-          <Link href='/dashboard/shipments/new'>
-            <RiAddLine className='mr-2 size-4' />
-            <span className='text-[11px] font-bold uppercase tracking-wide'>New Shipment</span>
-          </Link>
-        </Button>
-      }
-    >
-      {/* ============================================
-          BENTO GRID - Asymmetric Premium Layout
-          ============================================ */}
-      <div className='grid grid-cols-12 gap-5 auto-rows-min'>
-        
-        {/* ----------------------------------------
-            ROW 1: Hero KPI + Secondary Stats
-            Asymmetric focal point
-            ---------------------------------------- */}
-        <div className='col-span-12 lg:col-span-5 xl:col-span-4'>
-          <StatCard
-            icon={RiBox3Line}
-            title='Active Shipments'
-            value='1,247'
-            trend={{ value: 12.5, isPositive: true }}
-            isActive
-            variant='hero'
-            subtitle='Across 14 active hubs'
-          />
-        </div>
-        
-        <div className='col-span-12 lg:col-span-7 xl:col-span-8'>
-          <div className='grid grid-cols-1 sm:grid-cols-3 gap-5 h-full'>
-            <StatCard
-              icon={RiTruckLine}
-              title='In Transit'
-              value='342'
-              trend={{ value: 5.2, isPositive: true }}
-            />
-            <StatCard
-              icon={RiTimeLine}
-              title='Pending'
-              value='23'
-              trend={{ value: 3.1, isPositive: false }}
-            />
-            <StatCard
-              icon={RiCheckboxCircleLine}
-              title='Delivered Today'
-              value='892'
-              trend={{ value: 18.3, isPositive: true }}
-            />
-          </div>
-        </div>
+    for (const status of statuses) {
+        const { count } = await supabase
+            .from("shipments")
+            .select("id", { count: "exact", head: true })
+            .eq("status", status);
+        shipmentCounts[status] = count || 0;
+    }
 
-        {/* ----------------------------------------
-            ROW 2: Main Chart + Sidebar Widgets
-            8:4 ratio for visual balance
-            ---------------------------------------- */}
-        <div className='col-span-12 xl:col-span-8'>
-          <ShipmentTrendsChart />
-        </div>
-        
-        <div className='col-span-12 xl:col-span-4 grid gap-5'>
-          <QuickActions />
-          <ActivityFeed />
-        </div>
+    // Today's shipments
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const { count: todayCount } = await supabase
+        .from("shipments")
+        .select("id", { count: "exact", head: true })
+        .gte("created_at", today.toISOString());
 
-        {/* ----------------------------------------
-            ROW 3: Insights + Revenue
-            Balanced 2-column layout
-            ---------------------------------------- */}
-        <div className='col-span-12 lg:col-span-5'>
-          <ProductInsightsCard className='h-full' />
-        </div>
-        
-        <div className='col-span-12 lg:col-span-7'>
-          <TotalEarningCard
-            title='Revenue Stream'
-            earning={2465050}
-            trend='up'
-            percentage={10}
-            comparisonText='Relative to FY24 Performance'
-            earningData={earningData}
-            className='h-full'
-          />
-        </div>
+    // Revenue (from paid invoices)
+    const { data: paidInvoices } = await supabase
+        .from("invoices")
+        .select("total_amount")
+        .eq("status", "paid");
+    const totalRevenue = (paidInvoices || []).reduce((sum, i) => sum + i.total_amount, 0);
 
-        {/* ----------------------------------------
-            ROW 4: Transaction Queue (Full Width)
-            Data-dense operational view
-            ---------------------------------------- */}
-        <div className='col-span-12'>
-          <Card className='depth-surface noise-overlay border-none overflow-hidden'>
-            <div className='px-6 py-4 border-b border-border/30 flex items-center justify-between'>
-              <div className='flex items-center gap-3'>
-                <div className='p-2 rounded-lg bg-primary/10 text-primary'>
-                  <RiFlashlightLine className='size-4' />
+    // Outstanding
+    const { data: outstandingInvoices } = await supabase
+        .from("invoices")
+        .select("balance_due")
+        .gt("balance_due", 0);
+    const totalOutstanding = (outstandingInvoices || []).reduce((sum, i) => sum + i.balance_due, 0);
+
+    // Active manifests
+    const { count: activeManifests } = await supabase
+        .from("manifests")
+        .select("id", { count: "exact", head: true })
+        .in("status", ["open", "locked", "dispatched"]);
+
+    // Delayed shipments
+    const threeDaysAgo = new Date();
+    threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+    const { count: delayedCount } = await supabase
+        .from("shipments")
+        .select("id", { count: "exact", head: true })
+        .eq("status", "in_transit")
+        .lt("updated_at", threeDaysAgo.toISOString());
+
+    return {
+        shipments: {
+            total: Object.values(shipmentCounts).reduce((a, b) => a + b, 0),
+            pending: shipmentCounts.pending,
+            inTransit: shipmentCounts.in_transit,
+            delivered: shipmentCounts.delivered,
+            failed: shipmentCounts.failed,
+            today: todayCount || 0,
+            delayed: delayedCount || 0,
+        },
+        finance: {
+            revenue: totalRevenue,
+            outstanding: totalOutstanding,
+        },
+        operations: {
+            activeManifests: activeManifests || 0,
+        },
+    };
+}
+
+async function getRecentActivity() {
+    const supabase = await createClient();
+
+    const { data: recentShipments } = await supabase
+        .from("shipments")
+        .select("id, reference, status, consignee_name, updated_at")
+        .order("updated_at", { ascending: false })
+        .limit(10);
+
+    return recentShipments || [];
+}
+
+export default async function OverviewPage() {
+    const [stats, recentActivity] = await Promise.all([
+        getDashboardStats(),
+        getRecentActivity(),
+    ]);
+
+    return (
+        <>
+            <V2Header title="Overview" section="Main Deck" />
+            <main className="flex-1 overflow-y-auto p-8 scroll-smooth" id="main-scroll">
+                <div className="max-w-[1600px] mx-auto pb-20">
+                    {/* Page Header */}
+                    <div className="flex justify-between items-end mb-8">
+                        <div>
+                            <h1 className="text-3xl font-semibold text-foreground tracking-tight">
+                                Mission Control
+                            </h1>
+                            <p className="text-sm text-muted-foreground mt-1">
+                                Real-time status of global logistics operations.
+                            </p>
+                        </div>
+                        <div className="flex gap-2">
+                            <Link
+                                href="/dashboard/shipments"
+                                className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-foreground text-background text-xs font-medium hover:opacity-90 transition-colors"
+                            >
+                                <Plus className="w-4 h-4" /> New Shipment
+                            </Link>
+                        </div>
+                    </div>
+
+                    <OverviewClient stats={stats} recentActivity={recentActivity} />
                 </div>
-                <div>
-                  <h3 className='text-xs font-bold uppercase tracking-[0.2em] text-foreground'>Operational Queue</h3>
-                  <p className='text-[9px] font-medium text-muted-foreground/50 uppercase tracking-wide'>Recent transactions & pending actions</p>
-                </div>
-              </div>
-              <Link 
-                href='/dashboard/shipments' 
-                className='text-[10px] font-bold uppercase tracking-wide text-primary hover:text-primary/80 transition-colors flex items-center gap-1.5 px-3 py-1.5 rounded-md hover:bg-primary/5'
-              >
-                View All
-              </Link>
-            </div>
-            <TransactionDatatable data={transactionData} />
-          </Card>
-        </div>
-      </div>
-    </PageLayout>
-  )
+            </main>
+        </>
+    );
 }

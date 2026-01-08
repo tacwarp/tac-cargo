@@ -1,31 +1,31 @@
-'use client'
+"use client";
 
-import * as React from 'react'
-import { cn } from '@/lib/utils'
-import { PlaneIcon, TruckIcon, PackageIcon } from 'lucide-react'
+import * as React from "react";
+import { cn } from "@/lib/utils";
+import { PlaneIcon, TruckIcon, PackageIcon } from "lucide-react";
 
 interface ShippingLabelProps {
-  awb: string
+  awb: string;
   shipTo: {
-    name: string
-    address: string
-    city: string
-    state: string
-    pincode: string
-  }
+    name: string;
+    address: string;
+    city: string;
+    state: string;
+    pincode: string;
+  };
   shipFrom: {
-    name: string
-    address?: string
-  }
-  shipDate: string
-  weight: number
-  pieces: number
-  transportMode: 'air' | 'surface' | 'express'
-  paymentMode: 'prepaid' | 'to_pay' | 'credit'
-  invoiceNo?: string
-  gstNo?: string
-  contentDescription?: string
-  className?: string
+    name: string;
+    address?: string;
+  };
+  shipDate: string;
+  weight: number;
+  pieces: number;
+  transportMode: "air" | "surface" | "express";
+  paymentMode: "prepaid" | "to_pay" | "credit";
+  invoiceNo?: string;
+  gstNo?: string;
+  contentDescription?: string;
+  className?: string;
 }
 
 export function ShippingLabelPreview({
@@ -40,138 +40,183 @@ export function ShippingLabelPreview({
   invoiceNo,
   gstNo,
   contentDescription,
-  className
+  className,
 }: ShippingLabelProps) {
-  const deliveryDate = new Date()
-  deliveryDate.setDate(deliveryDate.getDate() + (transportMode === 'air' ? 2 : transportMode === 'express' ? 1 : 5))
+  // Calculate delivery date from shipDate, not current date
+  const baseDate = shipDate ? new Date(shipDate) : new Date();
+  const deliveryDate = new Date(baseDate);
+  deliveryDate.setDate(
+    deliveryDate.getDate() +
+      (transportMode === "air" ? 2 : transportMode === "express" ? 1 : 5),
+  );
 
-  const TransportIcon = transportMode === 'air' ? PlaneIcon : TruckIcon
+  const TransportIcon = transportMode === "air" ? PlaneIcon : TruckIcon;
 
   return (
-    <div className={cn(
-      'w-full max-w-[300px] bg-white text-black font-sans text-xs',
-      'border-2 border-black rounded-none overflow-hidden',
-      className
-    )}>
+    <div
+      className={cn(
+        "w-full max-w-[300px] bg-white font-sans text-xs text-black",
+        "overflow-hidden rounded-none border-2 border-black",
+        className,
+      )}
+    >
       {/* Header with AWB and Mode */}
-      <div className='flex items-stretch border-b-2 border-black'>
-        <div className='flex-1 p-2 border-r-2 border-black'>
-          <div className='text-[8px] text-gray-600 uppercase tracking-wider'>AWB</div>
-          <div className='font-mono font-bold text-sm tracking-wide'>{awb || 'TAC0000000'}</div>
-        </div>
-        <div className='flex flex-col items-center justify-center gap-1 p-2 min-w-[70px]'>
-          <div className='text-[10px] font-bold uppercase'>{transportMode.toUpperCase()}</div>
-          <div className='text-[10px] font-mono'>{weight.toFixed(2)} kgs</div>
-          <div className='text-[10px] font-bold uppercase bg-black text-white px-2 py-0.5'>
-            {pieces > 1 ? 'LARGE' : 'SMALL'}
+      <div className="flex items-stretch border-b-2 border-black">
+        <div className="flex-1 border-r-2 border-black p-2">
+          <div className="text-muted-foreground text-[8px] tracking-wider uppercase">
+            AWB
+          </div>
+          <div className="font-mono text-sm font-bold tracking-wide">
+            {awb || "TAC0000000"}
           </div>
         </div>
-        <div className='flex items-center justify-center p-2 border-l-2 border-black'>
-          <TransportIcon className='size-8' />
+        <div className="flex min-w-[70px] flex-col items-center justify-center gap-1 p-2">
+          <div className="text-[10px] font-bold uppercase">
+            {transportMode.toUpperCase()}
+          </div>
+          <div className="font-mono text-[10px]">{weight.toFixed(2)} kgs</div>
+          <div className="bg-black px-2 py-0.5 text-[10px] font-bold text-white uppercase">
+            {pieces > 1 ? "LARGE" : "SMALL"}
+          </div>
+        </div>
+        <div className="flex items-center justify-center border-l-2 border-black p-2">
+          <TransportIcon className="size-8" />
         </div>
       </div>
 
       {/* Ship To Section */}
-      <div className='p-2 border-b border-black'>
-        <div className='text-[8px] text-gray-600 font-bold uppercase'>Ship To:</div>
-        <div className='font-bold text-sm mt-0.5'>{shipTo.name || 'Consignee Name'}</div>
-        <div className='text-[10px] leading-tight mt-1'>
-          {shipTo.address || 'Address Line 1'}<br />
-          {shipTo.city || 'City'}, {shipTo.state || 'State'}<br />
-          {shipTo.pincode || '000000'}
+      <div className="border-b border-black p-2">
+        <div className="text-muted-foreground text-[8px] font-bold uppercase">
+          Ship To:
+        </div>
+        <div className="mt-0.5 text-sm font-bold">
+          {shipTo.name || "Consignee Name"}
+        </div>
+        <div className="mt-1 text-[10px] leading-tight">
+          {shipTo.address || "Address Line 1"}
+          <br />
+          {shipTo.city || "City"}, {shipTo.state || "State"}
+          <br />
+          {shipTo.pincode || "000000"}
         </div>
       </div>
 
       {/* Delivery Date & Payment */}
-      <div className='flex border-b border-black'>
-        <div className='flex-1 p-2 border-r border-black text-center'>
-          <div className='text-[8px] text-gray-600 uppercase'>Delivery</div>
-          <div className='font-bold text-lg font-mono'>
+      <div className="flex border-b border-black">
+        <div className="flex-1 border-r border-black p-2 text-center">
+          <div className="text-muted-foreground text-[8px] uppercase">
+            Delivery
+          </div>
+          <div className="font-mono text-lg font-bold">
             {deliveryDate.getDate()}/{deliveryDate.getMonth() + 1}
           </div>
         </div>
-        <div className='flex-1 p-2 text-center'>
-          <div className='text-[8px] text-gray-600 uppercase'>Payment</div>
-          <div className='font-bold text-sm uppercase bg-black text-white inline-block px-2 py-0.5 mt-0.5'>
-            {paymentMode.replace('_', ' ')}
+        <div className="flex-1 p-2 text-center">
+          <div className="text-muted-foreground text-[8px] uppercase">
+            Payment
+          </div>
+          <div className="mt-0.5 inline-block bg-black px-2 py-0.5 text-sm font-bold text-white uppercase">
+            {paymentMode.replace("_", " ")}
           </div>
         </div>
       </div>
 
       {/* Zone Info */}
-      <div className='flex border-b border-black text-center'>
-        <div className='flex-1 p-1 border-r border-black'>
-          <div className='text-[7px] text-gray-600 uppercase'>Delivery Station</div>
-          <div className='font-bold text-sm'>{shipTo.city?.substring(0, 4).toUpperCase() || 'CITY'}</div>
+      <div className="flex border-b border-black text-center">
+        <div className="flex-1 border-r border-black p-1">
+          <div className="text-muted-foreground text-[7px] uppercase">
+            Delivery Station
+          </div>
+          <div className="text-sm font-bold">
+            {shipTo.city?.substring(0, 4).toUpperCase() || "CITY"}
+          </div>
         </div>
-        <div className='flex-1 p-1 border-r border-black'>
-          <div className='text-[7px] text-gray-600 uppercase'>Sector</div>
-          <div className='font-bold text-sm'>S—{shipTo.pincode?.charAt(0) || '0'}</div>
+        <div className="flex-1 border-r border-black p-1">
+          <div className="text-muted-foreground text-[7px] uppercase">
+            Sector
+          </div>
+          <div className="text-sm font-bold">
+            S—{shipTo.pincode?.charAt(0) || "0"}
+          </div>
         </div>
-        <div className='flex-1 p-1'>
-          <div className='text-[7px] text-gray-600 uppercase'>Sortzone</div>
-          <div className='font-bold text-sm'>{shipTo.state?.substring(0, 4).toUpperCase() || 'ZONE'}</div>
+        <div className="flex-1 p-1">
+          <div className="text-muted-foreground text-[7px] uppercase">
+            Sortzone
+          </div>
+          <div className="text-sm font-bold">
+            {shipTo.state?.substring(0, 4).toUpperCase() || "ZONE"}
+          </div>
         </div>
       </div>
 
       {/* Ship Date & GST */}
-      <div className='flex border-b border-black text-[9px]'>
-        <div className='flex-1 p-1.5'>
-          <span className='font-bold'>Ship Date:</span> {shipDate || new Date().toLocaleDateString('en-IN')}
+      <div className="flex border-b border-black text-[9px]">
+        <div className="flex-1 p-1.5">
+          <span className="font-bold">Ship Date:</span>{" "}
+          {shipDate || new Date().toLocaleDateString("en-IN")}
         </div>
         {gstNo && (
-          <div className='flex-1 p-1.5 border-l border-black'>
-            <span className='font-bold'>GST#</span> {gstNo}
+          <div className="flex-1 border-l border-black p-1.5">
+            <span className="font-bold">GST#</span> {gstNo}
           </div>
         )}
       </div>
 
       {/* Invoice Info */}
-      <div className='flex border-b border-black text-[9px]'>
-        <div className='flex-1 p-1.5 border-r border-black'>
-          <span className='font-bold'>Invoice ID:</span> {invoiceNo || 'INV-XXXX'}
+      <div className="flex border-b border-black text-[9px]">
+        <div className="flex-1 border-r border-black p-1.5">
+          <span className="font-bold">Invoice ID:</span>{" "}
+          {invoiceNo || "INV-XXXX"}
         </div>
-        <div className='flex-1 p-1.5'>
-          <span className='font-bold'>Date:</span> {new Date().toLocaleDateString('en-IN')}
+        <div className="flex-1 p-1.5">
+          <span className="font-bold">Date:</span>{" "}
+          {new Date().toLocaleDateString("en-IN")}
         </div>
       </div>
 
       {/* Ship From */}
-      <div className='p-2 border-b border-black'>
-        <div className='text-[8px] text-gray-600 font-bold uppercase'>Ordered From:</div>
-        <div className='font-bold text-sm'>{shipFrom.name || 'TAC CARGO SERVICE'}</div>
+      <div className="border-b border-black p-2">
+        <div className="text-muted-foreground text-[8px] font-bold uppercase">
+          Ordered From:
+        </div>
+        <div className="text-sm font-bold">
+          {shipFrom.name || "TAC CARGO SERVICE"}
+        </div>
       </div>
 
       {/* Barcode Placeholder */}
-      <div className='p-3 flex justify-center bg-white'>
-        <div className='text-center'>
-          <div className='font-mono text-3xl tracking-[0.3em] font-bold'>
+      <div className="flex justify-center bg-white p-3">
+        <div className="text-center">
+          <div className="font-mono text-3xl font-bold tracking-[0.3em]">
             |||||||||||||||
           </div>
-          <div className='text-[8px] mt-1 font-mono'>{awb || 'TAC0000000'}</div>
+          <div className="mt-1 font-mono text-[8px]">{awb || "TAC0000000"}</div>
         </div>
       </div>
 
       {/* Return Address */}
-      <div className='p-1.5 border-t border-black text-[8px] bg-gray-50'>
-        <span className='font-bold'>Ship From:</span> {shipFrom.name || 'TAC CARGO SERVICE'}<br />
-        <span className='font-bold'>Return Address:</span> {shipFrom.address || 'Main Office, Imphal, Manipur'}
+      <div className="border-t border-black bg-gray-50 p-1.5 text-[8px]">
+        <span className="font-bold">Ship From:</span>{" "}
+        {shipFrom.name || "TAC CARGO SERVICE"}
+        <br />
+        <span className="font-bold">Return Address:</span>{" "}
+        {shipFrom.address || "Main Office, Imphal, Manipur"}
       </div>
 
       {/* Item Description */}
       {contentDescription && (
-        <div className='border-t-2 border-black'>
-          <table className='w-full text-[9px]'>
+        <div className="border-t-2 border-black">
+          <table className="w-full text-[9px]">
             <thead>
-              <tr className='border-b border-black'>
-                <th className='p-1 text-left border-r border-black w-6'>#</th>
-                <th className='p-1 text-left'>Item description</th>
+              <tr className="border-b border-black">
+                <th className="w-6 border-r border-black p-1 text-left">#</th>
+                <th className="p-1 text-left">Item description</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td className='p-1 border-r border-black'>1</td>
-                <td className='p-1 uppercase'>{contentDescription}</td>
+                <td className="border-r border-black p-1">1</td>
+                <td className="p-1 uppercase">{contentDescription}</td>
               </tr>
             </tbody>
           </table>
@@ -179,35 +224,35 @@ export function ShippingLabelPreview({
       )}
 
       {/* Footer with Route Codes */}
-      <div className='flex border-t-2 border-black'>
-        <div className='flex-1 p-1.5 border-r-2 border-black text-center'>
-          <div className='text-[7px] text-gray-600'>DLIN</div>
-          <div className='font-mono font-bold text-sm bg-black text-white inline-block px-1'>
-            {shipTo.pincode?.charAt(0) || '1'}
+      <div className="flex border-t-2 border-black">
+        <div className="flex-1 border-r-2 border-black p-1.5 text-center">
+          <div className="text-muted-foreground text-[7px]">DLIN</div>
+          <div className="inline-block bg-black px-1 font-mono text-sm font-bold text-white">
+            {shipTo.pincode?.charAt(0) || "1"}
           </div>
-          <span className='font-mono font-bold ml-0.5'>
-            {transportMode === 'air' ? 'AIR' : 'SUR'}
+          <span className="ml-0.5 font-mono font-bold">
+            {transportMode === "air" ? "AIR" : "SUR"}
           </span>
         </div>
-        <div className='flex-1 p-1.5 border-r-2 border-black text-center'>
-          <div className='text-[7px] text-gray-600'>ROUTE</div>
-          <div className='font-mono font-bold'>
-            {shipTo.city?.substring(0, 4).toUpperCase() || 'CITY'}
+        <div className="flex-1 border-r-2 border-black p-1.5 text-center">
+          <div className="text-muted-foreground text-[7px]">ROUTE</div>
+          <div className="font-mono font-bold">
+            {shipTo.city?.substring(0, 4).toUpperCase() || "CITY"}
           </div>
         </div>
-        <div className='flex-1 p-1.5 text-center'>
-          <div className='text-[7px] text-gray-600'>ZONE</div>
-          <div className='font-mono font-bold'>
-            {shipTo.state?.substring(0, 4).toUpperCase() || 'ZONE'}
+        <div className="flex-1 p-1.5 text-center">
+          <div className="text-muted-foreground text-[7px]">ZONE</div>
+          <div className="font-mono font-bold">
+            {shipTo.state?.substring(0, 4).toUpperCase() || "ZONE"}
           </div>
         </div>
       </div>
 
       {/* Brand Footer */}
-      <div className='p-2 border-t-2 border-black text-right'>
-        <span className='font-bold text-lg tracking-tight'>tac</span>
-        <span className='font-light text-lg'> cargo</span>
+      <div className="border-t-2 border-black p-2 text-right">
+        <span className="text-lg font-bold tracking-tight">tac</span>
+        <span className="text-lg font-light"> cargo</span>
       </div>
     </div>
-  )
+  );
 }

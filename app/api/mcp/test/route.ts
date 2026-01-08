@@ -32,7 +32,7 @@ export async function GET(request: Request) {
               await client.disconnect();
               return NextResponse.json(
                 { error: "Reference parameter required for query action" },
-                { status: 400 }
+                { status: 400 },
               );
             }
             result = await client.queryShipment(reference);
@@ -43,7 +43,7 @@ export async function GET(request: Request) {
               await client.disconnect();
               return NextResponse.json(
                 { error: "Reference parameter required for status action" },
-                { status: 400 }
+                { status: 400 },
               );
             }
             result = await client.getShipmentStatus(reference);
@@ -84,9 +84,9 @@ export async function GET(request: Request) {
             success: false,
             error: error instanceof Error ? error.message : "Unknown error",
           },
-          { status: 500 }
+          { status: 500 },
         );
       }
-    }
+    },
   );
 }

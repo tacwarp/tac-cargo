@@ -4,8 +4,8 @@ Looking at your current stack, here's the optimized OKLCH color scheme that will
 @import "tailwindcss";
 
 @layer base {
-  :root {
-    color-scheme: dark;
+:root {
+color-scheme: dark;
 
     /* Base - Deep navy with cargo/logistics feel */
     --background: oklch(0.14 0.025 245);
@@ -74,10 +74,11 @@ Looking at your current stack, here's the optimized OKLCH color scheme that will
     --sidebar-ring: oklch(0.68 0.20 195);
 
     --radius: 0.75rem;
-  }
 
-  .light {
-    color-scheme: light;
+}
+
+.light {
+color-scheme: light;
 
     /* Base - Clean white with subtle warmth */
     --background: oklch(0.99 0.00 0);
@@ -144,85 +145,87 @@ Looking at your current stack, here's the optimized OKLCH color scheme that will
     --sidebar-accent-foreground: oklch(0.58 0.18 195);
     --sidebar-border: oklch(0.90 0.01 245);
     --sidebar-ring: oklch(0.58 0.18 195);
-  }
+
+}
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-success: var(--success);
-  --color-success-foreground: var(--success-foreground);
-  --color-warning: var(--warning);
-  --color-warning-foreground: var(--warning-foreground);
-  --color-info: var(--info);
-  --color-info-foreground: var(--info-foreground);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+--color-background: var(--background);
+--color-foreground: var(--foreground);
+--color-card: var(--card);
+--color-card-foreground: var(--card-foreground);
+--color-popover: var(--popover);
+--color-popover-foreground: var(--popover-foreground);
+--color-primary: var(--primary);
+--color-primary-foreground: var(--primary-foreground);
+--color-secondary: var(--secondary);
+--color-secondary-foreground: var(--secondary-foreground);
+--color-muted: var(--muted);
+--color-muted-foreground: var(--muted-foreground);
+--color-accent: var(--accent);
+--color-accent-foreground: var(--accent-foreground);
+--color-destructive: var(--destructive);
+--color-destructive-foreground: var(--destructive-foreground);
+--color-success: var(--success);
+--color-success-foreground: var(--success-foreground);
+--color-warning: var(--warning);
+--color-warning-foreground: var(--warning-foreground);
+--color-info: var(--info);
+--color-info-foreground: var(--info-foreground);
+--color-border: var(--border);
+--color-input: var(--input);
+--color-ring: var(--ring);
+--color-chart-1: var(--chart-1);
+--color-chart-2: var(--chart-2);
+--color-chart-3: var(--chart-3);
+--color-chart-4: var(--chart-4);
+--color-chart-5: var(--chart-5);
+--color-sidebar: var(--sidebar);
+--color-sidebar-foreground: var(--sidebar-foreground);
+--color-sidebar-primary: var(--sidebar-primary);
+--color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+--color-sidebar-accent: var(--sidebar-accent);
+--color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+--color-sidebar-border: var(--sidebar-border);
+--color-sidebar-ring: var(--sidebar-ring);
+--radius-sm: calc(var(--radius) - 4px);
+--radius-md: calc(var(--radius) - 2px);
+--radius-lg: var(--radius);
+--radius-xl: calc(var(--radius) + 4px);
 }
 
 @layer base {
-  * {
-    @apply border-border;
+
+- {
+  @apply border-border;
   }
 
-  body {
-    @apply bg-background text-foreground antialiased;
-  }
+body {
+@apply bg-background text-foreground antialiased;
+}
 }
 
-/* Additional utility classes for cargo-specific status colors */
+/_ Additional utility classes for cargo-specific status colors _/
 @layer utilities {
-  .status-delivered {
-    @apply bg-success/10 text-success border-success/20;
-  }
-  
-  .status-in-transit {
-    @apply bg-warning/10 text-warning border-warning/20;
-  }
-  
-  .status-delayed {
-    @apply bg-destructive/10 text-destructive border-destructive/20;
-  }
-  
-  .status-pending {
-    @apply bg-info/10 text-info border-info/20;
-  }
-  
-  .status-processing {
-    @apply bg-primary/10 text-primary border-primary/20;
-  }
+.status-delivered {
+@apply bg-success/10 text-success border-success/20;
+}
+
+.status-in-transit {
+@apply bg-warning/10 text-warning border-warning/20;
+}
+
+.status-delayed {
+@apply bg-destructive/10 text-destructive border-destructive/20;
+}
+
+.status-pending {
+@apply bg-info/10 text-info border-info/20;
+}
+
+.status-processing {
+@apply bg-primary/10 text-primary border-primary/20;
+}
 }
 
 Now here are my recommended package additions to enhance your TAC Cargo project:
@@ -364,9 +367,7 @@ Data Density - Show more info without clutter
 
 npm install remixicon --save
 
-
-use for the dashboard  "C:\tac-saas\tac-cargo\public\remixicon" "C:\tac-saas\tac-cargo\public\remixIcon_fonts"
-
+use for the dashboard "C:\tac-saas\tac-cargo\public\remixicon" "C:\tac-saas\tac-cargo\public\remixIcon_fonts"
 
 Next.js
 Everything you need to set up Tremor with Next.js.
@@ -405,21 +406,22 @@ import { GeistSans } from "geist/font/sans"; // import font
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Create Next App",
-  description: "Generated by create next app",
+title: "Create Next App",
+description: "Generated by create next app",
 };
 
 export default function RootLayout({
-  children,
+children,
 }: Readonly<{
-  children: React.ReactNode;
+children: React.ReactNode;
 }>) {
-  return (
-    // add font to className, also add antialiased and dark mode
-    <html lang="en" className={`${GeistSans.className} antialiased dark:bg-gray-950`}>
-      <body>{children}</body>
-    </html>
-  );
+return (
+// add font to className, also add antialiased and dark mode
+
+<html lang="en" className={`${GeistSans.className} antialiased dark:bg-gray-950`}>
+<body>{children}</body>
+</html>
+);
 }
 
 4
@@ -436,130 +438,130 @@ Show less
 @import "tailwindcss";
 @plugin "@tailwindcss/forms";
 
-@custom-variant dark (&:where(.dark, .dark *));
+@custom-variant dark (&:where(.dark, .dark \*));
 
 @theme {
-  --animate-hide: hide 150ms cubic-bezier(0.16, 1, 0.3, 1);
-  --animate-slide-down-and-fade: slideDownAndFade 150ms
-    cubic-bezier(0.16, 1, 0.3, 1);
-  --animate-slide-left-and-fade: slideLeftAndFade 150ms
-    cubic-bezier(0.16, 1, 0.3, 1);
-  --animate-slide-up-and-fade: slideUpAndFade 150ms
-    cubic-bezier(0.16, 1, 0.3, 1);
-  --animate-slide-right-and-fade: slideRightAndFade 150ms
-    cubic-bezier(0.16, 1, 0.3, 1);
-  --animate-accordion-open: accordionOpen 150ms cubic-bezier(0.87, 0, 0.13, 1);
-  --animate-accordion-close: accordionClose 150ms cubic-bezier(0.87, 0, 0.13, 1);
-  --animate-dialog-overlay-show: dialogOverlayShow 150ms
-    cubic-bezier(0.16, 1, 0.3, 1);
-  --animate-dialog-content-show: dialogContentShow 150ms
-    cubic-bezier(0.16, 1, 0.3, 1);
-  --animate-drawer-slide-left-and-fade: drawerSlideLeftAndFade 150ms
-    cubic-bezier(0.16, 1, 0.3, 1);
-  --animate-drawer-slide-right-and-fade: drawerSlideRightAndFade 150ms ease-in;
+--animate-hide: hide 150ms cubic-bezier(0.16, 1, 0.3, 1);
+--animate-slide-down-and-fade: slideDownAndFade 150ms
+cubic-bezier(0.16, 1, 0.3, 1);
+--animate-slide-left-and-fade: slideLeftAndFade 150ms
+cubic-bezier(0.16, 1, 0.3, 1);
+--animate-slide-up-and-fade: slideUpAndFade 150ms
+cubic-bezier(0.16, 1, 0.3, 1);
+--animate-slide-right-and-fade: slideRightAndFade 150ms
+cubic-bezier(0.16, 1, 0.3, 1);
+--animate-accordion-open: accordionOpen 150ms cubic-bezier(0.87, 0, 0.13, 1);
+--animate-accordion-close: accordionClose 150ms cubic-bezier(0.87, 0, 0.13, 1);
+--animate-dialog-overlay-show: dialogOverlayShow 150ms
+cubic-bezier(0.16, 1, 0.3, 1);
+--animate-dialog-content-show: dialogContentShow 150ms
+cubic-bezier(0.16, 1, 0.3, 1);
+--animate-drawer-slide-left-and-fade: drawerSlideLeftAndFade 150ms
+cubic-bezier(0.16, 1, 0.3, 1);
+--animate-drawer-slide-right-and-fade: drawerSlideRightAndFade 150ms ease-in;
 
-  @keyframes hide {
-    from {
-      opacity: 1;
-    }
-    to {
-      opacity: 0;
-    }
-  }
-  @keyframes slideDownAndFade {
-    from {
-      opacity: 0;
-      transform: translateY(-6px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  @keyframes slideLeftAndFade {
-    from {
-      opacity: 0;
-      transform: translateX(6px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-  @keyframes slideUpAndFade {
-    from {
-      opacity: 0;
-      transform: translateY(6px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  @keyframes slideRightAndFade {
-    from {
-      opacity: 0;
-      transform: translateX(-6px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-  @keyframes accordionOpen {
-    from {
-      height: 0px;
-    }
-    to {
-      height: var(--radix-accordion-content-height);
-    }
-  }
-  @keyframes accordionClose {
-    from {
-      height: var(--radix-accordion-content-height);
-    }
-    to {
-      height: 0px;
-    }
-  }
-  @keyframes dialogOverlayShow {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-  @keyframes dialogContentShow {
-    from {
-      opacity: 0;
-      transform: translate(-50%, -45%) scale(0.95);
-    }
-    to {
-      opacity: 1;
-      transform: translate(-50%, -50%) scale(1);
-    }
-  }
-  @keyframes drawerSlideLeftAndFade {
-    from {
-      opacity: 0;
-      transform: translateX(100%);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-  @keyframes drawerSlideRightAndFade {
-    from {
-      opacity: 1;
-      transform: translateX(0);
-    }
-    to {
-      opacity: 0;
-      transform: translateX(100%);
-    }
-  }
+@keyframes hide {
+from {
+opacity: 1;
+}
+to {
+opacity: 0;
+}
+}
+@keyframes slideDownAndFade {
+from {
+opacity: 0;
+transform: translateY(-6px);
+}
+to {
+opacity: 1;
+transform: translateY(0);
+}
+}
+@keyframes slideLeftAndFade {
+from {
+opacity: 0;
+transform: translateX(6px);
+}
+to {
+opacity: 1;
+transform: translateX(0);
+}
+}
+@keyframes slideUpAndFade {
+from {
+opacity: 0;
+transform: translateY(6px);
+}
+to {
+opacity: 1;
+transform: translateY(0);
+}
+}
+@keyframes slideRightAndFade {
+from {
+opacity: 0;
+transform: translateX(-6px);
+}
+to {
+opacity: 1;
+transform: translateX(0);
+}
+}
+@keyframes accordionOpen {
+from {
+height: 0px;
+}
+to {
+height: var(--radix-accordion-content-height);
+}
+}
+@keyframes accordionClose {
+from {
+height: var(--radix-accordion-content-height);
+}
+to {
+height: 0px;
+}
+}
+@keyframes dialogOverlayShow {
+from {
+opacity: 0;
+}
+to {
+opacity: 1;
+}
+}
+@keyframes dialogContentShow {
+from {
+opacity: 0;
+transform: translate(-50%, -45%) scale(0.95);
+}
+to {
+opacity: 1;
+transform: translate(-50%, -50%) scale(1);
+}
+}
+@keyframes drawerSlideLeftAndFade {
+from {
+opacity: 0;
+transform: translateX(100%);
+}
+to {
+opacity: 1;
+transform: translateX(0);
+}
+}
+@keyframes drawerSlideRightAndFade {
+from {
+opacity: 1;
+transform: translateX(0);
+}
+to {
+opacity: 0;
+transform: translateX(100%);
+}
+}
 }
 
 6
@@ -575,38 +577,38 @@ import clsx, { type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
 export function cx(...args: ClassValue[]) {
-  return twMerge(clsx(...args))
+return twMerge(clsx(...args))
 }
 
 // Tremor focusInput [v0.0.2]
 
 export const focusInput = [
-  // base
-  "focus:ring-2",
-  // ring color
-  "focus:ring-blue-200 dark:focus:ring-blue-700/30",
-  // border color
-  "focus:border-blue-500 dark:focus:border-blue-700",
+// base
+"focus:ring-2",
+// ring color
+"focus:ring-blue-200 dark:focus:ring-blue-700/30",
+// border color
+"focus:border-blue-500 dark:focus:border-blue-700",
 ]
 
 // Tremor Raw focusRing [v0.0.1]
 
 export const focusRing = [
-  // base
-  "outline outline-offset-2 outline-0 focus-visible:outline-2",
-  // outline color
-  "outline-blue-500 dark:outline-blue-500",
+// base
+"outline outline-offset-2 outline-0 focus-visible:outline-2",
+// outline color
+"outline-blue-500 dark:outline-blue-500",
 ]
 
 // Tremor Raw hasErrorInput [v0.0.1]
 
 export const hasErrorInput = [
-  // base
-  "ring-2",
-  // border color
-  "border-red-500 dark:border-red-700",
-  // ring color
-  "ring-red-200 dark:ring-red-700/30",
+// base
+"ring-2",
+// border color
+"border-red-500 dark:border-red-700",
+// ring color
+"ring-red-200 dark:ring-red-700/30",
 ]
 
 Next, we add the chart utilities. Add a new chartUtils.ts file and paste the following code into this file.
@@ -617,128 +619,127 @@ Show less
 export type ColorUtility = "bg" | "stroke" | "fill" | "text"
 
 export const chartColors = {
-  blue: {
-    bg: "bg-blue-500",
-    stroke: "stroke-blue-500",
-    fill: "fill-blue-500",
-    text: "text-blue-500",
-  },
-  emerald: {
-    bg: "bg-emerald-500",
-    stroke: "stroke-emerald-500",
-    fill: "fill-emerald-500",
-    text: "text-emerald-500",
-  },
-  violet: {
-    bg: "bg-violet-500",
-    stroke: "stroke-violet-500",
-    fill: "fill-violet-500",
-    text: "text-violet-500",
-  },
-  amber: {
-    bg: "bg-amber-500",
-    stroke: "stroke-amber-500",
-    fill: "fill-amber-500",
-    text: "text-amber-500",
-  },
-  gray: {
-    bg: "bg-gray-500",
-    stroke: "stroke-gray-500",
-    fill: "fill-gray-500",
-    text: "text-gray-500",
-  },
-  cyan: {
-    bg: "bg-cyan-500",
-    stroke: "stroke-cyan-500",
-    fill: "fill-cyan-500",
-    text: "text-cyan-500",
-  },
-  pink: {
-    bg: "bg-pink-500",
-    stroke: "stroke-pink-500",
-    fill: "fill-pink-500",
-    text: "text-pink-500",
-  },
-  lime: {
-    bg: "bg-lime-500",
-    stroke: "stroke-lime-500",
-    fill: "fill-lime-500",
-    text: "text-lime-500",
-  },
-  fuchsia: {
-    bg: "bg-fuchsia-500",
-    stroke: "stroke-fuchsia-500",
-    fill: "fill-fuchsia-500",
-    text: "text-fuchsia-500",
-  },
+blue: {
+bg: "bg-blue-500",
+stroke: "stroke-blue-500",
+fill: "fill-blue-500",
+text: "text-blue-500",
+},
+emerald: {
+bg: "bg-emerald-500",
+stroke: "stroke-emerald-500",
+fill: "fill-emerald-500",
+text: "text-emerald-500",
+},
+violet: {
+bg: "bg-violet-500",
+stroke: "stroke-violet-500",
+fill: "fill-violet-500",
+text: "text-violet-500",
+},
+amber: {
+bg: "bg-amber-500",
+stroke: "stroke-amber-500",
+fill: "fill-amber-500",
+text: "text-amber-500",
+},
+gray: {
+bg: "bg-gray-500",
+stroke: "stroke-gray-500",
+fill: "fill-gray-500",
+text: "text-gray-500",
+},
+cyan: {
+bg: "bg-cyan-500",
+stroke: "stroke-cyan-500",
+fill: "fill-cyan-500",
+text: "text-cyan-500",
+},
+pink: {
+bg: "bg-pink-500",
+stroke: "stroke-pink-500",
+fill: "fill-pink-500",
+text: "text-pink-500",
+},
+lime: {
+bg: "bg-lime-500",
+stroke: "stroke-lime-500",
+fill: "fill-lime-500",
+text: "text-lime-500",
+},
+fuchsia: {
+bg: "bg-fuchsia-500",
+stroke: "stroke-fuchsia-500",
+fill: "fill-fuchsia-500",
+text: "text-fuchsia-500",
+},
 } as const satisfies {
-  [color: string]: {
-    [key in ColorUtility]: string
-  }
+[color: string]: {
+[key in ColorUtility]: string
+}
 }
 
 export type AvailableChartColorsKeys = keyof typeof chartColors
 
 export const AvailableChartColors: AvailableChartColorsKeys[] = Object.keys(
-  chartColors,
+chartColors,
 ) as Array<AvailableChartColorsKeys>
 
 export const constructCategoryColors = (
-  categories: string[],
-  colors: AvailableChartColorsKeys[],
+categories: string[],
+colors: AvailableChartColorsKeys[],
 ): Map<string, AvailableChartColorsKeys> => {
-  const categoryColors = new Map<string, AvailableChartColorsKeys>()
-  categories.forEach((category, index) => {
-    categoryColors.set(category, colors[index % colors.length])
-  })
-  return categoryColors
+const categoryColors = new Map<string, AvailableChartColorsKeys>()
+categories.forEach((category, index) => {
+categoryColors.set(category, colors[index % colors.length])
+})
+return categoryColors
 }
 
 export const getColorClassName = (
-  color: AvailableChartColorsKeys,
-  type: ColorUtility,
+color: AvailableChartColorsKeys,
+type: ColorUtility,
 ): string => {
-  const fallbackColor = {
-    bg: "bg-gray-500",
-    stroke: "stroke-gray-500",
-    fill: "fill-gray-500",
-    text: "text-gray-500",
-  }
-  return chartColors[color]?.[type] ?? fallbackColor[type]
+const fallbackColor = {
+bg: "bg-gray-500",
+stroke: "stroke-gray-500",
+fill: "fill-gray-500",
+text: "text-gray-500",
+}
+return chartColors[color]?.[type] ?? fallbackColor[type]
 }
 
 // Tremor Raw getYAxisDomain [v0.0.0]
 
 export const getYAxisDomain = (
-  autoMinValue: boolean,
-  minValue: number | undefined,
-  maxValue: number | undefined,
+autoMinValue: boolean,
+minValue: number | undefined,
+maxValue: number | undefined,
 ) => {
-  const minDomain = autoMinValue ? "auto" : minValue ?? 0
-  const maxDomain = maxValue ?? "auto"
-  return [minDomain, maxDomain]
+const minDomain = autoMinValue ? "auto" : minValue ?? 0
+const maxDomain = maxValue ?? "auto"
+return [minDomain, maxDomain]
 }
 
 // Tremor Raw hasOnlyOneValueForKey [v0.1.0]
 
 export function hasOnlyOneValueForKey(
-  array: any[],
-  keyToCheck: string,
+array: any[],
+keyToCheck: string,
 ): boolean {
-  const val: any[] = []
+const val: any[] = []
 
-  for (const obj of array) {
-    if (Object.prototype.hasOwnProperty.call(obj, keyToCheck)) {
-      val.push(obj[keyToCheck])
-      if (val.length > 1) {
-        return false
-      }
-    }
-  }
-
-  return true
+for (const obj of array) {
+if (Object.prototype.hasOwnProperty.call(obj, keyToCheck)) {
+val.push(obj[keyToCheck])
+if (val.length > 1) {
+return false
+}
+}
 }
 
+return true
+}
 
 7
 Notes on your project structure
@@ -746,18 +747,18 @@ When adding components, we recommend adding them to a components directory insid
 
 .
 ├── src
-│   ├── app
-│   │   ├── favicon.ico
-│   │   ├── globals.css
-│   │   ├── layout.tsx
-│   │   └── page.tsx
-│   ├── components
-│   │   ├── Accordion.tsx
-│   │   ├── Badge.tsx
-│   │   └── ...
-│   └── lib
-│       ├── utils.ts
-│       └── chartUtils.ts
+│ ├── app
+│ │ ├── favicon.ico
+│ │ ├── globals.css
+│ │ ├── layout.tsx
+│ │ └── page.tsx
+│ ├── components
+│ │ ├── Accordion.tsx
+│ │ ├── Badge.tsx
+│ │ └── ...
+│ └── lib
+│ ├── utils.ts
+│ └── chartUtils.ts
 ├── package-lock.json
 ├── package.json
 ├── postcss.config.js

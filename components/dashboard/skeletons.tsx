@@ -1,8 +1,15 @@
-'use client'
+"use client";
 
-import { Skeleton } from '@/components/ui/skeleton'
-import { Card, CardContent, CardHeader } from '@/components/ui/card'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 /**
  * Skeleton for KPI/Stat cards grid
@@ -12,27 +19,33 @@ export function StatCardsSkeleton({ count = 4 }: { count?: number }) {
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {Array.from({ length: count }).map((_, i) => (
         <Card key={i} className="depth-surface">
-          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <Skeleton className="h-3 w-20" />
             <Skeleton className="h-8 w-8 rounded-md" />
           </CardHeader>
           <CardContent>
-            <Skeleton className="h-12 w-24 mb-3" />
+            <Skeleton className="mb-3 h-12 w-24" />
             <Skeleton className="h-4 w-16" />
           </CardContent>
         </Card>
       ))}
     </div>
-  )
+  );
 }
 
 /**
  * Skeleton for data tables
  */
-export function TableSkeleton({ rows = 5, columns = 6 }: { rows?: number; columns?: number }) {
+export function TableSkeleton({
+  rows = 5,
+  columns = 6,
+}: {
+  rows?: number;
+  columns?: number;
+}) {
   return (
     <Card className="overflow-hidden">
-      <div className="p-4 border-b border-border/50">
+      <div className="border-border/50 border-b p-4">
         <div className="flex items-center justify-between">
           <Skeleton className="h-10 w-64" />
           <Skeleton className="h-9 w-32" />
@@ -61,7 +74,7 @@ export function TableSkeleton({ rows = 5, columns = 6 }: { rows?: number; column
         </TableBody>
       </Table>
     </Card>
-  )
+  );
 }
 
 /**
@@ -78,7 +91,7 @@ export function ChartSkeleton() {
         <Skeleton className="h-[300px] w-full rounded-lg" />
       </CardContent>
     </Card>
-  )
+  );
 }
 
 /**
@@ -94,7 +107,7 @@ export function DashboardSkeleton() {
       </div>
       <TableSkeleton rows={5} columns={6} />
     </div>
-  )
+  );
 }
 
 /**
@@ -112,7 +125,7 @@ export function ShipmentsSkeleton() {
       </div>
       <TableSkeleton rows={8} columns={7} />
     </div>
-  )
+  );
 }
 
 /**
@@ -122,10 +135,10 @@ export function TrackingSkeleton() {
   return (
     <div className="space-y-6">
       <Card className="p-6">
-        <div className="flex flex-col gap-4 max-w-xl mx-auto">
-          <Skeleton className="h-6 w-48 mx-auto" />
+        <div className="mx-auto flex max-w-xl flex-col gap-4">
+          <Skeleton className="mx-auto h-6 w-48" />
           <Skeleton className="h-14 w-full" />
-          <Skeleton className="h-10 w-32 mx-auto" />
+          <Skeleton className="mx-auto h-10 w-32" />
         </div>
       </Card>
       <Card className="p-6">
@@ -144,7 +157,7 @@ export function TrackingSkeleton() {
         </div>
       </Card>
     </div>
-  )
+  );
 }
 
 /**
@@ -156,7 +169,7 @@ export function ManifestSkeleton() {
       <StatCardsSkeleton count={3} />
       <TableSkeleton rows={6} columns={5} />
     </div>
-  )
+  );
 }
 
 /**
@@ -168,7 +181,7 @@ export function InvoiceSkeleton() {
       <StatCardsSkeleton count={4} />
       <TableSkeleton rows={6} columns={6} />
     </div>
-  )
+  );
 }
 
 /**
@@ -186,5 +199,5 @@ export function PageSkeleton({ title }: { title?: string }) {
       <StatCardsSkeleton count={4} />
       <TableSkeleton rows={5} columns={5} />
     </div>
-  )
+  );
 }

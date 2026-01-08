@@ -41,7 +41,7 @@ async function listRecentShipments(limit: number = 10) {
       }
 
       return data;
-    }
+    },
   );
 }
 
@@ -70,12 +70,14 @@ async function queryShipment(reference: string) {
 
       const { data, error } = await supabase
         .from("shipments")
-        .select(`
+        .select(
+          `
           *,
           origin_warehouse:warehouses!origin_warehouse_id(code, name, city, state),
           destination_warehouse:warehouses!destination_warehouse_id(code, name, city, state),
           customer:customers(name, email)
-        `)
+        `,
+        )
         .eq("reference", reference)
         .single();
 
@@ -88,7 +90,7 @@ async function queryShipment(reference: string) {
       }
 
       return data;
-    }
+    },
   );
 }
 
@@ -135,7 +137,7 @@ async function getShipmentStatus(reference: string) {
         eta: data.eta,
         delivered_at: data.delivered_at,
       };
-    }
+    },
   );
 }
 
@@ -154,12 +156,15 @@ export async function GET(request: Request) {
     async () => {
       // Authentication check
       const supabase = await createClient();
-      const { data: { user }, error: authError } = await supabase.auth.getUser();
-      
+      const {
+        data: { user },
+        error: authError,
+      } = await supabase.auth.getUser();
+
       if (authError || !user) {
         return NextResponse.json(
           { error: "Authentication required" },
-          { status: 401 }
+          { status: 401 },
         );
       }
 
@@ -174,8 +179,10 @@ export async function GET(request: Request) {
           case "query":
             if (!reference || reference.trim().length === 0) {
               return NextResponse.json(
-                { error: "Valid reference parameter required for query action" },
-                { status: 400 }
+                {
+                  error: "Valid reference parameter required for query action",
+                },
+                { status: 400 },
               );
             }
             result = await queryShipment(reference.trim());
@@ -184,8 +191,10 @@ export async function GET(request: Request) {
           case "status":
             if (!reference || reference.trim().length === 0) {
               return NextResponse.json(
-                { error: "Valid reference parameter required for status action" },
-                { status: 400 }
+                {
+                  error: "Valid reference parameter required for status action",
+                },
+                { status: 400 },
               );
             }
             result = await getShipmentStatus(reference.trim());
@@ -232,18 +241,21 @@ export async function GET(request: Request) {
           },
         });
 
-        const errorMessage = process.env.NODE_ENV === "production"
-          ? "A protocol error occurred while processing the request."
-          : (error instanceof Error ? error.message : "Unknown error");
+        const errorMessage =
+          process.env.NODE_ENV === "production"
+            ? "A protocol error occurred while processing the request."
+            : error instanceof Error
+              ? error.message
+              : "Unknown error";
 
         return NextResponse.json(
           {
             success: false,
             error: errorMessage,
           },
-          { status: 500 }
+          { status: 500 },
         );
       }
-    }
+    },
   );
 }

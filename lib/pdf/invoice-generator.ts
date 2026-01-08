@@ -4,30 +4,30 @@
  */
 
 export interface InvoiceData {
-  invoice_number: string
-  invoice_date: string
-  due_date: string
+  invoice_number: string;
+  invoice_date: string;
+  due_date: string;
   customer: {
-    name: string
-    gst_number?: string
-    address: string
-    city: string
-    state: string
-    pincode: string
-  }
+    name: string;
+    gst_number?: string;
+    address: string;
+    city: string;
+    state: string;
+    pincode: string;
+  };
   items: Array<{
-    description: string
-    quantity: number
-    unit_price: number
-    gst_rate: number
-    line_total: number
-  }>
-  subtotal: number
-  gst_amount: number
-  total_amount: number
-  currency: string
-  payment_terms?: string
-  notes?: string
+    description: string;
+    quantity: number;
+    unit_price: number;
+    gst_rate: number;
+    line_total: number;
+  }>;
+  subtotal: number;
+  gst_amount: number;
+  total_amount: number;
+  currency: string;
+  payment_terms?: string;
+  notes?: string;
 }
 
 /**
@@ -46,9 +46,9 @@ export function generateInvoiceHTML(data: InvoiceData): string {
       <td style="text-align: center">${item.gst_rate}%</td>
       <td style="text-align: right; font-weight: 600">₹${item.line_total.toFixed(2)}</td>
     </tr>
-  `
+  `,
     )
-    .join('')
+    .join("");
 
   return `
 <!DOCTYPE html>
@@ -95,8 +95,8 @@ export function generateInvoiceHTML(data: InvoiceData): string {
         <div class="invoice-title">INVOICE</div>
         <div class="invoice-meta">
           ${data.invoice_number}<br>
-          Date: ${new Date(data.invoice_date).toLocaleDateString('en-IN')}<br>
-          Due: ${new Date(data.due_date).toLocaleDateString('en-IN')}
+          Date: ${new Date(data.invoice_date).toLocaleDateString("en-IN")}<br>
+          Due: ${new Date(data.due_date).toLocaleDateString("en-IN")}
         </div>
       </div>
     </div>
@@ -106,7 +106,7 @@ export function generateInvoiceHTML(data: InvoiceData): string {
         <div class="detail-box">
           <div class="section-title">Bill To</div>
           <div style="font-weight: 600; margin-bottom: 4px;">${data.customer.name}</div>
-          ${data.customer.gst_number ? `<div style="font-size: 12px; color: #6b7280; margin-bottom: 8px;">GST: ${data.customer.gst_number}</div>` : ''}
+          ${data.customer.gst_number ? `<div style="font-size: 12px; color: #6b7280; margin-bottom: 8px;">GST: ${data.customer.gst_number}</div>` : ""}
           <div style="font-size: 14px; color: #4b5563;">
             ${data.customer.address}<br>
             ${data.customer.city}, ${data.customer.state} ${data.customer.pincode}
@@ -114,8 +114,8 @@ export function generateInvoiceHTML(data: InvoiceData): string {
         </div>
         <div class="detail-box">
           <div class="section-title">Payment Terms</div>
-          <div>${data.payment_terms || 'Net 30'}</div>
-          ${data.notes ? `<div style="margin-top: 16px;"><div class="section-title">Notes</div><div style="font-size: 14px;">${data.notes}</div></div>` : ''}
+          <div>${data.payment_terms || "Net 30"}</div>
+          ${data.notes ? `<div style="margin-top: 16px;"><div class="section-title">Notes</div><div style="font-size: 14px;">${data.notes}</div></div>` : ""}
         </div>
       </div>
     </div>
@@ -161,7 +161,7 @@ export function generateInvoiceHTML(data: InvoiceData): string {
   </div>
 </body>
 </html>
-  `
+  `;
 }
 
 /**
@@ -171,11 +171,11 @@ export function generateInvoiceHTML(data: InvoiceData): string {
 export async function generateInvoicePDF(data: InvoiceData): Promise<string> {
   // For now, return HTML-based invoice
   // In production, integrate with Puppeteer/jsPDF or cloud PDF service
-  const html = generateInvoiceHTML(data)
-  
+  const html = generateInvoiceHTML(data);
+
   // Simulate PDF generation - in production, use actual PDF service
-  const blob = new Blob([html], { type: 'text/html' })
-  const url = URL.createObjectURL(blob)
-  
-  return url
+  const blob = new Blob([html], { type: "text/html" });
+  const url = URL.createObjectURL(blob);
+
+  return url;
 }

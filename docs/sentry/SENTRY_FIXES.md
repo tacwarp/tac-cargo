@@ -9,6 +9,7 @@ All deprecation warnings and configuration errors have been fixed.
 ## 1. ✅ Removed Deprecated Sentry Options
 
 ### Issue
+
 ```
 [@sentry/nextjs] DEPRECATION WARNING: disableLogger is deprecated
 [@sentry/nextjs] DEPRECATION WARNING: automaticVercelMonitors is deprecated
@@ -16,6 +17,7 @@ All deprecation warnings and configuration errors have been fixed.
 ```
 
 ### Fix Applied
+
 **File:** `@/next.config.ts:179-191`
 
 Moved deprecated top-level options to `webpack` config object:
@@ -34,6 +36,7 @@ webpack: {
 
 > [!NOTE]
 > **Next.js 16 Turbopack Behavior:**
+>
 > - **Production builds** (`next build`): Next.js 16 uses Turbopack by default for production. The `webpack` key in `withSentryConfig` is ignored when Turbopack is active. Sentry has native Turbopack support via the `experimental.turbo` configuration.
 > - **Development** (`next dev`): Turbopack is the default bundler. Use `next dev --webpack` to opt back into Webpack if needed.
 > - **Sentry + Turbopack**: Core error tracking works. For source maps, use `SENTRY_AUTH_TOKEN` with Sentry's Turbopack plugin or configure via `sentry.properties`.
@@ -45,12 +48,14 @@ webpack: {
 ## 2. ✅ Removed instrumentationHook
 
 ### Issue
+
 ```
 ⚠ `experimental.instrumentationHook` is no longer needed
 ⚠ Invalid next.config.ts options detected: Unrecognized key(s) in object: 'instrumentationHook'
 ```
 
 ### Fix Applied
+
 **File:** `@/next.config.ts:136-139`
 
 Removed `instrumentationHook` from experimental config:
@@ -69,20 +74,24 @@ experimental: {
 ## 3. ✅ Deleted middleware.ts
 
 ### Issue
+
 ```
 ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead.
 Unhandled Rejection: Error: Both middleware file "./middleware.ts" and proxy file "./proxy.ts" are detected.
 ```
 
 ### Fix Applied
+
 **Deleted:** `./middleware.ts`
 
-**Reason:** 
+**Reason:**
+
 - Next.js 16 has officially migrated from `middleware.ts` to `proxy.ts` for edge-side request interception.
 - Having both files causes a conflict and build-time errors.
 - `proxy.ts` handles all Supabase session management and authentication logic.
 
-**Verification:** 
+**Verification:**
+
 - `proxy.ts` is sufficient for standard Node.js/Edge runtimes.
 - Edge runtime is **not required** unless you are using specific Edge-only APIs or need ultra-low latency redirection. For the current Supabase integration, `proxy.ts` running on the default runtime is optimal.
 
@@ -91,6 +100,7 @@ Unhandled Rejection: Error: Both middleware file "./middleware.ts" and proxy fil
 ## Current Configuration
 
 ### Sentry Webpack Options
+
 ```typescript
 const sentryWebpackPluginOptions = {
   org: process.env.SENTRY_ORG,
@@ -108,6 +118,7 @@ const sentryWebpackPluginOptions = {
 ```
 
 ### Next.js Experimental Config
+
 ```typescript
 experimental: {
   optimizePackageImports: ['lucide-react', 'recharts'],
@@ -130,6 +141,7 @@ experimental: {
 ## Verification
 
 Run the dev server:
+
 ```bash
 npm run dev
 ```
@@ -138,7 +150,9 @@ npm run dev
 **Result:** Clean startup with Sentry fully configured
 
 ### 4. ✅ Proxy Functionality Test
+
 To verify the new `proxy.ts` is correctly intercepting requests:
+
 1. Access a protected route (e.g., `/dashboard`) without being logged in.
 2. Observe if you are redirected to `/login`.
 3. Check the server logs (or Sentry) to ensure `proxy.ts` is executing `updateSession`.

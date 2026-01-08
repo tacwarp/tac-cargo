@@ -3,7 +3,7 @@
  * @module lib/chartUtils
  */
 
-export type ColorUtility = "bg" | "stroke" | "fill" | "text"
+export type ColorUtility = "bg" | "stroke" | "fill" | "text";
 
 export const chartColors = {
   cyan: {
@@ -50,15 +50,15 @@ export const chartColors = {
   },
 } as const satisfies {
   [color: string]: {
-    [key in ColorUtility]: string
-  }
-}
+    [key in ColorUtility]: string;
+  };
+};
 
-export type AvailableChartColorsKeys = keyof typeof chartColors
+export type AvailableChartColorsKeys = keyof typeof chartColors;
 
 export const AvailableChartColors: AvailableChartColorsKeys[] = Object.keys(
   chartColors,
-) as Array<AvailableChartColorsKeys>
+) as Array<AvailableChartColorsKeys>;
 
 /**
  * Constructs a mapping of categories to colors for chart legends.
@@ -67,12 +67,15 @@ export const constructCategoryColors = (
   categories: string[],
   colors: AvailableChartColorsKeys[],
 ): Map<string, AvailableChartColorsKeys> => {
-  const categoryColors = new Map<string, AvailableChartColorsKeys>()
+  const categoryColors = new Map<string, AvailableChartColorsKeys>();
   categories.forEach((category, index) => {
-    categoryColors.set(category, colors.length > 0 ? colors[index % colors.length] : 'gray')
-  })
-  return categoryColors
-}
+    categoryColors.set(
+      category,
+      colors.length > 0 ? colors[index % colors.length] : "gray",
+    );
+  });
+  return categoryColors;
+};
 
 /**
  * Gets the appropriate Tailwind class for a chart color and utility type.
@@ -86,9 +89,9 @@ export const getColorClassName = (
     stroke: "stroke-muted",
     fill: "fill-muted",
     text: "text-muted-foreground",
-  }
-  return chartColors[color]?.[type] ?? fallbackColor[type]
-}
+  };
+  return chartColors[color]?.[type] ?? fallbackColor[type];
+};
 
 /**
  * Gets the Y-axis domain for charts with optional auto-scaling.
@@ -98,10 +101,10 @@ export const getYAxisDomain = (
   minValue: number | undefined,
   maxValue: number | undefined,
 ): [number | "auto", number | "auto"] => {
-  const minDomain = autoMinValue ? "auto" : minValue ?? 0
-  const maxDomain = maxValue ?? "auto"
-  return [minDomain, maxDomain]
-}
+  const minDomain = autoMinValue ? "auto" : (minValue ?? 0);
+  const maxDomain = maxValue ?? "auto";
+  return [minDomain, maxDomain];
+};
 
 /**
  * Checks if all values for a specific key in an array are the same.
@@ -110,17 +113,17 @@ export function hasOnlyOneValueForKey(
   array: Record<string, unknown>[],
   keyToCheck: string,
 ): boolean {
-  if (!array || array.length === 0) return false
+  if (!array || array.length === 0) return false;
 
-  const values = new Set<unknown>()
+  const values = new Set<unknown>();
 
   for (const obj of array) {
     if (Object.prototype.hasOwnProperty.call(obj, keyToCheck)) {
-      values.add(obj[keyToCheck])
+      values.add(obj[keyToCheck]);
     }
   }
 
-  return values.size === 1
+  return values.size === 1;
 }
 
 /**
@@ -132,15 +135,15 @@ export const cargoStatusColors = {
   delayed: "coral",
   pending: "blue",
   processing: "cyan",
-} as const
+} as const;
 
 /**
  * Gets the chart color for a cargo status.
  */
 export function getCargoStatusColor(
-  status: keyof typeof cargoStatusColors
+  status: keyof typeof cargoStatusColors,
 ): AvailableChartColorsKeys {
-  return cargoStatusColors[status] as AvailableChartColorsKeys
+  return cargoStatusColors[status] as AvailableChartColorsKeys;
 }
 
 /**
@@ -148,21 +151,21 @@ export function getCargoStatusColor(
  */
 export function formatChartValue(value: number, prefix: string = ""): string {
   if (value >= 1000000) {
-    return `${prefix}${(value / 1000000).toFixed(1)}M`
+    return `${prefix}${(value / 1000000).toFixed(1)}M`;
   }
   if (value >= 1000) {
-    return `${prefix}${(value / 1000).toFixed(1)}K`
+    return `${prefix}${(value / 1000).toFixed(1)}K`;
   }
-  return `${prefix}${value.toLocaleString()}`
+  return `${prefix}${value.toLocaleString()}`;
 }
 
 /**
  * Formats currency values for Indian Rupees.
  */
 export function formatINR(value: number): string {
-  return new Intl.NumberFormat('en-IN', {
-    style: 'currency',
-    currency: 'INR',
+  return new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
     maximumFractionDigits: 0,
-  }).format(value)
+  }).format(value);
 }

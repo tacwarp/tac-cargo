@@ -1,7 +1,7 @@
-import * as React from "react"
-import { cva, type VariantProps } from "class-variance-authority"
+import * as React from "react";
+import { cva, type VariantProps } from "class-variance-authority";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 const fieldVariants = cva("flex w-full", {
   variants: {
@@ -13,10 +13,11 @@ const fieldVariants = cva("flex w-full", {
   defaultVariants: {
     orientation: "vertical",
   },
-})
+});
 
 export interface FieldProps
-  extends React.HTMLAttributes<HTMLDivElement>,
+  extends
+    React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof fieldVariants> {}
 
 const Field = React.forwardRef<HTMLDivElement, FieldProps>(
@@ -26,17 +27,17 @@ const Field = React.forwardRef<HTMLDivElement, FieldProps>(
       className={cn(fieldVariants({ orientation }), className)}
       {...props}
     />
-  )
-)
-Field.displayName = "Field"
+  ),
+);
+Field.displayName = "Field";
 
 const FieldGroup = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
   <div ref={ref} className={cn("flex flex-col gap-4", className)} {...props} />
-))
-FieldGroup.displayName = "FieldGroup"
+));
+FieldGroup.displayName = "FieldGroup";
 
 const FieldLabel = React.forwardRef<
   HTMLLabelElement,
@@ -44,11 +45,11 @@ const FieldLabel = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <label
     ref={ref}
-    className={cn("text-sm font-medium leading-none", className)}
+    className={cn("text-sm leading-none font-medium", className)}
     {...props}
   />
-))
-FieldLabel.displayName = "FieldLabel"
+));
+FieldLabel.displayName = "FieldLabel";
 
 const FieldDescription = React.forwardRef<
   HTMLParagraphElement,
@@ -56,11 +57,11 @@ const FieldDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <p
     ref={ref}
-    className={cn("text-sm text-muted-foreground", className)}
+    className={cn("text-muted-foreground text-sm", className)}
     {...props}
   />
-))
-FieldDescription.displayName = "FieldDescription"
+));
+FieldDescription.displayName = "FieldDescription";
 
 const FieldError = React.forwardRef<
   HTMLParagraphElement,
@@ -68,10 +69,10 @@ const FieldError = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <p
     ref={ref}
-    className={cn("text-sm font-medium text-destructive", className)}
+    className={cn("text-destructive text-sm font-medium", className)}
     {...props}
   />
-))
-FieldError.displayName = "FieldError"
+));
+FieldError.displayName = "FieldError";
 
-export { Field, FieldGroup, FieldLabel, FieldDescription, FieldError }
+export { Field, FieldGroup, FieldLabel, FieldDescription, FieldError };

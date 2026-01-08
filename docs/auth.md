@@ -3,6 +3,7 @@
 ## Authentication Provider
 
 ### Supabase Auth
+
 **Version**: `@supabase/supabase-js` v2.89.0  
 **Session Management**: Server-side cookies via `@supabase/ssr` v0.8.0
 
@@ -11,14 +12,15 @@
 ### Client Types
 
 #### Browser Client (`lib/supabase/client.ts`)
+
 ```typescript
-import { createBrowserClient } from '@supabase/ssr'
+import { createBrowserClient } from "@supabase/ssr";
 
 export function createClient() {
   return createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  )
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  );
 }
 ```
 
@@ -26,30 +28,31 @@ export function createClient() {
 **Capabilities**: Read user session, sign in, sign up, sign out
 
 #### Server Client (`lib/supabase/server.ts`)
+
 ```typescript
-import { createServerClient } from '@supabase/ssr'
-import { cookies } from 'next/headers'
+import { createServerClient } from "@supabase/ssr";
+import { cookies } from "next/headers";
 
 export function createClient() {
-  const cookieStore = cookies()
-  
+  const cookieStore = cookies();
+
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
         get(name: string) {
-          return cookieStore.get(name)?.value
+          return cookieStore.get(name)?.value;
         },
         set(name: string, value: string, options: CookieOptions) {
-          cookieStore.set({ name, value, ...options })
+          cookieStore.set({ name, value, ...options });
         },
         remove(name: string, options: CookieOptions) {
-          cookieStore.set({ name, value: '', ...options })
+          cookieStore.set({ name, value: "", ...options });
         },
       },
-    }
-  )
+    },
+  );
 }
 ```
 
@@ -57,36 +60,37 @@ export function createClient() {
 **Capabilities**: Full auth operations with cookie management
 
 #### Middleware Client (`lib/supabase/middleware.ts`)
+
 ```typescript
-import { createServerClient } from '@supabase/ssr'
-import { NextResponse, type NextRequest } from 'next/server'
+import { createServerClient } from "@supabase/ssr";
+import { NextResponse, type NextRequest } from "next/server";
 
 export function createClient(request: NextRequest) {
   let response = NextResponse.next({
     request: {
       headers: request.headers,
     },
-  })
-  
+  });
+
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
         get(name: string) {
-          return request.cookies.get(name)?.value
+          return request.cookies.get(name)?.value;
         },
         set(name: string, value: string, options: CookieOptions) {
-          response.cookies.set({ name, value, ...options })
+          response.cookies.set({ name, value, ...options });
         },
         remove(name: string, options: CookieOptions) {
-          response.cookies.set({ name, value: '', ...options })
+          response.cookies.set({ name, value: "", ...options });
         },
       },
-    }
-  )
-  
-  return { supabase, response }
+    },
+  );
+
+  return { supabase, response };
 }
 ```
 
@@ -96,11 +100,14 @@ export function createClient(request: NextRequest) {
 ## Session Strategy
 
 ### Cookie-Based Sessions
+
 **Cookie Names**:
+
 - `sb-<project-ref>-auth-token` - Access token
 - `sb-<project-ref>-auth-token.0`, `.1`, etc. - Chunked tokens (if large)
 
 **Cookie Options**:
+
 ```typescript
 {
   httpOnly: true,
@@ -112,6 +119,7 @@ export function createClient(request: NextRequest) {
 ```
 
 ### Session Lifecycle
+
 1. **Sign In**: Creates session, sets cookies
 2. **Token Refresh**: Automatic via middleware (when near expiry)
 3. **Sign Out**: Clears session, removes cookies
@@ -120,6 +128,7 @@ export function createClient(request: NextRequest) {
 ## Authentication Flow
 
 ### Sign In Flow
+
 ```
 1. User visits /login
 2. Enters credentials
@@ -130,6 +139,7 @@ export function createClient(request: NextRequest) {
 ```
 
 ### OAuth Flow (Future)
+
 ```
 1. User clicks "Sign in with Google"
 2. Redirect to Supabase OAuth URL
@@ -141,6 +151,7 @@ export function createClient(request: NextRequest) {
 ```
 
 ### Sign Out Flow
+
 ```
 1. User clicks sign out
 2. Call supabase.auth.signOut()
@@ -151,166 +162,173 @@ export function createClient(request: NextRequest) {
 ## Login Page Implementation
 
 ### Current Pattern
+
 ```tsx
 // app/login/page.tsx
-'use client'
-import { createClient } from '@/lib/supabase/client'
-import { useRouter } from 'next/navigation'
+"use client";
+import { createClient } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
-  const router = useRouter()
-  const supabase = createClient()
-  
+  const router = useRouter();
+  const supabase = createClient();
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    const formData = new FormData(e.currentTarget)
-    
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+
     const { error } = await supabase.auth.signInWithPassword({
-      email: formData.get('email') as string,
-      password: formData.get('password') as string,
-    })
-    
+      email: formData.get("email") as string,
+      password: formData.get("password") as string,
+    });
+
     if (error) {
-      console.error('Sign in error:', error.message)
-      return
+      console.error("Sign in error:", error.message);
+      return;
     }
-    
-    router.push('/dashboard')
-    router.refresh() // Refresh server components
+
+    router.push("/dashboard");
+    router.refresh(); // Refresh server components
   }
-  
+
   return (
     <form onSubmit={handleSubmit}>
       <input name="email" type="email" required />
       <input name="password" type="password" required />
       <button type="submit">Sign In</button>
     </form>
-  )
+  );
 }
 ```
 
 ## OAuth Callback Handler
 
 ### Implementation
+
 ```tsx
 // app/auth/callback/route.ts
-import { createClient } from '@/lib/supabase/server'
-import { NextResponse } from 'next/server'
+import { createClient } from "@/lib/supabase/server";
+import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
-  const requestUrl = new URL(request.url)
-  const code = requestUrl.searchParams.get('code')
-  
+  const requestUrl = new URL(request.url);
+  const code = requestUrl.searchParams.get("code");
+
   if (code) {
-    const supabase = createClient()
-    
+    const supabase = createClient();
+
     // Exchange code for session
-    await supabase.auth.exchangeCodeForSession(code)
+    await supabase.auth.exchangeCodeForSession(code);
   }
-  
+
   // Redirect to dashboard or origin
-  const origin = requestUrl.origin
-  return NextResponse.redirect(`${origin}/dashboard`)
+  const origin = requestUrl.origin;
+  return NextResponse.redirect(`${origin}/dashboard`);
 }
 ```
 
 ## Route Protection
 
 ### Middleware Implementation
+
 ```typescript
 // middleware.ts
-import { createClient } from '@/lib/supabase/middleware'
-import { NextResponse, type NextRequest } from 'next/server'
+import { createClient } from "@/lib/supabase/middleware";
+import { NextResponse, type NextRequest } from "next/server";
 
 export async function middleware(request: NextRequest) {
-  const { supabase, response } = createClient(request)
-  
+  const { supabase, response } = createClient(request);
+
   // Refresh session if expired
   const {
     data: { user },
-  } = await supabase.auth.getUser()
-  
+  } = await supabase.auth.getUser();
+
   // Protected routes
-  if (request.nextUrl.pathname.startsWith('/dashboard')) {
+  if (request.nextUrl.pathname.startsWith("/dashboard")) {
     if (!user) {
-      const redirectUrl = request.nextUrl.clone()
-      redirectUrl.pathname = '/login'
-      redirectUrl.searchParams.set('redirect', request.nextUrl.pathname)
-      return NextResponse.redirect(redirectUrl)
+      const redirectUrl = request.nextUrl.clone();
+      redirectUrl.pathname = "/login";
+      redirectUrl.searchParams.set("redirect", request.nextUrl.pathname);
+      return NextResponse.redirect(redirectUrl);
     }
   }
-  
+
   // Already authenticated, redirect from login
-  if (request.nextUrl.pathname === '/login' && user) {
-    const redirectUrl = request.nextUrl.clone()
-    redirectUrl.pathname = '/dashboard'
-    return NextResponse.redirect(redirectUrl)
+  if (request.nextUrl.pathname === "/login" && user) {
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = "/dashboard";
+    return NextResponse.redirect(redirectUrl);
   }
-  
-  return response
+
+  return response;
 }
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
-}
+};
 ```
 
 ### Manual Route Protection (Server Components)
+
 ```tsx
 // app/(dashboard)/dashboard/page.tsx
-import { createClient } from '@/lib/supabase/server'
-import { redirect } from 'next/navigation'
+import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 
 export default async function DashboardPage() {
-  const supabase = createClient()
-  
+  const supabase = createClient();
+
   const {
     data: { user },
-  } = await supabase.auth.getUser()
-  
+  } = await supabase.auth.getUser();
+
   if (!user) {
-    redirect('/login')
+    redirect("/login");
   }
-  
-  return <Dashboard user={user} />
+
+  return <Dashboard user={user} />;
 }
 ```
 
 ## Role & Permission Model
 
 ### Current: Basic User Model
+
 ```typescript
 interface User {
-  id: string
-  email: string
-  role?: 'admin' | 'manager' | 'driver' | 'client'
-  created_at: string
-  updated_at: string
+  id: string;
+  email: string;
+  role?: "admin" | "manager" | "driver" | "client";
+  created_at: string;
+  updated_at: string;
 }
 ```
 
 ### Supabase User Metadata
+
 ```typescript
 // Set on sign up
 const { data, error } = await supabase.auth.signUp({
-  email: 'user@example.com',
-  password: 'password',
+  email: "user@example.com",
+  password: "password",
   options: {
     data: {
-      role: 'client',
-      company_name: 'Example Corp',
+      role: "client",
+      company_name: "Example Corp",
     },
   },
-})
+});
 
 // Access in user object
-const user = await supabase.auth.getUser()
-const role = user.data.user?.user_metadata?.role
+const user = await supabase.auth.getUser();
+const role = user.data.user?.user_metadata?.role;
 ```
 
 ### Database-Level Permissions (RLS)
+
 ```sql
 -- Row-Level Security policy
 CREATE POLICY "Users can view own shipments"
@@ -327,24 +345,27 @@ USING (
 ```
 
 ### Application-Level Authorization
+
 ```typescript
 // lib/auth-helpers.ts
 export async function requireAdmin() {
-  const supabase = createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  
-  if (!user || user.user_metadata?.role !== 'admin') {
-    throw new Error('Unauthorized')
+  const supabase = createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user || user.user_metadata?.role !== "admin") {
+    throw new Error("Unauthorized");
   }
-  
-  return user
+
+  return user;
 }
 
 // Usage in Server Action
-'use server'
+("use server");
 export async function deleteShipment(id: string) {
-  await requireAdmin()
-  
+  await requireAdmin();
+
   // Proceed with admin action
 }
 ```
@@ -352,19 +373,20 @@ export async function deleteShipment(id: string) {
 ## User Profile Management
 
 ### Fetch User Profile
+
 ```typescript
 // Server Component
 export async function UserProfile() {
   const supabase = createClient()
-  
+
   const {
     data: { user },
   } = await supabase.auth.getUser()
-  
+
   if (!user) {
     redirect('/login')
   }
-  
+
   return (
     <div>
       <p>Email: {user.email}</p>
@@ -375,25 +397,26 @@ export async function UserProfile() {
 ```
 
 ### Update User Metadata
+
 ```typescript
 'use client'
 import { createClient } from '@/lib/supabase/client'
 
 export function UpdateProfileForm() {
   const supabase = createClient()
-  
+
   async function handleUpdate(formData: FormData) {
     const { error } = await supabase.auth.updateUser({
       data: {
         company_name: formData.get('company_name'),
       },
     })
-    
+
     if (error) {
       console.error('Update error:', error)
     }
   }
-  
+
   return <form action={handleUpdate}>{/* fields */}</form>
 }
 ```
@@ -401,89 +424,93 @@ export function UpdateProfileForm() {
 ## Password Management
 
 ### Change Password
+
 ```typescript
 'use client'
 export function ChangePasswordForm() {
   const supabase = createClient()
-  
+
   async function handleChange(formData: FormData) {
     const { error } = await supabase.auth.updateUser({
       password: formData.get('newPassword') as string,
     })
-    
+
     if (error) {
       console.error('Password change error:', error)
     }
   }
-  
+
   return <form action={handleChange}>{/* fields */}</form>
 }
 ```
 
 ### Password Reset Flow
+
 ```typescript
 // 1. Request reset email
 const { error } = await supabase.auth.resetPasswordForEmail(email, {
   redirectTo: `${window.location.origin}/auth/reset-password`,
-})
+});
 
 // 2. Handle reset in callback route
 // app/auth/reset-password/route.ts
 export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url)
-  const token = searchParams.get('token')
-  
+  const { searchParams } = new URL(request.url);
+  const token = searchParams.get("token");
+
   // Redirect to reset form with token
-  return NextResponse.redirect(`/reset-password?token=${token}`)
+  return NextResponse.redirect(`/reset-password?token=${token}`);
 }
 
 // 3. Submit new password
 const { error } = await supabase.auth.updateUser({
   password: newPassword,
-})
+});
 ```
 
 ## Session Management Utilities
 
 ### Check Authentication Status
+
 ```typescript
 // Server Component
 export async function getUser() {
-  const supabase = createClient()
+  const supabase = createClient();
   const {
     data: { user },
-  } = await supabase.auth.getUser()
-  return user
+  } = await supabase.auth.getUser();
+  return user;
 }
 
 // Client Component
-'use client'
-import { createClient } from '@/lib/supabase/client'
-import { useEffect, useState } from 'react'
+("use client");
+import { createClient } from "@/lib/supabase/client";
+import { useEffect, useState } from "react";
 
 export function useUser() {
-  const [user, setUser] = useState(null)
-  const supabase = createClient()
-  
+  const [user, setUser] = useState(null);
+  const supabase = createClient();
+
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
-      setUser(user)
-    })
-    
+      setUser(user);
+    });
+
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null)
-    })
-    
-    return () => subscription.unsubscribe()
-  }, [supabase])
-  
-  return user
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, [supabase]);
+
+  return user;
 }
 ```
 
 ### Sign Out
+
 ```typescript
 // Client Component
 'use client'
@@ -493,13 +520,13 @@ import { useRouter } from 'next/navigation'
 export function SignOutButton() {
   const router = useRouter()
   const supabase = createClient()
-  
+
   async function handleSignOut() {
     await supabase.auth.signOut()
     router.push('/')
     router.refresh()
   }
-  
+
   return <button onClick={handleSignOut}>Sign Out</button>
 }
 ```
@@ -507,6 +534,7 @@ export function SignOutButton() {
 ## Security Best Practices
 
 ### Environment Variables
+
 ```env
 # Public (exposed to browser)
 NEXT_PUBLIC_SUPABASE_URL=https://xxx.supabase.co
@@ -517,11 +545,13 @@ SUPABASE_SERVICE_ROLE_KEY=eyJxxx...
 ```
 
 **Rules**:
+
 - Never expose service role key to client
 - Anon key is safe to expose (RLS enforced)
 - Use service role key only for admin operations
 
 ### Row-Level Security (RLS)
+
 **MANDATORY**: All tables must have RLS policies
 
 ```sql
@@ -542,87 +572,98 @@ USING (auth.uid() = user_id);
 ```
 
 ### PKCE Flow
+
 **Enabled by default** in `@supabase/ssr`
 
 **Benefits**:
+
 - No client secret required
 - Secure for public clients
 - Resistant to authorization code interception
 
 ### Session Refresh
+
 **Automatic** via middleware
 
 **Manual refresh** (if needed):
+
 ```typescript
-const { data, error } = await supabase.auth.refreshSession()
+const { data, error } = await supabase.auth.refreshSession();
 ```
 
 ## Error Handling
 
 ### Authentication Errors
+
 ```typescript
 const { data, error } = await supabase.auth.signInWithPassword({
   email,
   password,
-})
+});
 
 if (error) {
   switch (error.message) {
-    case 'Invalid login credentials':
+    case "Invalid login credentials":
       // Show "Incorrect email or password"
-      break
-    case 'Email not confirmed':
+      break;
+    case "Email not confirmed":
       // Show "Please confirm your email"
-      break
+      break;
     default:
       // Show generic error
-      break
+      break;
   }
 }
 ```
 
 ### Session Errors
+
 ```typescript
 const {
   data: { user },
   error,
-} = await supabase.auth.getUser()
+} = await supabase.auth.getUser();
 
 if (error) {
   // Session invalid or expired
-  redirect('/login')
+  redirect("/login");
 }
 
 if (!user) {
   // No active session
-  redirect('/login')
+  redirect("/login");
 }
 ```
 
 ## Testing Authentication
 
 ### Test Accounts (Development)
+
 ```typescript
 // Create test user
 const { data, error } = await supabase.auth.signUp({
-  email: 'test@example.com',
-  password: 'test-password',
+  email: "test@example.com",
+  password: "test-password",
   options: {
     data: {
-      role: 'client',
+      role: "client",
     },
   },
-})
+});
 ```
 
 ### Bypass Auth (Development Only)
+
 ```typescript
 // middleware.ts
 export async function middleware(request: NextRequest) {
-  if (process.env.NODE_ENV === 'development' && process.env.BYPASS_AUTH === 'true') {
-    return NextResponse.next()
+  if (
+    process.env.NODE_ENV === "development" &&
+    process.env.BYPASS_AUTH === "true"
+  ) {
+    return NextResponse.next();
   }
-  
+
   // Normal auth flow
 }
 ```
@@ -630,12 +671,14 @@ export async function middleware(request: NextRequest) {
 ## Future Enhancements
 
 ### Phase 2
+
 - OAuth providers (Google, GitHub)
 - Magic link authentication
 - Multi-factor authentication (MFA)
 - Session device management
 
 ### Phase 3
+
 - Role-based UI rendering
 - Permission-based feature flags
 - Audit logging for auth events
@@ -644,6 +687,7 @@ export async function middleware(request: NextRequest) {
 ## Rules Summary
 
 ### ✅ Do
+
 - Use appropriate client for context (browser/server/middleware)
 - Validate session on protected routes
 - Implement RLS policies on all tables
@@ -653,6 +697,7 @@ export async function middleware(request: NextRequest) {
 - Use server-side validation for mutations
 
 ### ❌ Don't
+
 - Expose service role key to client
 - Skip RLS policies
 - Store tokens in localStorage

@@ -1,91 +1,95 @@
-import crypto from 'crypto'
-import { createClient } from '@/lib/supabase/server'
+import crypto from "crypto";
+import { createClient } from "@/lib/supabase/server";
 
-const API_KEY_PREFIX = 'tac_'
-const API_KEY_LENGTH = 32
+const API_KEY_PREFIX = "tac_";
+const API_KEY_LENGTH = 32;
 
-export function generateApiKey(): { key: string; hash: string; prefix: string } {
-  const random = crypto.randomBytes(API_KEY_LENGTH).toString('base64url')
-  const key = `${API_KEY_PREFIX}${random}`
-  const hash = crypto.createHash('sha256').update(key).digest('hex')
-  const prefix = key.slice(0, 12)
-  
-  return { key, hash, prefix }
+export function generateApiKey(): {
+  key: string;
+  hash: string;
+  prefix: string;
+} {
+  const random = crypto.randomBytes(API_KEY_LENGTH).toString("base64url");
+  const key = `${API_KEY_PREFIX}${random}`;
+  const hash = crypto.createHash("sha256").update(key).digest("hex");
+  const prefix = key.slice(0, 12);
+
+  return { key, hash, prefix };
 }
 
 export function hashApiKey(key: string): string {
-  return crypto.createHash('sha256').update(key).digest('hex')
+  return crypto.createHash("sha256").update(key).digest("hex");
 }
 
 export async function validateApiKey(key: string): Promise<{
-  valid: boolean
-  organizationId?: string
-  scopes?: string[]
-  error?: string
+  valid: boolean;
+  organizationId?: string;
+  scopes?: string[];
+  error?: string;
 }> {
   if (!key || !key.startsWith(API_KEY_PREFIX)) {
-    return { valid: false, error: 'Invalid API key format' }
+    return { valid: false, error: "Invalid API key format" };
   }
 
   try {
-    const supabase = await createClient()
-    const hash = hashApiKey(key)
+    const supabase = await createClient();
+    const hash = hashApiKey(key);
 
     const { data: apiKey, error } = await supabase
-      .from('api_keys')
-      .select('organization_id, scopes, expires_at, is_active')
-      .eq('key_hash', hash)
-      .single()
+      .from("api_keys")
+      .select("organization_id, scopes, expires_at, is_active")
+      .eq("key_hash", hash)
+      .single();
 
     if (error || !apiKey) {
-      return { valid: false, error: 'API key not found' }
+      return { valid: false, error: "API key not found" };
     }
 
     if (!apiKey.is_active) {
-      return { valid: false, error: 'API key is inactive' }
+      return { valid: false, error: "API key is inactive" };
     }
 
     if (apiKey.expires_at && new Date(apiKey.expires_at) < new Date()) {
-      return { valid: false, error: 'API key has expired' }
+      return { valid: false, error: "API key has expired" };
     }
 
     // Update last used timestamp
     await supabase
-      .from('api_keys')
+      .from("api_keys")
       .update({ last_used_at: new Date().toISOString() })
-      .eq('key_hash', hash)
+      .eq("key_hash", hash);
 
     return {
       valid: true,
       organizationId: apiKey.organization_id,
-      scopes: apiKey.scopes || ['read'],
-    }
+      scopes: apiKey.scopes || ["read"],
+    };
   } catch (error) {
-    console.error('API key validation error:', error)
-    return { valid: false, error: 'Validation failed' }
+    console.error("API key validation error:", error);
+    return { valid: false, error: "Validation failed" };
   }
 }
 
 export function hasScope(scopes: string[], required: string): boolean {
-  return scopes.includes(required) || scopes.includes('*')
+  return scopes.includes(required) || scopes.includes("*");
 }
 
 export async function createApiKeyForOrg(
   organizationId: string,
   name: string,
-  scopes: string[] = ['read'],
-  expiresInDays?: number
+  scopes: string[] = ["read"],
+  expiresInDays?: number,
 ): Promise<{ key: string; id: string } | null> {
   try {
-    const supabase = await createClient()
-    const { key, hash, prefix } = generateApiKey()
+    const supabase = await createClient();
+    const { key, hash, prefix } = generateApiKey();
 
     const expiresAt = expiresInDays
       ? new Date(Date.now() + expiresInDays * 24 * 60 * 60 * 1000).toISOString()
-      : null
+      : null;
 
     const { data, error } = await supabase
-      .from('api_keys')
+      .from("api_keys")
       .insert({
         organization_id: organizationId,
         name,
@@ -95,17 +99,17 @@ export async function createApiKeyForOrg(
         expires_at: expiresAt,
         is_active: true,
       })
-      .select('id')
-      .single()
+      .select("id")
+      .single();
 
     if (error || !data) {
-      console.error('Failed to create API key:', error)
-      return null
+      console.error("Failed to create API key:", error);
+      return null;
     }
 
-    return { key, id: data.id }
+    return { key, id: data.id };
   } catch (error) {
-    console.error('API key creation error:', error)
-    return null
+    console.error("API key creation error:", error);
+    return null;
   }
 }

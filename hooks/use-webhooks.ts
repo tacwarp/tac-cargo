@@ -1,80 +1,80 @@
-'use client'
+"use client";
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface Webhook {
-  id: string
-  name: string
-  url: string
-  events: string[]
-  is_active: boolean
-  last_triggered_at?: string
-  failure_count: number
-  created_at: string
+  id: string;
+  name: string;
+  url: string;
+  events: string[];
+  is_active: boolean;
+  last_triggered_at?: string;
+  failure_count: number;
+  created_at: string;
 }
 
 interface CreateWebhookData {
-  name: string
-  url: string
-  events?: string[]
-  secret?: string
+  name: string;
+  url: string;
+  events?: string[];
+  secret?: string;
 }
 
 export function useWebhooks() {
   return useQuery({
-    queryKey: ['webhooks'],
+    queryKey: ["webhooks"],
     queryFn: async () => {
-      const response = await fetch('/api/webhooks')
+      const response = await fetch("/api/webhooks");
       if (!response.ok) {
-        throw new Error('Failed to fetch webhooks')
+        throw new Error("Failed to fetch webhooks");
       }
-      const data = await response.json()
-      return data.webhooks as Webhook[]
+      const data = await response.json();
+      return data.webhooks as Webhook[];
     },
-  })
+  });
 }
 
 export function useCreateWebhook() {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (data: CreateWebhookData) => {
-      const response = await fetch('/api/webhooks', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/webhooks", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
-      })
+      });
 
       if (!response.ok) {
-        const error = await response.json()
-        throw new Error(error.error || 'Failed to create webhook')
+        const error = await response.json();
+        throw new Error(error.error || "Failed to create webhook");
       }
 
-      return response.json()
+      return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['webhooks'] })
+      queryClient.invalidateQueries({ queryKey: ["webhooks"] });
     },
-  })
+  });
 }
 
 export function useDeleteWebhook() {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (id: string) => {
       const response = await fetch(`/api/webhooks?id=${id}`, {
-        method: 'DELETE',
-      })
+        method: "DELETE",
+      });
 
       if (!response.ok) {
-        throw new Error('Failed to delete webhook')
+        throw new Error("Failed to delete webhook");
       }
 
-      return response.json()
+      return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['webhooks'] })
+      queryClient.invalidateQueries({ queryKey: ["webhooks"] });
     },
-  })
+  });
 }

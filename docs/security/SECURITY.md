@@ -65,18 +65,18 @@ We take security seriously at TAC Cargo. If you discover a security vulnerabilit
 
 ## OWASP Top 10 Considerations
 
-| Risk | Status | Notes |
-|------|--------|-------|
-| Injection | ✅ Mitigated | Parameterized queries via Supabase |
-| Broken Auth | ✅ Mitigated | Supabase Auth with session management |
-| Sensitive Data Exposure | ✅ Mitigated | Env vars, no hardcoded secrets |
-| XXE | ✅ N/A | No XML processing |
-| Broken Access Control | ✅ Mitigated | RLS policies, middleware checks |
-| Security Misconfiguration | ⚠️ Review | Regular audit recommended |
-| XSS | ✅ Mitigated | React auto-escapes, CSP headers |
-| Insecure Deserialization | ✅ N/A | No custom deserialization |
-| Vulnerable Components | ⚠️ Monitor | Regular dependency updates |
-| Insufficient Logging | ⚠️ Enhance | Add structured logging |
+| Risk                      | Status       | Notes                                 |
+| ------------------------- | ------------ | ------------------------------------- |
+| Injection                 | ✅ Mitigated | Parameterized queries via Supabase    |
+| Broken Auth               | ✅ Mitigated | Supabase Auth with session management |
+| Sensitive Data Exposure   | ✅ Mitigated | Env vars, no hardcoded secrets        |
+| XXE                       | ✅ N/A       | No XML processing                     |
+| Broken Access Control     | ✅ Mitigated | RLS policies, middleware checks       |
+| Security Misconfiguration | ⚠️ Review    | Regular audit recommended             |
+| XSS                       | ✅ Mitigated | React auto-escapes, CSP headers       |
+| Insecure Deserialization  | ✅ N/A       | No custom deserialization             |
+| Vulnerable Components     | ⚠️ Monitor   | Regular dependency updates            |
+| Insufficient Logging      | ⚠️ Enhance   | Add structured logging                |
 
 ## Security Headers
 
@@ -85,26 +85,26 @@ Recommended security headers for production (configure in `next.config.ts`):
 ```typescript
 const securityHeaders = [
   {
-    key: 'X-DNS-Prefetch-Control',
-    value: 'on'
+    key: "X-DNS-Prefetch-Control",
+    value: "on",
   },
   {
-    key: 'Strict-Transport-Security',
-    value: 'max-age=63072000; includeSubDomains; preload'
+    key: "Strict-Transport-Security",
+    value: "max-age=63072000; includeSubDomains; preload",
   },
   {
-    key: 'X-Frame-Options',
-    value: 'SAMEORIGIN'
+    key: "X-Frame-Options",
+    value: "SAMEORIGIN",
   },
   {
-    key: 'X-Content-Type-Options',
-    value: 'nosniff'
+    key: "X-Content-Type-Options",
+    value: "nosniff",
   },
   {
-    key: 'Referrer-Policy',
-    value: 'origin-when-cross-origin'
-  }
-]
+    key: "Referrer-Policy",
+    value: "origin-when-cross-origin",
+  },
+];
 ```
 
 ## Contact

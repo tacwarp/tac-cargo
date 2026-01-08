@@ -1,6 +1,6 @@
-'use client'
+"use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   LineChart,
   Line,
@@ -10,24 +10,24 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-} from 'recharts'
-import { format } from 'date-fns'
+} from "recharts";
+import { format } from "date-fns";
 
 interface TrendChartProps {
   data: Array<{
-    date: string
-    total: number
-    delivered: number
-    pending: number
-  }>
-  loading?: boolean
+    date: string;
+    total: number;
+    delivered: number;
+    pending: number;
+  }>;
+  loading?: boolean;
 }
 
 export function TrendChart({ data, loading }: TrendChartProps) {
   const formattedData = data?.map((item) => ({
     ...item,
-    date: format(new Date(item.date), 'MMM dd'),
-  }))
+    date: format(new Date(item.date), "MMM dd"),
+  }));
 
   if (loading) {
     return (
@@ -36,10 +36,10 @@ export function TrendChart({ data, loading }: TrendChartProps) {
           <CardTitle>7-Day Trend</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="h-[300px] bg-muted animate-pulse rounded" />
+          <div className="bg-muted h-[300px] animate-pulse rounded" />
         </CardContent>
       </Card>
-    )
+    );
   }
 
   return (
@@ -67,24 +67,24 @@ export function TrendChart({ data, loading }: TrendChartProps) {
             <Line
               type="monotone"
               dataKey="delivered"
-              stroke="hsl(var(--emerald-500))"
+              stroke="hsl(var(--success))"
               strokeWidth={2}
               name="Delivered"
               dot={false}
-              activeDot={{ r: 6, fill: "hsl(var(--emerald-500))" }}
+              activeDot={{ r: 6, fill: "hsl(var(--success))" }}
             />
             <Line
               type="monotone"
               dataKey="pending"
-              stroke="hsl(var(--orange-500))"
+              stroke="hsl(var(--warning))"
               strokeWidth={2}
               name="Pending"
               dot={false}
-              activeDot={{ r: 6, fill: "hsl(var(--orange-500))" }}
+              activeDot={{ r: 6, fill: "hsl(var(--warning))" }}
             />
           </LineChart>
         </ResponsiveContainer>
       </CardContent>
     </Card>
-  )
+  );
 }

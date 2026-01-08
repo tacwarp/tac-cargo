@@ -1,135 +1,140 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { CheckCircle2, QrCode } from 'lucide-react';
-import { QRCodeCanvas } from 'qrcode.react';
+import React from "react";
+import { motion } from "framer-motion";
+import { CheckCircle2, QrCode } from "lucide-react";
 
-import { cn } from '@/lib/utils';
+import { cn } from "@/lib/utils";
+import { ThemeAwareQRCode } from "@/components/ui/qr-code";
 
 // Props interface for type safety and reusability
 export interface PackageTrackerCardProps {
-    status: string;
-    packageNumber: string;
-    destination: string;
-    destinationFlag: React.ReactNode;
-    date: string;
-    qrCodeValue?: string;
-    packageImage: React.ReactNode;
-    onTrackClick?: () => void;
-    className?: string;
+  status: string;
+  packageNumber: string;
+  destination: string;
+  destinationFlag: React.ReactNode;
+  date: string;
+  qrCodeValue?: string;
+  packageImage: React.ReactNode;
+  onTrackClick?: () => void;
+  className?: string;
 }
 
 // A simple container for the package image with an animated background
 const PackageImageContainer = ({ children }: { children: React.ReactNode }) => (
-    <div className="relative flex h-48 w-full items-center justify-center overflow-hidden bg-muted/20">
-        {/* Animated background to simulate a conveyor belt */}
-        <div
-            className={cn(
-                'absolute inset-0 z-0 h-full w-full',
-                'bg-[hsl(var(--muted)/0.3)]',
-                'bg-[size:80px_80px]',
-                'bg-gradient-to-r from-transparent via-[hsl(var(--muted)/0.3)] to-transparent',
-                'animate-conveyor-belt' // This requires a custom animation keyframe in globals.css or tailwind config
-            )}
-            style={{
-                backgroundImage: `
+  <div className="bg-muted/20 relative flex h-48 w-full items-center justify-center overflow-hidden">
+    {/* Animated background to simulate a conveyor belt */}
+    <div
+      className={cn(
+        "absolute inset-0 z-0 h-full w-full",
+        "bg-[hsl(var(--muted)/0.3)]",
+        "bg-[size:80px_80px]",
+        "bg-gradient-to-r from-transparent via-[hsl(var(--muted)/0.3)] to-transparent",
+        "animate-conveyor-belt", // This requires a custom animation keyframe in globals.css or tailwind config
+      )}
+      style={{
+        backgroundImage: `
           repeating-linear-gradient(45deg, transparent, transparent 25px, hsl(var(--muted)/0.2) 25px, hsl(var(--muted)/0.2) 50px),
           repeating-linear-gradient(-45deg, transparent, transparent 25px, hsl(var(--muted)/0.2) 25px, hsl(var(--muted)/0.2) 50px)
         `,
-            }}
-        />
-        <div className="z-10 relative">{children}</div>
-    </div>
+      }}
+    />
+    <div className="relative z-10">{children}</div>
+  </div>
 );
 
 export const PackageTrackerCard = ({
-    status,
-    packageNumber,
-    destination,
-    destinationFlag,
-    date,
-    qrCodeValue,
-    packageImage,
-    onTrackClick,
-    className,
+  status,
+  packageNumber,
+  destination,
+  destinationFlag,
+  date,
+  qrCodeValue,
+  packageImage,
+  onTrackClick,
+  className,
 }: PackageTrackerCardProps) => {
-    const cardVariants = {
-        hidden: { opacity: 0, y: 30 },
-        visible: {
-            opacity: 1,
-            y: 0,
-            transition: {
-                type: 'spring',
-                stiffness: 100,
-                damping: 15,
-                staggerChildren: 0.1,
-            } as const,
-        },
-    };
+  const cardVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 15,
+        staggerChildren: 0.1,
+      } as const,
+    },
+  };
 
-    const itemVariants = {
-        hidden: { opacity: 0, y: 20 },
-        visible: { opacity: 1, y: 0 },
-    };
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+  };
 
-    return (
-        <motion.div
-            variants={cardVariants}
-            initial="hidden"
-            animate="visible"
-            className={cn(
-                'w-full max-w-sm overflow-hidden rounded-3xl border bg-card text-card-foreground shadow-lg',
-                className
-            )}
+  return (
+    <motion.div
+      variants={cardVariants}
+      initial="hidden"
+      animate="visible"
+      className={cn(
+        "bg-card text-card-foreground w-full max-w-sm overflow-hidden rounded-3xl border shadow-lg",
+        className,
+      )}
+    >
+      {/* Top Section */}
+      <div className="p-4">
+        <motion.button
+          variants={itemVariants}
+          onClick={onTrackClick}
+          className="bg-muted/50 text-muted-foreground hover:bg-muted flex w-full items-center justify-center gap-2 rounded-full px-4 py-2 text-sm transition-colors"
         >
-            {/* Top Section */}
-            <div className="p-4">
-                <motion.button
-                    variants={itemVariants}
-                    onClick={onTrackClick}
-                    className="flex w-full items-center justify-center gap-2 rounded-full bg-muted/50 px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted"
-                >
-                    <CheckCircle2 className="h-4 w-4 text-green-500" />
-                    Show full tracking
-                </motion.button>
-            </div>
+          <CheckCircle2 className="h-4 w-4 text-success" />
+          Show full tracking
+        </motion.button>
+      </div>
 
-            {/* Image Section */}
-            <motion.div variants={itemVariants}>
-                <PackageImageContainer>{packageImage}</PackageImageContainer>
-            </motion.div>
+      {/* Image Section */}
+      <motion.div variants={itemVariants}>
+        <PackageImageContainer>{packageImage}</PackageImageContainer>
+      </motion.div>
 
-            {/* Details Section */}
-            <div className="p-6">
-                <motion.div variants={itemVariants} className="flex items-center gap-2">
-                    {destinationFlag}
-                    <span className="text-sm font-medium text-muted-foreground">{destination}</span>
-                </motion.div>
-
-                <motion.h2 variants={itemVariants} className="mt-2 text-3xl font-bold tracking-tight">
-                    {status}
-                </motion.h2>
-
-                <div className="mt-6 flex items-end justify-between">
-                    <motion.div variants={itemVariants} className="space-y-1">
-                        <p className="text-xs text-muted-foreground">Package Number:</p>
-                        <p className="font-mono text-sm">{packageNumber}</p>
-                        <p className="text-xs text-muted-foreground">{date}</p>
-                    </motion.div>
-
-                    <motion.div
-                        variants={itemVariants}
-                        className="rounded-lg border border-border/50 p-1 bg-background"
-                    >
-                        {qrCodeValue ? (
-                            <QRCodeCanvas value={qrCodeValue} size={64} bgColor="#ffffff" fgColor="#000000" />
-                        ) : (
-                            <div className="flex h-16 w-16 items-center justify-center bg-muted">
-                                <QrCode className="h-8 w-8 text-muted-foreground" />
-                            </div>
-                        )}
-                    </motion.div>
-                </div>
-            </div>
+      {/* Details Section */}
+      <div className="p-6">
+        <motion.div variants={itemVariants} className="flex items-center gap-2">
+          {destinationFlag}
+          <span className="text-muted-foreground text-sm font-medium">
+            {destination}
+          </span>
         </motion.div>
-    );
+
+        <motion.h2
+          variants={itemVariants}
+          className="mt-2 text-3xl font-bold tracking-tight"
+        >
+          {status}
+        </motion.h2>
+
+        <div className="mt-6 flex items-end justify-between">
+          <motion.div variants={itemVariants} className="space-y-1">
+            <p className="text-muted-foreground text-xs">Package Number:</p>
+            <p className="font-mono text-sm">{packageNumber}</p>
+            <p className="text-muted-foreground text-xs">{date}</p>
+          </motion.div>
+
+          <motion.div
+            variants={itemVariants}
+            className="border-border/50 bg-background rounded-lg border p-1"
+          >
+            {qrCodeValue ? (
+              <ThemeAwareQRCode value={qrCodeValue} size={64} />
+            ) : (
+              <div className="bg-muted flex h-16 w-16 items-center justify-center">
+                <QrCode className="text-muted-foreground h-8 w-8" />
+              </div>
+            )}
+          </motion.div>
+        </div>
+      </div>
+    </motion.div>
+  );
 };

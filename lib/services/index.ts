@@ -1,1 +1,1 @@
-export * from './shipment-events'
+export * from "./shipment-events";

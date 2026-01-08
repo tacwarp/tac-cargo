@@ -9,6 +9,7 @@ This checklist **MUST** be completed before deploying to production. Each item a
 ## ✅ Phase 1: Critical Security Fixes (COMPLETED)
 
 ### 1.1 Root Proxy Implementation
+
 - [x] **Verified** `proxy.ts` exists at project root (Next.js 16 uses proxy.ts instead of middleware.ts)
 - [x] **Configured** matcher pattern to cover all routes
 - [x] **Verified** proxy invokes `updateSession()` from `lib/supabase/middleware.ts`
@@ -23,6 +24,7 @@ This checklist **MUST** be completed before deploying to production. Each item a
 ---
 
 ### 1.2 Dashboard Layout Authentication
+
 - [x] **Added** server-side authentication check
 - [x] **Imported** `createClient` from `lib/supabase/server`
 - [x] **Implemented** `getUser()` validation
@@ -36,6 +38,7 @@ This checklist **MUST** be completed before deploying to production. Each item a
 ---
 
 ### 1.3 Row-Level Security (RLS) Policies
+
 - [x] **Created** RLS policy documentation
 - [ ] **Login** to Supabase dashboard
 - [ ] **Enable RLS** on `customers` table
@@ -51,6 +54,7 @@ This checklist **MUST** be completed before deploying to production. Each item a
 **Files:** `database/rls-policies.sql`, `database/SECURITY_CHECKLIST.md`
 
 **Action Required:**
+
 1. Open Supabase dashboard: https://app.supabase.com
 2. Navigate to: Database → Tables
 3. For each table (customers, warehouses, shipments, scan_events):
@@ -64,6 +68,7 @@ This checklist **MUST** be completed before deploying to production. Each item a
 ---
 
 ### 1.4 CORS Configuration
+
 - [x] **Removed** wildcard `*` fallback
 - [x] **Set** explicit domain fallback: `https://tac-cargo.vercel.app`
 - [ ] **Set** `NEXT_PUBLIC_SITE_URL` environment variable in production
@@ -75,6 +80,7 @@ This checklist **MUST** be completed before deploying to production. Each item a
 **File:** `next.config.ts`
 
 **Production Environment Variable:**
+
 ```bash
 NEXT_PUBLIC_SITE_URL=https://your-production-domain.com
 ```
@@ -82,6 +88,7 @@ NEXT_PUBLIC_SITE_URL=https://your-production-domain.com
 ---
 
 ### 1.5 Open Redirect Vulnerability
+
 - [x] **Added** validation for `next` parameter
 - [x] **Implemented** check for relative paths only
 - [x] **Blocked** external URLs with `://` protocol
@@ -96,6 +103,7 @@ NEXT_PUBLIC_SITE_URL=https://your-production-domain.com
 ---
 
 ### 1.6 Tracking API PII Sanitization
+
 - [x] **Removed** customer name, email, phone
 - [x] **Removed** consignee name, address, phone, email
 - [x] **Removed** warehouse names (kept codes and cities only)
@@ -109,6 +117,7 @@ NEXT_PUBLIC_SITE_URL=https://your-production-domain.com
 **File:** `app/api/track/route.ts`
 
 **Response Format (Public):**
+
 ```json
 {
   "shipment": {
@@ -132,6 +141,7 @@ NEXT_PUBLIC_SITE_URL=https://your-production-domain.com
 ## ✅ Phase 2: Additional Security Measures (COMPLETED)
 
 ### 2.1 Environment Variable Validation
+
 - [x] **Created** `lib/env-validation.ts` with comprehensive validation
 - [x] **Implemented** build-time validation for required variables
 - [x] **Added** URL format validation and placeholder detection
@@ -145,6 +155,7 @@ NEXT_PUBLIC_SITE_URL=https://your-production-domain.com
 ---
 
 ### 2.2 Distributed Rate Limiting
+
 - [ ] **Replace** in-memory rate limiting with Redis/Upstash
 - [ ] **Update** `lib/rate-limit.ts`
 - [ ] **Test** rate limiting across multiple server instances
@@ -157,6 +168,7 @@ NEXT_PUBLIC_SITE_URL=https://your-production-domain.com
 ---
 
 ### 2.3 Structured Logging
+
 - [x] **Created** `lib/logger.ts` with PII sanitization
 - [x] **Implemented** automatic sensitive data redaction
 - [x] **Replaced** `console.log/error` in API routes and components
@@ -170,6 +182,7 @@ NEXT_PUBLIC_SITE_URL=https://your-production-domain.com
 ---
 
 ### 2.4 Error Handling Improvements
+
 - [x] **Removed** raw error object logging in production
 - [x] **Implemented** error sanitization via logger
 - [x] **Installed** Sentry for error tracking (@sentry/nextjs)
@@ -183,6 +196,7 @@ NEXT_PUBLIC_SITE_URL=https://your-production-domain.com
 ---
 
 ### 2.5 Authentication State Consistency
+
 - [x] **Created** `lib/auth-helpers.ts` with robust sign-out
 - [x] **Implemented** forced local session cleanup
 - [x] **Fixed** authentication state inconsistency on sign-out failure
@@ -195,6 +209,7 @@ NEXT_PUBLIC_SITE_URL=https://your-production-domain.com
 ---
 
 ### 2.6 User-Friendly Error Messages
+
 - [ ] **Create** user-friendly error messages
 - [ ] **Implement** error boundary components
 - [ ] **Add** graceful degradation for failed operations
@@ -208,6 +223,7 @@ NEXT_PUBLIC_SITE_URL=https://your-production-domain.com
 ## 🧪 Phase 3: Testing & Validation
 
 ### 3.1 Security Testing
+
 - [ ] **Test** authentication bypass attempts
 - [ ] **Test** RLS policy enforcement
 - [ ] **Test** CORS policy enforcement
@@ -221,6 +237,7 @@ NEXT_PUBLIC_SITE_URL=https://your-production-domain.com
 ---
 
 ### 3.2 Automated Testing
+
 - [ ] **Install** Vitest or Jest
 - [ ] **Write** authentication tests
 - [ ] **Write** API route tests
@@ -238,18 +255,21 @@ NEXT_PUBLIC_SITE_URL=https://your-production-domain.com
 Before deploying to production, verify:
 
 ### Environment Variables
+
 - [ ] `NEXT_PUBLIC_SUPABASE_URL` is set
 - [ ] `NEXT_PUBLIC_SUPABASE_ANON_KEY` is set
 - [ ] `NEXT_PUBLIC_SITE_URL` is set (no wildcard)
 - [ ] Service role key is configured (server-side only)
 
 ### Database Security
+
 - [ ] RLS is enabled on all tables
 - [ ] RLS policies are tested and verified
 - [ ] Database backups are configured
 - [ ] Database access logs are enabled
 
 ### Application Security
+
 - [ ] Root middleware is active
 - [ ] Dashboard authentication is enforced
 - [ ] CORS is configured with explicit domain
@@ -259,12 +279,14 @@ Before deploying to production, verify:
 - [ ] Security headers are configured
 
 ### Testing
+
 - [ ] All security tests pass
 - [ ] Manual penetration testing completed
 - [ ] No exposed secrets in codebase
 - [ ] Dependency audit shows 0 vulnerabilities
 
 ### Documentation
+
 - [ ] README is updated
 - [ ] API documentation is complete
 - [ ] Security policies are documented
@@ -275,13 +297,14 @@ Before deploying to production, verify:
 ## 🚨 Known Security Gaps
 
 ### HIGH Priority
+
 1. **In-Memory Rate Limiting** - Not effective with multiple server instances
    - **Mitigation:** Deploy to single instance OR implement Redis-based rate limiting
-   
 2. **No Automated Security Testing** - Manual testing only
    - **Mitigation:** Add security test suite before public launch
 
 ### MEDIUM Priority
+
 1. **Console Logging in Production** - May expose sensitive data
    - **Mitigation:** Implement structured logging with sanitization
 
@@ -308,10 +331,10 @@ If a security vulnerability is discovered:
 
 ## 📝 Audit History
 
-| Date | Auditor | Findings | Status |
-|------|---------|----------|--------|
+| Date       | Auditor    | Findings                            | Status              |
+| ---------- | ---------- | ----------------------------------- | ------------------- |
 | 2026-01-01 | CodeGen AI | 5 Critical, 3 High, 4 Medium, 1 Low | Phase 1 Implemented |
-| | | | RLS Pending |
+|            |            |                                     | RLS Pending         |
 
 ---
 
@@ -324,8 +347,8 @@ Before production deployment, the following stakeholders must review and approve
 - [ ] **DevOps Engineer** - Infrastructure security verified
 - [ ] **Product Owner** - Risk assessment accepted
 
-**Deployment Approved By:** ___________________  
-**Date:** ___________________
+**Deployment Approved By:** **\*\*\*\***\_\_\_**\*\*\*\***  
+**Date:** **\*\*\*\***\_\_\_**\*\*\*\***
 
 ---
 

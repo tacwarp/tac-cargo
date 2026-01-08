@@ -12,32 +12,32 @@ import { withSentryConfig } from "@sentry/nextjs";
  */
 const securityHeaders = [
   {
-    key: 'X-DNS-Prefetch-Control',
-    value: 'on',
+    key: "X-DNS-Prefetch-Control",
+    value: "on",
   },
   {
-    key: 'Strict-Transport-Security',
-    value: 'max-age=63072000; includeSubDomains; preload',
+    key: "Strict-Transport-Security",
+    value: "max-age=63072000; includeSubDomains; preload",
   },
   {
-    key: 'X-Frame-Options',
-    value: 'SAMEORIGIN',
+    key: "X-Frame-Options",
+    value: "SAMEORIGIN",
   },
   {
-    key: 'X-Content-Type-Options',
-    value: 'nosniff',
+    key: "X-Content-Type-Options",
+    value: "nosniff",
   },
   {
-    key: 'Referrer-Policy',
-    value: 'strict-origin-when-cross-origin',
+    key: "Referrer-Policy",
+    value: "strict-origin-when-cross-origin",
   },
   {
-    key: 'Permissions-Policy',
-    value: 'camera=(), microphone=(), geolocation=(self), interest-cohort=()',
+    key: "Permissions-Policy",
+    value: "camera=(), microphone=(), geolocation=(self), interest-cohort=()",
   },
   {
-    key: 'X-XSS-Protection',
-    value: '1; mode=block',
+    key: "X-XSS-Protection",
+    value: "1; mode=block",
   },
 ];
 
@@ -46,6 +46,12 @@ const nextConfig: NextConfig = {
    * React strict mode for development
    */
   reactStrictMode: true,
+
+  /**
+   * Allowed dev origins for cross-origin requests
+   * Prevents warning about proxy requests in development
+   */
+  allowedDevOrigins: ["127.0.0.1:3000", "localhost:3000"],
 
   /**
    * Powered by header removal for security
@@ -59,39 +65,39 @@ const nextConfig: NextConfig = {
     return [
       {
         // Apply security headers to all routes
-        source: '/:path*',
+        source: "/:path*",
         headers: securityHeaders,
       },
       {
         // API routes - add CORS and cache headers
-        source: '/api/:path*',
+        source: "/api/:path*",
         headers: [
           ...securityHeaders,
           {
-            key: 'Access-Control-Allow-Origin',
-            value: process.env.NEXT_PUBLIC_SITE_URL || '*',
+            key: "Access-Control-Allow-Origin",
+            value: process.env.NEXT_PUBLIC_SITE_URL || "*",
           },
           {
-            key: 'Access-Control-Allow-Methods',
-            value: 'GET, POST, PUT, DELETE, OPTIONS',
+            key: "Access-Control-Allow-Methods",
+            value: "GET, POST, PUT, DELETE, OPTIONS",
           },
           {
-            key: 'Access-Control-Allow-Headers',
-            value: 'Content-Type, Authorization',
+            key: "Access-Control-Allow-Headers",
+            value: "Content-Type, Authorization",
           },
           {
-            key: 'Cache-Control',
-            value: 'no-store, max-age=0',
+            key: "Cache-Control",
+            value: "no-store, max-age=0",
           },
         ],
       },
       {
         // Static assets - enable caching
-        source: '/lottie/:path*',
+        source: "/lottie/:path*",
         headers: [
           {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
           },
         ],
       },
@@ -104,22 +110,22 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'cdn.shadcnstudio.com',
-        pathname: '/**',
+        protocol: "https",
+        hostname: "cdn.shadcnstudio.com",
+        pathname: "/**",
       },
       {
-        protocol: 'https',
-        hostname: 'avatars.githubusercontent.com',
-        pathname: '/**',
+        protocol: "https",
+        hostname: "avatars.githubusercontent.com",
+        pathname: "/**",
       },
       {
-        protocol: 'https',
-        hostname: 'res.cloudinary.com',
-        pathname: '/**',
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+        pathname: "/**",
       },
     ],
-    formats: ['image/avif', 'image/webp'],
+    formats: ["image/avif", "image/webp"],
   },
 
   /**
@@ -128,8 +134,8 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
-        source: '/home',
-        destination: '/',
+        source: "/home",
+        destination: "/",
         permanent: true,
       },
     ];
@@ -141,11 +147,11 @@ const nextConfig: NextConfig = {
   experimental: {
     // Enable optimized package imports for faster dev server
     optimizePackageImports: [
-      'lucide-react',
-      'recharts',
-      '@remixicon/react',
-      'framer-motion',
-      '@radix-ui/react-icons',
+      "lucide-react",
+      "recharts",
+      "@remixicon/react",
+      "framer-motion",
+      "@radix-ui/react-icons",
     ],
   },
 
@@ -155,7 +161,7 @@ const nextConfig: NextConfig = {
   turbopack: {
     // Resolve aliases for faster module resolution
     resolveAlias: {
-      '@': './src',
+      "@": "./",
     },
   },
 
@@ -164,7 +170,7 @@ const nextConfig: NextConfig = {
    */
   logging: {
     fetches: {
-      fullUrl: process.env.NODE_ENV === 'development',
+      fullUrl: process.env.NODE_ENV === "development",
     },
   },
 };

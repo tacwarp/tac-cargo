@@ -1,62 +1,95 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
 
 export async function GET(request: NextRequest) {
   try {
-    const supabase = await createClient()
-    
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    const supabase = await createClient();
+
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
     if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const searchParams = request.nextUrl.searchParams
-    const status = searchParams.get('status')
-    const limit = parseInt(searchParams.get('limit') || '50')
-    const offset = parseInt(searchParams.get('offset') || '0')
+    const searchParams = request.nextUrl.searchParams;
+    const status = searchParams.get("status");
+    const limitParam = parseInt(searchParams.get("limit") || "50");
+    const offsetParam = parseInt(searchParams.get("offset") || "0");
+    const limit = Math.min(
+      Math.max(1, isNaN(limitParam) ? 50 : limitParam),
+      100,
+    );
+    const offset = Math.max(0, isNaN(offsetParam) ? 0 : offsetParam);
 
     let query = supabase
-      .from('invoices')
-      .select(`
+      .from("invoices")
+      .select(
+        `
         *,
         customer:customers(id, name, email, phone),
         shipment:shipments(reference, weight)
-      `)
-      .order('created_at', { ascending: false })
-      .range(offset, offset + limit - 1)
+      `,
+      )
+      .order("created_at", { ascending: false })
+      .range(offset, offset + limit - 1);
 
     if (status) {
-      query = query.eq('status', status)
+      query = query.eq("status", status);
     }
 
-    const { data, error } = await query
+    const { data, error } = await query;
 
     if (error) {
-      console.error('Database error:', error)
-      return NextResponse.json({ error: 'Failed to fetch invoices' }, { status: 500 })
+      console.error("Database error:", error);
+      return NextResponse.json(
+        { error: "Failed to fetch invoices" },
+        { status: 500 },
+      );
     }
 
-    return NextResponse.json({ invoices: data, count: data.length })
+    // Get total count for pagination
+    let countQuery = supabase
+      .from("invoices")
+      .select("*", { count: "exact", head: true });
+    if (status) {
+      countQuery = countQuery.eq("status", status);
+    }
+    const { count: totalCount } = await countQuery;
+
+    return NextResponse.json({
+      invoices: data,
+      count: totalCount ?? data.length,
+      pageSize: limit,
+    });
   } catch (error) {
-    console.error('Server error:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    console.error("Server error:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = await createClient()
-    
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    const supabase = await createClient();
+
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
     if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const body = await request.json()
-    
+    const body = await request.json();
+
     // Extract packages from the request
-    const { packages, sendWhatsApp, sendEmail, printLabel, ...invoiceFields } = body
-    
+    const { packages, sendWhatsApp, sendEmail, printLabel, ...invoiceFields } =
+      body;
+
     // Map frontend field names to database column names
     const invoiceData = {
       invoice_no: invoiceFields.invoiceNo,
@@ -101,28 +134,35 @@ export async function POST(request: NextRequest) {
       total_tax: invoiceFields.totalTax,
       total_amount: invoiceFields.totalAmount,
       balance_due: invoiceFields.totalAmount,
-      status: 'pending',
+      status: "pending",
       created_by: user.id,
-    }
+    };
 
     // Insert invoice using stored procedure to bypass PostgREST schema cache
-    const { data: invoiceResult, error: invoiceError } = await supabase.rpc('create_invoice_direct', {
-      invoice_data: invoiceData
-    })
+    const { data: invoiceResult, error: invoiceError } = await supabase.rpc(
+      "create_invoice_direct",
+      {
+        invoice_data: invoiceData,
+      },
+    );
 
     if (invoiceError) {
-      console.error('Invoice creation error:', invoiceError)
-      return NextResponse.json({ 
-        error: 'Failed to create invoice', 
-        details: invoiceError.message,
-        code: invoiceError.code 
-      }, { status: 500 })
+      console.error("Invoice creation error:", invoiceError);
+      return NextResponse.json(
+        {
+          error: "Failed to create invoice",
+          details: invoiceError.message,
+          code: invoiceError.code,
+        },
+        { status: 500 },
+      );
     }
-    
-    const invoice = invoiceResult
+
+    const invoice = invoiceResult;
 
     // Insert packages if provided
     if (packages && packages.length > 0) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const packageData = packages.map((pkg: any, index: number) => ({
         invoice_id: invoice.id,
         package_no: index + 1,
@@ -135,146 +175,188 @@ export async function POST(request: NextRequest) {
         declared_value: pkg.declaredValue,
         packaging_type: pkg.packagingType,
         is_fragile: pkg.isFragile,
-      }))
+      }));
 
       const { error: packageError } = await supabase
-        .from('packages')
-        .insert(packageData)
+        .from("packages")
+        .insert(packageData);
 
       if (packageError) {
-        console.error('Package creation error:', packageError)
+        console.error("Package creation error:", packageError);
         // Rollback invoice creation if packages fail
-        await supabase.from('invoices').delete().eq('id', invoice.id)
-        return NextResponse.json({ 
-          error: 'Failed to create packages', 
-          details: packageError.message 
-        }, { status: 500 })
+        await supabase.from("invoices").delete().eq("id", invoice.id);
+        return NextResponse.json(
+          {
+            error: "Failed to create packages",
+            details: packageError.message,
+          },
+          { status: 500 },
+        );
       }
     }
 
     // Create shipment record with correct schema fields
     const { data: shipment, error: shipmentError } = await supabase
-      .from('shipments')
-      .insert([{
-        reference: invoice.awb_no,
-        customer_id: invoice.customer_id,
-        consignee_name: invoiceFields.consigneeName,
-        consignee_phone: invoiceFields.consigneePhone,
-        consignee_address: invoiceFields.consigneeAddress,
-        origin_warehouse_id: invoiceFields.originWarehouseId || null,
-        destination_warehouse_id: invoiceFields.destinationWarehouseId || null,
-        status: 'pending',
-        transport_mode: invoiceFields.transportMode,
-        weight: invoiceFields.totalActualWeight || 0,
-        volumetric_weight: invoiceFields.totalVolumetricWeight || 0,
-        chargeable_weight: invoiceFields.chargeableWeight || 0,
-        pieces: invoiceFields.totalPieces || 1,
-        description: invoiceFields.contentDescription,
-        special_instructions: invoiceFields.specialInstructions,
-        created_by: user.id,
-      }])
+      .from("shipments")
+      .insert([
+        {
+          reference: invoice.awb_no,
+          customer_id: invoice.customer_id,
+          consignee_name: invoiceFields.consigneeName,
+          consignee_phone: invoiceFields.consigneePhone,
+          consignee_address: invoiceFields.consigneeAddress,
+          origin_warehouse_id: invoiceFields.originWarehouseId || null,
+          destination_warehouse_id:
+            invoiceFields.destinationWarehouseId || null,
+          status: "pending",
+          transport_mode: invoiceFields.transportMode,
+          weight: invoiceFields.totalActualWeight || 0,
+          volumetric_weight: invoiceFields.totalVolumetricWeight || 0,
+          chargeable_weight: invoiceFields.chargeableWeight || 0,
+          pieces: invoiceFields.totalPieces || 1,
+          description: invoiceFields.contentDescription,
+          special_instructions: invoiceFields.specialInstructions,
+          created_by: user.id,
+        },
+      ])
       .select()
-      .single()
+      .single();
 
     if (shipmentError) {
-      console.error('Shipment creation error:', shipmentError)
+      console.error("Shipment creation error:", shipmentError);
       // Rollback invoice and packages if shipment fails
-      await supabase.from('packages').delete().eq('invoice_id', invoice.id)
-      await supabase.from('invoices').delete().eq('id', invoice.id)
-      return NextResponse.json({ 
-        error: 'Failed to create shipment record', 
-        details: shipmentError.message 
-      }, { status: 500 })
-    }
-    
-    // Update invoice with shipment_id reference
-    if (shipment) {
-      await supabase
-        .from('invoices')
-        .update({ shipment_id: shipment.id })
-        .eq('id', invoice.id)
+      await supabase.from("packages").delete().eq("invoice_id", invoice.id);
+      await supabase.from("invoices").delete().eq("id", invoice.id);
+      return NextResponse.json(
+        {
+          error: "Failed to create shipment record",
+          details: shipmentError.message,
+        },
+        { status: 500 },
+      );
     }
 
-    return NextResponse.json({ 
-      id: invoice.id, 
-      invoice_no: invoice.invoice_no,
-      awb_no: invoice.awb_no,
-      success: true 
-    }, { status: 201 })
+    // Update invoice with shipment_id reference
+    if (shipment) {
+      const { error: updateError } = await supabase
+        .from("invoices")
+        .update({ shipment_id: shipment.id })
+        .eq("id", invoice.id);
+
+      if (updateError) {
+        console.error("Failed to link shipment to invoice:", updateError);
+      }
+    }
+
+    return NextResponse.json(
+      {
+        id: invoice.id,
+        invoice_no: invoice.invoice_no,
+        awb_no: invoice.awb_no,
+        success: true,
+      },
+      { status: 201 },
+    );
   } catch (error) {
-    console.error('Server error:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    console.error("Server error:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
   }
 }
 
 export async function PUT(request: NextRequest) {
   try {
-    const supabase = await createClient()
-    
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    const supabase = await createClient();
+
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
     if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const body = await request.json()
-    const { id, ...updateData } = body
+    const body = await request.json();
+    const { id, ...updateData } = body;
 
     if (!id) {
-      return NextResponse.json({ error: 'Invoice ID is required' }, { status: 400 })
+      return NextResponse.json(
+        { error: "Invoice ID is required" },
+        { status: 400 },
+      );
     }
 
     const { data, error } = await supabase
-      .from('invoices')
+      .from("invoices")
       .update(updateData)
-      .eq('id', id)
-      .select(`
+      .eq("id", id)
+      .select(
+        `
         *,
         customer:customers(id, name, email, phone),
         shipment:shipments(reference, weight)
-      `)
-      .single()
+      `,
+      )
+      .single();
 
     if (error) {
-      console.error('Database error:', error)
-      return NextResponse.json({ error: 'Failed to update invoice' }, { status: 500 })
+      console.error("Database error:", error);
+      return NextResponse.json(
+        { error: "Failed to update invoice" },
+        { status: 500 },
+      );
     }
 
-    return NextResponse.json(data)
+    return NextResponse.json(data);
   } catch (error) {
-    console.error('Server error:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    console.error("Server error:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
   }
 }
 
 export async function DELETE(request: NextRequest) {
   try {
-    const supabase = await createClient()
-    
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    const supabase = await createClient();
+
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
     if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const searchParams = request.nextUrl.searchParams
-    const id = searchParams.get('id')
+    const searchParams = request.nextUrl.searchParams;
+    const id = searchParams.get("id");
 
     if (!id) {
-      return NextResponse.json({ error: 'Invoice ID is required' }, { status: 400 })
+      return NextResponse.json(
+        { error: "Invoice ID is required" },
+        { status: 400 },
+      );
     }
 
-    const { error } = await supabase
-      .from('invoices')
-      .delete()
-      .eq('id', id)
+    const { error } = await supabase.from("invoices").delete().eq("id", id);
 
     if (error) {
-      console.error('Database error:', error)
-      return NextResponse.json({ error: 'Failed to delete invoice' }, { status: 500 })
+      console.error("Database error:", error);
+      return NextResponse.json(
+        { error: "Failed to delete invoice" },
+        { status: 500 },
+      );
     }
 
-    return NextResponse.json({ success: true })
+    return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Server error:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    console.error("Server error:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
   }
 }
