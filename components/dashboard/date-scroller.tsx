@@ -2,7 +2,6 @@
 
 import { cn } from "@/lib/utils";
 import { useState } from "react";
-import { RiCalendarLine } from "@remixicon/react";
 
 export function DateScroller() {
   const [activeDate, setActiveDate] = useState(10);

@@ -38,7 +38,7 @@ const exceptionConfig: Record<ExceptionType, { label: string; color: string; bgC
     delayed: { label: "Delayed", color: "text-warning", bgColor: "bg-warning/10", icon: Clock },
 };
 
-export function ExceptionsClient({ initialExceptions }: ExceptionsClientProps) {
+export function ExceptionsClient({ initialExceptions }: Readonly<ExceptionsClientProps>) {
     const [exceptions, setExceptions] = useState(initialExceptions);
     const [selectedId, setSelectedId] = useState<string | null>(initialExceptions[0]?.id || null);
     const [isPending, startTransition] = useTransition();
@@ -124,7 +124,6 @@ export function ExceptionsClient({ initialExceptions }: ExceptionsClientProps) {
                     <div className="md:col-span-1 space-y-3 max-h-[60vh] overflow-y-auto pr-2">
                         {exceptions.map((exception) => {
                             const config = exceptionConfig[exception.exception_type];
-                            const Icon = config.icon;
                             const isSelected = selectedId === exception.id;
 
                             return (

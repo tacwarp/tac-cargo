@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion";
 import { ArrowRight, Play, Star, Target, Globe, Award } from "lucide-react";
-import Link from "next/link";
 import Image from "next/image";
 
 export function HeroSection() {

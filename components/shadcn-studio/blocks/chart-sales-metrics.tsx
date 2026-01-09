@@ -11,7 +11,6 @@ import {
 
 import { Bar, BarChart, Label, Pie, PieChart } from "recharts";
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   Card,
   CardContent,

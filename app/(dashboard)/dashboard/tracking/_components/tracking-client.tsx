@@ -14,7 +14,6 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { GlassPanel } from "../../_components/glass-panel";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
     DropdownMenu,
@@ -66,7 +65,7 @@ const statusConfig: Record<ShipmentStatus, { label: string; color: string; bgCol
     cancelled: { label: "Cancelled", color: "text-muted-foreground", bgColor: "bg-muted", icon: Clock },
 };
 
-export function TrackingClient({ stats, initialShipments }: TrackingClientProps) {
+export function TrackingClient({ stats, initialShipments }: Readonly<TrackingClientProps>) {
     const [shipments, setShipments] = useState(initialShipments);
     const [searchQuery, setSearchQuery] = useState("");
     const [statusFilter, setStatusFilter] = useState<ShipmentStatus | "all">("all");
@@ -78,7 +77,7 @@ export function TrackingClient({ stats, initialShipments }: TrackingClientProps)
         destination: string;
         events: Array<{ status: string; description: string | null; created_at: string }>;
     } | null>(null);
-    const [isPending, startTransition] = useTransition();
+    const [, startTransition] = useTransition();
 
     const filteredShipments = shipments.filter((s) => {
         const matchesSearch =

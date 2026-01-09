@@ -29,7 +29,7 @@ async function getShipments() {
         .limit(100);
 
     if (error) {
-        console.error("Failed to fetch shipments:", (error as any)?.message ?? error);
+        console.error("Failed to fetch shipments:", (error as { message: string })?.message ?? error);
         // Return empty array to keep the page functional even if Supabase/RLS rejects the query
         return [];
     }

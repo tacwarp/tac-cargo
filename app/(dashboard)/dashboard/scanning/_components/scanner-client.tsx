@@ -7,7 +7,6 @@ import {
     Truck,
     CheckCircle,
     AlertCircle,
-    Clock,
     ArrowRight,
     History,
     Keyboard

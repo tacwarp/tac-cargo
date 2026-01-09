@@ -2,12 +2,9 @@
 
 import React, { useState, useTransition } from "react";
 import {
-    DollarSign,
     CreditCard,
     AlertCircle,
     CheckCircle,
-    Clock,
-    Plus,
     ArrowDownLeft,
     ArrowUpRight
 } from "lucide-react";
@@ -18,7 +15,6 @@ import {
     DialogContent,
     DialogHeader,
     DialogTitle,
-    DialogTrigger
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -77,7 +73,6 @@ export function PaymentsClient({
     const [outstanding, setOutstanding] = useState(outstandingInvoices);
     const [selectedInvoice, setSelectedInvoice] = useState<OutstandingInvoice | null>(null);
     const [isRecordOpen, setIsRecordOpen] = useState(false);
-    const [isPending, startTransition] = useTransition();
 
     return (
         <div className="space-y-6">

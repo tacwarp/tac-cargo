@@ -3,7 +3,6 @@
 import React from "react";
 import {
     Package,
-    Truck,
     CheckCircle,
     AlertCircle,
     TrendingUp,

@@ -4,10 +4,6 @@ import {
   ArrowRight,
   Link,
   Zap,
-  Truck,
-  Package,
-  CheckCircle2,
-  Clock,
   ShieldCheck,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";

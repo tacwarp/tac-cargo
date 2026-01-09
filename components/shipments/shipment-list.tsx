@@ -3,10 +3,6 @@
 import { cn } from "@/lib/utils";
 import {
   Copy,
-  ArrowRight,
-  CheckCircle,
-  AlertTriangle,
-  Loader,
   User,
 } from "lucide-react";
 import {

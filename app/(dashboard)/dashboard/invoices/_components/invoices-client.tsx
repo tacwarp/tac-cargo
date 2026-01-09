@@ -28,7 +28,6 @@ import {
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
-    DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import {
     Tabs,
@@ -40,7 +39,6 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import {
     generateLabelInvoice,
-    generateCustomerInvoice,
     regenerateInvoice
 } from "@/app/actions/invoices";
 import { sendInvoiceViaWhatsApp, getWhatsAppLink } from "@/app/actions/whatsapp";
@@ -96,9 +94,9 @@ const statusConfig: Record<InvoiceStatus, { label: string; color: string; icon: 
 export function InvoicesClient({
     initialInvoices,
     shipmentsWithoutInvoice: initialShipments
-}: InvoicesClientProps) {
+}: Readonly<InvoicesClientProps>) {
     const [invoices, setInvoices] = useState(initialInvoices);
-    const [shipments, setShipments] = useState(initialShipments);
+    const [shipments] = useState(initialShipments);
     const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
     const [isPending, startTransition] = useTransition();
 

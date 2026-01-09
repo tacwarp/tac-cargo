@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   RiSearchLine,
   RiMapPinLine,
@@ -14,7 +14,6 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PackageTrackerCard } from "@/components/ui/tracker-card";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import { Truck } from "lucide-react";
 import { LottieContainer } from "@/components/ui/lottie-container";
 
 export function TrackingSection() {
@@ -144,8 +143,16 @@ export function TrackingSection() {
                   <Badge
                     key={example}
                     variant="outline"
-                    className="hover:bg-primary/10 hover:text-primary hover:border-primary/50 shrink-0 cursor-pointer rounded-sm px-3 py-1.5 font-mono text-[10px] transition-all"
+                    className="hover:bg-primary/10 hover:text-primary hover:border-primary/50 shrink-0 cursor-pointer rounded-sm px-3 py-1.5 font-mono text-[10px] transition-all focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
                     onClick={() => setTrackingNumber(example)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setTrackingNumber(example);
+                      }
+                    }}
+                    role="button"
+                    tabIndex={0}
                     aria-label={`Search for example tracking number ${example}`}
                   >
                     {example}

@@ -6,7 +6,7 @@ import { normalizeJoin } from "@/lib/utils/normalize-supabase";
 
 async function getManifests() {
     const supabase = await createClient();
-    
+
     const { data, error } = await supabase
         .from("manifests")
         .select(`
@@ -28,7 +28,7 @@ async function getManifests() {
         .limit(50);
 
     if (error) {
-        console.error("Failed to fetch manifests:", (error as any)?.message ?? error);
+        console.error("Failed to fetch manifests:", (error as { message: string })?.message ?? error);
         return [];
     }
 
@@ -45,7 +45,7 @@ async function getManifests() {
 
 async function getUnassignedShipments() {
     const supabase = await createClient();
-    
+
     const { data } = await supabase
         .from("shipments")
         .select(`
@@ -72,7 +72,7 @@ async function getUnassignedShipments() {
 
 async function getWarehouses() {
     const supabase = await createClient();
-    
+
     const { data } = await supabase
         .from("warehouses")
         .select("id, name, code")
@@ -93,7 +93,7 @@ export default async function ManifestsPage() {
         <>
             <V2Header title="Manifests" section="Ops Control" />
             <main className="flex-1 overflow-x-auto overflow-y-auto p-6" id="main-scroll">
-                <ManifestsClient 
+                <ManifestsClient
                     initialManifests={manifests}
                     unassignedShipments={unassignedShipments}
                     warehouses={warehouses}

@@ -1,5 +1,4 @@
-/** @type {import('stylelint').Config} */
-export default {
+const config = {
   extends: ["stylelint-config-standard"],
   rules: {
     // Prevent duplicate properties
@@ -104,3 +103,5 @@ export default {
   },
   ignoreFiles: ["node_modules/**", ".next/**", "dist/**", "build/**"],
 };
+
+export default config;

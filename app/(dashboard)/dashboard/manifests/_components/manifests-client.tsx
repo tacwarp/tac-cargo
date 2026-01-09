@@ -8,7 +8,6 @@ import {
     Package,
     ArrowRight,
     CheckCircle,
-    Clock,
     FileText,
     MoreHorizontal
 } from "lucide-react";
@@ -25,7 +24,6 @@ import {
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
-    DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -90,11 +88,10 @@ export function ManifestsClient({
     initialManifests,
     unassignedShipments: initialUnassigned,
     warehouses
-}: ManifestsClientProps) {
+}: Readonly<ManifestsClientProps>) {
     const [manifests, setManifests] = useState(initialManifests);
     const [unassigned, setUnassigned] = useState(initialUnassigned);
     const [isCreateOpen, setIsCreateOpen] = useState(false);
-    const [selectedManifest, setSelectedManifest] = useState<Manifest | null>(null);
     const [isPending, startTransition] = useTransition();
 
     const draftManifests = manifests.filter(m => m.status === "draft" || m.status === "open");
@@ -427,7 +424,7 @@ interface CreateManifestFormProps {
 
 function CreateManifestForm({ warehouses, onSuccess }: CreateManifestFormProps) {
     const [isPending, startTransition] = useTransition();
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState(() => ({
         manifest_number: `MNF-${new Date().getFullYear()}${Date.now().toString(36).toUpperCase()}`,
         origin_warehouse_id: "",
         destination_warehouse_id: "",
@@ -437,7 +434,7 @@ function CreateManifestForm({ warehouses, onSuccess }: CreateManifestFormProps) 
         driver_phone: "",
         planned_departure: new Date().toISOString().slice(0, 16),
         planned_arrival: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().slice(0, 16),
-    });
+    }));
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();

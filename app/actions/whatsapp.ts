@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { type ActionResult, success, error } from "@/types/action-result";
-import type { Invoice } from "@/types/database";
+import type { } from "@/types/database";
 
 interface WhatsAppMessageResult {
   invoiceId: string;
@@ -57,17 +57,6 @@ export async function sendInvoiceViaWhatsApp(
 
     // Format phone for WhatsApp (remove + and spaces)
     const formattedPhone = customerPhone.replace(/[\s+\-()]/g, "");
-
-    // Create WhatsApp message
-    const shipmentRef = (invoice as { shipments?: { reference?: string } }).shipments?.reference || "N/A";
-    const message = encodeURIComponent(
-      `Hello! Here is your invoice for shipment ${shipmentRef}.\n\n` +
-        `Invoice No: ${invoice.invoice_no}\n` +
-        `Amount: ₹${invoice.total_amount.toLocaleString("en-IN")}\n` +
-        `Due Date: ${invoice.due_date || "On Receipt"}\n\n` +
-        `View/Download: ${invoice.pdf_url}\n\n` +
-        `Thank you for choosing TAC Cargo!`
-    );
 
     // Log the WhatsApp send attempt
     await supabase.from("audit_logs").insert({
@@ -148,9 +137,9 @@ export async function getWhatsAppLink(
     const shipmentRef2 = (invoice as { shipments?: { reference?: string } }).shipments?.reference || "N/A";
     const message = encodeURIComponent(
       `Hello! Here is your invoice for shipment ${shipmentRef2}.\n\n` +
-        `Invoice No: ${invoice.invoice_no}\n` +
-        `Amount: ₹${invoice.total_amount.toLocaleString("en-IN")}\n` +
-        (invoice.pdf_url ? `\nView: ${invoice.pdf_url}` : "")
+      `Invoice No: ${invoice.invoice_no}\n` +
+      `Amount: ₹${invoice.total_amount.toLocaleString("en-IN")}\n` +
+      (invoice.pdf_url ? `\nView: ${invoice.pdf_url}` : "")
     );
 
     const whatsappUrl = `https://wa.me/${formattedPhone}?text=${message}`;

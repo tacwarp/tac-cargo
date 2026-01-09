@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { GlassPanel } from "./glass-panel";
 import { ArrowRight, DollarSign, AlertOctagon, CloudRain } from "lucide-react";
 import { Area, AreaChart, ResponsiveContainer } from "recharts";
@@ -112,7 +113,7 @@ export function OverviewAlertCard() {
 export function OverviewInventoryCard() {
     return (
         <GlassPanel className="md:col-span-1 md:row-span-1 relative overflow-hidden group">
-            <img src="https://images.unsplash.com/photo-1590247813693-5541d1c609fd?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" className="absolute right-0 top-0 w-24 h-full object-cover opacity-20 mask-bottom" alt="" />
+            <Image src="https://images.unsplash.com/photo-1590247813693-5541d1c609fd?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" fill className="absolute right-0 top-0 object-cover opacity-20 mask-bottom" alt="" />
             <div className="relative z-10">
                 <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">Inventory</div>
                 <div className="text-xl font-bold text-foreground">12.4k</div>
@@ -131,7 +132,7 @@ export function OverviewActivityFeed() {
             <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-4">Live Feed</div>
             <div className="space-y-3">
                 <div className="flex items-center gap-3">
-                    <img src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=100&h=100&q=80" className="w-6 h-6 rounded-full border border-border" alt="User" />
+                    <Image src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=100&h=100&q=80" width={24} height={24} className="rounded-full border border-border" alt="User" />
                     <div className="flex-1 min-w-0">
                         <p className="text-xs text-foreground/80 truncate"><span className="font-medium text-foreground">Sarah M.</span> approved manifest <span className="text-primary font-mono">#M-9921</span></p>
                     </div>

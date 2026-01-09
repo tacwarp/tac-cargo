@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { cn } from "@/lib/utils";
-import { PlaneIcon, TruckIcon, PackageIcon } from "lucide-react";
+import { PlaneIcon, TruckIcon } from "lucide-react";
 
 interface ShippingLabelProps {
   awb: string;

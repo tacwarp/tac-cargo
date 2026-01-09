@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { type ActionResult, success, error } from "@/types/action-result";
-import type { Payment, PaymentStatus } from "@/types/database";
+import type { Payment } from "@/types/database";
 
 interface RecordPaymentInput {
   invoiceId: string;

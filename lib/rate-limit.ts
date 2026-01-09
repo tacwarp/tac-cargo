@@ -57,7 +57,7 @@ function startCleanup() {
 }
 
 // Start cleanup on module load (server-side only)
-if (typeof window === "undefined") {
+if (typeof globalThis === "undefined") {
   startCleanup();
 }
 

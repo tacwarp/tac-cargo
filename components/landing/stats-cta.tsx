@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Box, ShieldCheck, Timer } from "lucide-react";
+import { ArrowRight, Box } from "lucide-react";
 import { motion } from "framer-motion";
 
 export function StatsCTA() {

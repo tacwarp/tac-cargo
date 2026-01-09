@@ -9,8 +9,7 @@ import {
     MapPin,
     User,
     Building2,
-    Crown,
-    MoreHorizontal
+    Crown
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { GlassPanel } from "../../_components/glass-panel";
@@ -21,17 +20,11 @@ import {
     DialogTitle,
     DialogTrigger
 } from "@/components/ui/dialog";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { createCustomer, updateCustomer } from "@/app/actions/customers";
+import { createCustomer } from "@/app/actions/customers";
 import type { CustomerType } from "@/types/database";
 
 interface Customer {
@@ -72,7 +65,7 @@ export function CustomersClient({ initialCustomers, stats }: CustomersClientProp
     const [searchQuery, setSearchQuery] = useState("");
     const [typeFilter, setTypeFilter] = useState<CustomerType | "all">("all");
     const [isCreateOpen, setIsCreateOpen] = useState(false);
-    const [isPending, startTransition] = useTransition();
+
 
     const filteredCustomers = customers.filter((c) => {
         const matchesSearch =

@@ -4,9 +4,7 @@ import React, { useState } from "react";
 import {
     Truck,
     MapPin,
-    Clock,
     Phone,
-    Package,
     ArrowRight
 } from "lucide-react";
 import { cn } from "@/lib/utils";

@@ -36,15 +36,15 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
 
     // Sentry integration - captures critical error
     if (
-      typeof window !== "undefined" &&
+      typeof globalThis !== "undefined" &&
       (
-        window as unknown as {
+        globalThis as unknown as {
           Sentry?: { captureException: (e: Error, opts?: object) => void };
         }
       ).Sentry
     ) {
       (
-        window as unknown as {
+        globalThis as unknown as {
           Sentry: { captureException: (e: Error, opts?: object) => void };
         }
       ).Sentry.captureException(error, {

@@ -125,7 +125,7 @@ async function forceLocalCleanup(
     await supabase.auth.signOut({ scope: "local" });
 
     // Additional cleanup: clear any auth-related items from storage
-    if (typeof window !== "undefined") {
+    if (typeof globalThis !== "undefined") {
       // Clear localStorage items related to Supabase auth
       const keysToRemove: string[] = [];
       for (let i = 0; i < localStorage.length; i++) {

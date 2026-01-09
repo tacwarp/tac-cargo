@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { RiFilter3Line, RiAddLine } from "@remixicon/react";
 
 export function ShipmentToolbar() {

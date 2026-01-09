@@ -90,7 +90,7 @@ export function ShipmentsTableClient({
     initialShipments,
     warehouses,
     customers
-}: ShipmentsTableClientProps) {
+}: Readonly<ShipmentsTableClientProps>) {
     const [shipments, setShipments] = useState(initialShipments);
     const [searchQuery, setSearchQuery] = useState("");
     const [statusFilter, setStatusFilter] = useState<ShipmentStatus | "all">("all");
@@ -337,7 +337,7 @@ interface CreateShipmentFormProps {
 
 function CreateShipmentForm({ warehouses, customers, onSuccess }: CreateShipmentFormProps) {
     const [isPending, startTransition] = useTransition();
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState(() => ({
         customer_id: "",
         reference: `SHP-${new Date().getFullYear()}${Date.now().toString(36).toUpperCase()}`,
         origin_warehouse_id: "",
@@ -353,7 +353,7 @@ function CreateShipmentForm({ warehouses, customers, onSuccess }: CreateShipment
         consignee_city: "",
         consignee_state: "",
         consignee_pincode: "",
-    });
+    }));
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();

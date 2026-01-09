@@ -6,7 +6,7 @@ import { normalizeJoin } from "@/lib/utils/normalize-supabase";
 
 async function getPayments() {
     const supabase = await createClient();
-    
+
     const { data, error } = await supabase
         .from("payments")
         .select(`
@@ -23,7 +23,7 @@ async function getPayments() {
         .limit(50);
 
     if (error) {
-        console.error("Failed to fetch payments:", (error as any)?.message ?? error);
+        console.error("Failed to fetch payments:", (error as { message: string })?.message ?? error);
         return [];
     }
 
@@ -45,7 +45,7 @@ async function getPayments() {
 
 async function getOutstandingInvoices() {
     const supabase = await createClient();
-    
+
     const { data } = await supabase
         .from("invoices")
         .select(`
@@ -70,7 +70,7 @@ async function getOutstandingInvoices() {
 
 async function getPaymentStats() {
     const supabase = await createClient();
-    
+
     // Total received
     const { data: payments } = await supabase
         .from("payments")
@@ -110,7 +110,7 @@ export default async function PaymentsPage() {
             <V2Header title="Payments" section="Finance" />
             <main className="flex-1 overflow-y-auto p-8 scroll-smooth" id="main-scroll">
                 <div className="max-w-[1400px] mx-auto">
-                    <PaymentsClient 
+                    <PaymentsClient
                         initialPayments={payments}
                         outstandingInvoices={outstanding}
                         stats={stats}

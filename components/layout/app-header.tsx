@@ -13,11 +13,10 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { ThemeToggle } from "@/components/dashboard/theme-toggle";
-import { BellIcon, SearchIcon, LanguagesIcon } from "lucide-react";
+import { BellIcon, SearchIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
 import React from "react";
 
-import LanguageDropdown from "@/components/shadcn-studio/blocks/dropdown-language";
 import ProfileDropdown from "@/components/shadcn-studio/blocks/dropdown-profile";
 
 export function AppHeader() {

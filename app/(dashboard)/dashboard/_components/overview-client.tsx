@@ -5,7 +5,6 @@ import Link from "next/link";
 import {
     Package,
     Truck,
-    CheckCircle,
     AlertCircle,
     DollarSign,
     Clock,

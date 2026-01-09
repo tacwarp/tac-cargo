@@ -54,7 +54,7 @@ const statusColors: Record<ShipmentStatus, string> = {
 };
 
 export function InventoryClient({ warehouses, initialInventory }: InventoryClientProps) {
-    const [inventory, setInventory] = useState(initialInventory);
+    const [inventory] = useState(initialInventory);
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedWarehouse, setSelectedWarehouse] = useState<string>("all");
     const [isPending, startTransition] = useTransition();
@@ -98,7 +98,6 @@ export function InventoryClient({ warehouses, initialInventory }: InventoryClien
 
     // Stats
     const totalPieces = filteredInventory.reduce((sum, item) => sum + (item.pieces || 0), 0);
-    const totalWeight = filteredInventory.reduce((sum, item) => sum + (item.weight_kg || 0), 0);
     const inManifest = filteredInventory.filter((item) => item.manifest_id).length;
     const notInManifest = filteredInventory.filter((item) => !item.manifest_id).length;
 

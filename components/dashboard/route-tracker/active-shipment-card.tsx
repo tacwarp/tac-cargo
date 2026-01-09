@@ -3,7 +3,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import {
-  RiTruckLine,
   RiUser3Line,
   RiPhoneLine,
   RiMapPin2Line,

@@ -31,7 +31,6 @@ import {
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
 } from "@/components/ui/pagination";
 import {
