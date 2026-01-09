@@ -140,7 +140,8 @@ security(api): add input validation to track route
 2. **Description**: Provide a clear description of changes
 3. **Testing**: Ensure all tests pass
 4. **Review**: Request review from maintainers
-5. **Squash**: Squash commits before merging
+5. **CodeRabbit**: Address AI review feedback
+6. **Squash**: Squash commits before merging
 
 ### PR Checklist
 
@@ -151,6 +152,46 @@ security(api): add input validation to track route
 - [ ] All tests pass locally
 - [ ] No new TypeScript errors
 - [ ] Updated relevant documentation
+- [ ] CodeRabbit review comments addressed
+
+## AI Code Reviews with CodeRabbit
+
+This project uses [CodeRabbit](https://coderabbit.ai) for AI-powered code reviews on every pull request.
+
+### What CodeRabbit Reviews
+
+- **Security**: SQL injection, XSS, authentication issues
+- **Performance**: Inefficient queries, memory leaks, re-render issues
+- **Best Practices**: TypeScript patterns, React hooks, accessibility
+- **Code Quality**: Error handling, type safety, maintainability
+
+### Interacting with CodeRabbit
+
+Use these commands in PR comments:
+
+| Command | Description |
+|---------|-------------|
+| `@coderabbitai review` | Request a new review |
+| `@coderabbitai summary` | Generate PR summary |
+| `@coderabbitai resolve` | Resolve all comments |
+| `@coderabbitai help` | Show all commands |
+
+### Local Reviews (Optional)
+
+Run CodeRabbit locally before pushing (requires WSL on Windows):
+
+```bash
+# Install CLI (in WSL)
+curl -fsSL https://cli.coderabbit.ai/install.sh | sh
+
+# Authenticate
+coderabbit auth login
+
+# Review your changes
+coderabbit --type uncommitted
+```
+
+For detailed setup, see [docs/CODERABBIT_SETUP.md](docs/CODERABBIT_SETUP.md).
 
 ## Security
 

@@ -1,23 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-const PUBLIC_ROUTES = [
-  "/login",
-  "/auth",
-  "/register",
-  "/track",
-  "/api/track",
-  "/api/health",
-  "/api/webhooks",
-  "/pricing",
-  "/request-access",
-];
 
-const RATE_LIMIT_ROUTES = [
-  { path: "/api/auth", limit: 5, window: 60000 },
-  { path: "/api/track", limit: 60, window: 60000 },
-  { path: "/api/", limit: 100, window: 60000 },
-];
 
 export async function updateSession(request: NextRequest) {
   const supabaseResponse = NextResponse.next({
@@ -25,9 +9,6 @@ export async function updateSession(request: NextRequest) {
   });
 
   const pathname = request.nextUrl.pathname;
-  const isPublicRoute = PUBLIC_ROUTES.some((route) =>
-    pathname.startsWith(route),
-  );
   const isApiRoute = pathname.startsWith("/api/");
   const isDashboardRoute = pathname.startsWith("/dashboard");
 
@@ -100,8 +81,8 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // Add user context headers for API routes
-  if (isApiRoute && user) {
+  // Add user context headers for API routes (development only)
+  if (process.env.NODE_ENV === "development" && isApiRoute && user) {
     supabaseResponse.headers.set("X-User-Id", user.id);
   }
 

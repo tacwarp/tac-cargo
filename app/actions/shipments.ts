@@ -54,20 +54,20 @@ export async function createShipment(
       .from("shipments")
       .insert({
         reference,
-        customer_id: parsed.data.customer_id,
+        customer_id: parsed.data.customer_id || null,
         consignee_name: parsed.data.consignee_name,
         consignee_phone: parsed.data.consignee_phone,
         consignee_email: parsed.data.consignee_email || null,
         consignee_address: parsed.data.consignee_address,
-        // consignee_city: parsed.data.consignee_city, // Column removed from DB
+        consignee_city: parsed.data.consignee_city,
         consignee_state: parsed.data.consignee_state,
         consignee_pincode: parsed.data.consignee_pincode,
-        origin_warehouse_id: parsed.data.origin_warehouse_id,
-        destination_warehouse_id: parsed.data.destination_warehouse_id,
+        origin_warehouse_id: parsed.data.origin_warehouse_id || null,
+        destination_warehouse_id: parsed.data.destination_warehouse_id || null,
         transport_mode: parsed.data.transport_mode,
-        service_level_id: parsed.data.service_level_id,
-        weight_kg: parsed.data.weight_kg,
-        pieces: parsed.data.pieces,
+        service_level_id: parsed.data.service_level_id || null,
+        weight_kg: parsed.data.weight_kg || null,
+        pieces: parsed.data.pieces || 1,
         declared_value: parsed.data.declared_value || null,
         notes: parsed.data.notes || null,
         status: "pending",
@@ -308,8 +308,10 @@ export async function searchShipments(
       .limit(options?.limit || 50);
 
     if (query) {
+      // Sanitize query to prevent SQL injection via pattern characters
+      const sanitizedQuery = query.replace(/[%_\\]/g, "\\$&");
       queryBuilder = queryBuilder.or(
-        `reference.ilike.%${query}%,consignee_name.ilike.%${query}%,consignee_phone.ilike.%${query}%`
+        `reference.ilike.%${sanitizedQuery}%,consignee_name.ilike.%${sanitizedQuery}%,consignee_phone.ilike.%${sanitizedQuery}%`
       );
     }
 

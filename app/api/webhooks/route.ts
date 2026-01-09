@@ -33,6 +33,30 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Validate URL format and require HTTPS
+    try {
+      const parsedUrl = new URL(url);
+      if (parsedUrl.protocol !== "https:") {
+        return NextResponse.json(
+          { error: "Webhook URL must use HTTPS" },
+          { status: 400 },
+        );
+      }
+    } catch {
+      return NextResponse.json(
+        { error: "Invalid URL format" },
+        { status: 400 },
+      );
+    }
+
+    // Validate webhook secret strength if provided
+    if (secret && secret.length < 32) {
+      return NextResponse.json(
+        { error: "Webhook secret must be at least 32 characters" },
+        { status: 400 },
+      );
+    }
+
     const { data, error } = await supabase
       .from("webhooks")
       .insert({
@@ -64,7 +88,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const supabase = await createClient();
 

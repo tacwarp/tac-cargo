@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
     let shipment = null;
     let shipmentError = null;
 
-    const { data: shipmentByRef, error: refError } = await supabase
+    const { data: shipmentByRef } = await supabase
       .from("shipments")
       .select("id, reference, status")
       .eq("reference", barcode)
@@ -118,15 +118,22 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Update shipment status if needed
+    // Update shipment status if needed (with optimistic locking)
     if (shipment.status !== status) {
-      const { error: updateError } = await supabase
+      const { error: updateError, count } = await supabase
         .from("shipments")
-        .update({ status })
-        .eq("id", shipment.id);
+        .update({ status, updated_at: new Date().toISOString() })
+        .eq("id", shipment.id)
+        .eq("status", shipment.status); // Only update if status hasn't changed (optimistic lock)
 
       if (updateError) {
-        console.error("Failed to update shipment status:", updateError);
+        console.error("Failed to update shipment status:", {
+          code: updateError.code,
+          message: updateError.message,
+        });
+      } else if (count === 0) {
+        // Status was changed by another process - log but don't fail
+        console.warn("Shipment status was updated by another process:", shipment.id);
       }
     }
 
