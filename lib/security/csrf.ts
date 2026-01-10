@@ -1,4 +1,4 @@
-import crypto from "crypto";
+import crypto from "node:crypto";
 
 function getCSRFSecret(): string {
   const secret = process.env.CSRF_SECRET;

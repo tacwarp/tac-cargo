@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import crypto from "crypto";
+import crypto from "node:crypto";
 
 export type WebhookEvent =
   | "shipment.created"

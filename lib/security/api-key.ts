@@ -1,4 +1,4 @@
-import crypto from "crypto";
+import crypto from "node:crypto";
 import { createClient } from "@/lib/supabase/server";
 
 const API_KEY_PREFIX = "tac_";
@@ -27,7 +27,7 @@ export async function validateApiKey(key: string): Promise<{
   scopes?: string[];
   error?: string;
 }> {
-  if (!key || !key.startsWith(API_KEY_PREFIX)) {
+  if (!key?.startsWith(API_KEY_PREFIX)) {
     return { valid: false, error: "Invalid API key format" };
   }
 
