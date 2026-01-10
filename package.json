@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "mcp:server": "tsx lib/mcp/shipment-server.ts",
-    "mcp:build": "tsc lib/mcp/shipment-server.ts --outDir dist --module commonjs --target es2020"
+    "mcp:build": "tsc lib/mcp/shipment-server.ts --outDir dist --module commonjs --target es2020",
+    "sentry:check": "tsx scripts/sentry-check.ts",
+    "sentry:test": "curl -s http://localhost:3000/api/sentry/health?action=test | jq"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

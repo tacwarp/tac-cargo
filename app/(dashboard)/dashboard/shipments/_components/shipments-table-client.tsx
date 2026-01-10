@@ -91,12 +91,14 @@ interface ShipmentsTableClientProps {
 }
 
 const statusConfig: Record<ShipmentStatus, { label: string; color: string; icon: React.ElementType }> = {
-    pending: { label: "Pending", color: "bg-muted text-muted-foreground border-border", icon: Clock },
+    booked: { label: "Booked", color: "bg-muted text-muted-foreground border-border", icon: Clock },
     picked_up: { label: "Picked Up", color: "bg-primary/10 text-primary border-primary/20", icon: Package },
+    at_origin_hub: { label: "At Origin Hub", color: "bg-primary/10 text-primary border-primary/20", icon: Package },
     in_transit: { label: "In Transit", color: "bg-primary/10 text-primary border-primary/20", icon: Truck },
+    at_destination_hub: { label: "At Destination Hub", color: "bg-primary/10 text-primary border-primary/20", icon: Package },
     out_for_delivery: { label: "Out for Delivery", color: "bg-warning/10 text-warning border-warning/20", icon: Truck },
     delivered: { label: "Delivered", color: "bg-success/10 text-success border-success/20", icon: CheckCircle },
-    failed: { label: "Failed", color: "bg-destructive/10 text-destructive border-destructive/20", icon: AlertCircle },
+    exception: { label: "Exception", color: "bg-destructive/10 text-destructive border-destructive/20", icon: AlertCircle },
     returned: { label: "Returned", color: "bg-warning/10 text-warning border-warning/20", icon: RefreshCw },
     cancelled: { label: "Cancelled", color: "bg-muted text-muted-foreground border-border", icon: XCircle },
 };
@@ -407,7 +409,7 @@ export function ShipmentsTableClient({
                             </tr>
                         ) : (
                             filteredShipments.map((shipment) => {
-                                const status = statusConfig[shipment.status] || statusConfig.pending;
+                                const status = statusConfig[shipment.status] || statusConfig.booked;
                                 const StatusIcon = status.icon;
                                 const isSelected = selectedIds.has(shipment.id);
 

@@ -7,7 +7,7 @@ async function getDashboardStats() {
     const supabase = await createClient();
 
     // Shipment counts by status
-    const statuses = ["pending", "picked_up", "in_transit", "out_for_delivery", "delivered", "failed"] as const;
+    const statuses = ["booked", "picked_up", "in_transit", "out_for_delivery", "delivered", "exception"] as const;
     const shipmentCounts: Record<string, number> = {};
 
     for (const status of statuses) {
@@ -44,7 +44,7 @@ async function getDashboardStats() {
     const { count: activeManifests } = await supabase
         .from("manifests")
         .select("id", { count: "exact", head: true })
-        .in("status", ["open", "locked", "dispatched"]);
+        .in("status", ["draft", "finalized", "dispatched"]);
 
     // Delayed shipments
     const threeDaysAgo = new Date();
@@ -58,10 +58,10 @@ async function getDashboardStats() {
     return {
         shipments: {
             total: Object.values(shipmentCounts).reduce((a, b) => a + b, 0),
-            pending: shipmentCounts.pending,
+            pending: shipmentCounts.booked,
             inTransit: shipmentCounts.in_transit,
             delivered: shipmentCounts.delivered,
-            failed: shipmentCounts.failed,
+            failed: shipmentCounts.exception,
             today: todayCount || 0,
             delayed: delayedCount || 0,
         },

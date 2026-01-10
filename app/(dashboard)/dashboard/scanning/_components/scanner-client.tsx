@@ -51,12 +51,14 @@ const scanTypeConfig: Record<ScanType, { label: string; icon: React.ElementType;
 };
 
 const statusColors: Record<ShipmentStatus, string> = {
-    pending: "text-muted-foreground",
+    booked: "text-muted-foreground",
     picked_up: "text-primary",
+    at_origin_hub: "text-primary",
     in_transit: "text-primary",
+    at_destination_hub: "text-primary",
     out_for_delivery: "text-warning",
     delivered: "text-success",
-    failed: "text-destructive",
+    exception: "text-destructive",
     returned: "text-warning",
     cancelled: "text-muted-foreground",
 };

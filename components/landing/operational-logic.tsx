@@ -174,6 +174,7 @@ function BentoGridItem({ item, className }: BentoItemProps) {
                       src={image || "/placeholder.svg"}
                       alt="visualise"
                       fill
+                      sizes="(max-width: 768px) 100vw, 50vw"
                       className="dark:shadow-primary/20 rounded-md object-cover shadow-xl shadow-black/10"
                     />
                   </div>

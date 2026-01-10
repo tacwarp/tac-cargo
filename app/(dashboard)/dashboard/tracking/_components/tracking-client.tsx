@@ -58,12 +58,14 @@ interface TrackingClientProps {
 }
 
 const statusConfig: Record<ShipmentStatus, { label: string; color: string; bgColor: string; icon: React.ElementType }> = {
-    pending: { label: "Pending", color: "text-muted-foreground", bgColor: "bg-muted", icon: Clock },
+    booked: { label: "Booked", color: "text-muted-foreground", bgColor: "bg-muted", icon: Clock },
     picked_up: { label: "Picked Up", color: "text-primary", bgColor: "bg-primary/10", icon: Package },
+    at_origin_hub: { label: "At Origin Hub", color: "text-primary", bgColor: "bg-primary/10", icon: Package },
     in_transit: { label: "In Transit", color: "text-primary", bgColor: "bg-primary/10", icon: Truck },
+    at_destination_hub: { label: "At Destination Hub", color: "text-primary", bgColor: "bg-primary/10", icon: Package },
     out_for_delivery: { label: "Out for Delivery", color: "text-warning", bgColor: "bg-warning/10", icon: Truck },
     delivered: { label: "Delivered", color: "text-success", bgColor: "bg-success/10", icon: CheckCircle },
-    failed: { label: "Failed", color: "text-destructive", bgColor: "bg-destructive/10", icon: AlertCircle },
+    exception: { label: "Exception", color: "text-destructive", bgColor: "bg-destructive/10", icon: AlertCircle },
     returned: { label: "Returned", color: "text-warning", bgColor: "bg-warning/10", icon: RefreshCw },
     cancelled: { label: "Cancelled", color: "text-muted-foreground", bgColor: "bg-muted", icon: Clock },
 };
@@ -184,7 +186,7 @@ export function TrackingClient({ stats, initialShipments }: Readonly<TrackingCli
                                 <IllustratedEmptyState type="tracking" />
                             ) : (
                                 filteredShipments.map((shipment) => {
-                                    const status = statusConfig[shipment.status] || statusConfig.pending;
+                                    const status = statusConfig[shipment.status] || statusConfig.booked;
                                     const StatusIcon = status.icon;
 
                                     return (

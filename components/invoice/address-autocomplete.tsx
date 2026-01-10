@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -10,7 +11,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { MapPin } from "lucide-react";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { MapPin, Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   INDIAN_CITIES,
@@ -43,45 +57,29 @@ export function AddressAutocomplete({
   errors = {},
   className,
 }: AddressAutocompleteProps) {
-  const [citySearch, setCitySearch] = useState(value.city || "");
-  const [showCityDropdown, setShowCityDropdown] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [open, setOpen] = useState(false);
+  const [citySearch, setCitySearch] = useState("");
 
-  // Filter cities based on search - use useMemo instead of useEffect+setState
+  // Filter cities based on search
   const filteredCities = useMemo(() => {
-    if (citySearch.length === 0) {
-      return PRIORITY_CITIES;
-    }
-    const search = citySearch.toLowerCase();
-    const filtered = INDIAN_CITIES.filter(
-      (city) =>
-        city.name.toLowerCase().includes(search) ||
-        city.state.toLowerCase().includes(search)
-    );
-    // Prioritize exact matches and priority cities
-    filtered.sort((a, b) => {
+    // If search is empty, show priority cities first
+    let cities = citySearch.length === 0 
+      ? PRIORITY_CITIES 
+      : INDIAN_CITIES.filter(
+          (city) =>
+            city.name.toLowerCase().includes(citySearch.toLowerCase()) ||
+            city.state.toLowerCase().includes(citySearch.toLowerCase())
+        );
+    
+    // Sort logic: Priority cities first, then alphabetical
+    return cities.slice(0, 50).sort((a, b) => {
       const aIsPriority = PRIORITY_CITIES.some((p) => p.name === a.name);
       const bIsPriority = PRIORITY_CITIES.some((p) => p.name === b.name);
       if (aIsPriority && !bIsPriority) return -1;
       if (!aIsPriority && bIsPriority) return 1;
       return a.name.localeCompare(b.name);
     });
-    return filtered.slice(0, 10);
   }, [citySearch]);
-
-  // Close dropdown on outside click
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setShowCityDropdown(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
 
   const handleCitySelect = (city: City) => {
     onChange({
@@ -90,8 +88,7 @@ export function AddressAutocomplete({
       state: city.state,
       pincode: city.pincode || value.pincode,
     });
-    setCitySearch(city.name);
-    setShowCityDropdown(false);
+    setOpen(false);
   };
 
   const handleStateChange = (stateCode: string) => {
@@ -135,51 +132,61 @@ export function AddressAutocomplete({
         )}
       </div>
 
-      {/* City with Autocomplete */}
+      {/* City with Popover + Command */}
       <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2 relative" ref={dropdownRef}>
+        <div className="space-y-2 flex flex-col">
           <Label>City {required && "*"}</Label>
-          <Input
-            value={citySearch}
-            onChange={(e) => {
-              setCitySearch(e.target.value);
-              setShowCityDropdown(true);
-            }}
-            onFocus={() => setShowCityDropdown(true)}
-            placeholder="Search city..."
-            className={cn(errors.city && "border-destructive")}
-          />
+          <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                role="combobox"
+                aria-expanded={open}
+                className={cn(
+                  "w-full justify-between font-normal",
+                  !value.city && "text-muted-foreground",
+                  errors.city && "border-destructive"
+                )}
+              >
+                {value.city || "Select city..."}
+                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[300px] p-0" align="start">
+              <Command shouldFilter={false}>
+                <CommandInput 
+                  placeholder="Search city..." 
+                  value={citySearch}
+                  onValueChange={setCitySearch}
+                />
+                <CommandList>
+                  <CommandEmpty>No city found.</CommandEmpty>
+                  <CommandGroup heading="Suggestions">
+                    {filteredCities.map((city) => (
+                      <CommandItem
+                        key={`${city.name}-${city.stateCode}`}
+                        value={`${city.name}|${city.state}`}
+                        onSelect={() => handleCitySelect(city)}
+                      >
+                        <Check
+                          className={cn(
+                            "mr-2 h-4 w-4",
+                            value.city === city.name ? "opacity-100" : "opacity-0"
+                          )}
+                        />
+                        <div className="flex flex-col">
+                          <span>{city.name}</span>
+                          <span className="text-xs text-muted-foreground">{city.state}</span>
+                        </div>
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
           {errors.city && (
             <p className="text-xs text-destructive">{errors.city}</p>
-          )}
-
-          {/* City Dropdown */}
-          {showCityDropdown && filteredCities.length > 0 && (
-            <div className="absolute z-50 w-full mt-1 bg-popover border border-border rounded-md shadow-lg max-h-60 overflow-auto">
-              {filteredCities.map((city) => (
-                <button
-                  key={`${city.name}-${city.stateCode}`}
-                  type="button"
-                  onClick={() => handleCitySelect(city)}
-                  className={cn(
-                    "w-full px-3 py-2 text-left text-sm hover:bg-accent flex items-center justify-between",
-                    value.city === city.name && "bg-accent"
-                  )}
-                >
-                  <div>
-                    <span className="font-medium">{city.name}</span>
-                    <span className="text-muted-foreground ml-2 text-xs">
-                      {city.state}
-                    </span>
-                  </div>
-                  {PRIORITY_CITIES.some((p) => p.name === city.name) && (
-                    <span className="text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded">
-                      Priority
-                    </span>
-                  )}
-                </button>
-              ))}
-            </div>
           )}
         </div>
 

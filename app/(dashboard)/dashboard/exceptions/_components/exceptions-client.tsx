@@ -90,7 +90,7 @@ export function ExceptionsClient({ initialExceptions, availableShipments = [] }:
         }
 
         startTransition(async () => {
-            const newStatus: ShipmentStatus = createForm.exceptionType === "failed" ? "failed" : "in_transit";
+            const newStatus: ShipmentStatus = createForm.exceptionType === "failed" ? "exception" : "in_transit";
             const result = await updateShipmentStatus(createForm.shipmentId, newStatus, createForm.reason);
             
             if (result.success) {
@@ -126,7 +126,7 @@ export function ExceptionsClient({ initialExceptions, availableShipments = [] }:
 
     const handleResolve = async (shipmentId: string) => {
         startTransition(async () => {
-            const result = await updateShipmentStatus(shipmentId, "pending");
+            const result = await updateShipmentStatus(shipmentId, "booked");
             if (result.success) {
                 setExceptions(prev => prev.filter(e => e.id !== shipmentId));
                 setSelectedId(exceptions.find(e => e.id !== shipmentId)?.id || null);

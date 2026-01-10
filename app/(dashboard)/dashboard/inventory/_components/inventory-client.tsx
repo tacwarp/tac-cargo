@@ -43,12 +43,14 @@ interface InventoryClientProps {
 }
 
 const statusColors: Record<ShipmentStatus, string> = {
-    pending: "text-muted-foreground bg-muted",
+    booked: "text-muted-foreground bg-muted",
     picked_up: "text-primary bg-primary/10",
+    at_origin_hub: "text-primary bg-primary/10",
     in_transit: "text-primary bg-primary/10",
+    at_destination_hub: "text-primary bg-primary/10",
     out_for_delivery: "text-warning bg-warning/10",
     delivered: "text-success bg-success/10",
-    failed: "text-destructive bg-destructive/10",
+    exception: "text-destructive bg-destructive/10",
     returned: "text-warning bg-warning/10",
     cancelled: "text-muted-foreground bg-muted",
 };

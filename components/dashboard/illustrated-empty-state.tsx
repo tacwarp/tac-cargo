@@ -112,6 +112,7 @@ export function IllustratedEmptyState({
           src={config.image}
           alt={displayTitle}
           fill
+          sizes="192px"
           className="object-contain"
           priority={false}
         />

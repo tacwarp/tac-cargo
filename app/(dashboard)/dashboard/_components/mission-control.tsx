@@ -74,12 +74,14 @@ const itemVariants = {
 };
 
 const statusConfig: Record<ShipmentStatus, { label: string; color: string }> = {
-  pending: { label: "Pending", color: "text-muted-foreground" },
+  booked: { label: "Booked", color: "text-muted-foreground" },
   picked_up: { label: "Picked Up", color: "text-primary" },
+  at_origin_hub: { label: "At Origin Hub", color: "text-primary" },
   in_transit: { label: "In Transit", color: "text-primary" },
+  at_destination_hub: { label: "At Destination Hub", color: "text-primary" },
   out_for_delivery: { label: "Out for Delivery", color: "text-warning" },
   delivered: { label: "Delivered", color: "text-success" },
-  failed: { label: "Failed", color: "text-destructive" },
+  exception: { label: "Exception", color: "text-destructive" },
   returned: { label: "Returned", color: "text-warning" },
   cancelled: { label: "Cancelled", color: "text-muted-foreground" },
 };
@@ -230,7 +232,7 @@ export function MissionControl({
               <div className="p-8 text-center text-muted-foreground">No recent activity</div>
             ) : (
               recentActivity.slice(0, 8).map((item, index) => {
-                const status = statusConfig[item.status] || statusConfig.pending;
+                const status = statusConfig[item.status] || statusConfig.booked;
                 return (
                   <motion.div
                     key={item.id}

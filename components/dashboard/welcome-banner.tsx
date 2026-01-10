@@ -143,6 +143,7 @@ export function WelcomeBanner({
             src="/images/dashboard-welcome.png"
             alt="Dashboard Welcome"
             fill
+            sizes="192px"
             className="object-contain"
             priority
           />

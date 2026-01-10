@@ -92,7 +92,7 @@ export async function generateLabelInvoice(
       .insert({
         invoice_no: invoiceNo,
         type: "label",
-        status: "generated",
+        status: "pending",
         shipment_id: input.shipmentId,
         customer_id: shipment.customer_id,
         awb_no: awbNo,
@@ -211,7 +211,7 @@ export async function generateCustomerInvoice(
       .insert({
         invoice_no: invoiceNo,
         type: "customer",
-        status: "generated",
+        status: "pending",
         shipment_id: input.shipmentId,
         customer_id: shipment.customer_id,
         consignee_name: shipment.consignee_name,
@@ -274,7 +274,7 @@ export async function regenerateInvoice(
     const { data, error: dbError } = await supabase
       .from("invoices")
       .update({
-        status: "generated",
+        status: "pending",
         pdf_url: null,
         updated_at: new Date().toISOString(),
       })
@@ -440,7 +440,7 @@ export async function getInvoicesPendingDelivery(): Promise<
       `
       )
       .eq("type", "customer")
-      .eq("status", "generated")
+      .eq("status", "pending")
       .is("sent_via_whatsapp_at", null)
       .order("created_at", { ascending: false });
 
