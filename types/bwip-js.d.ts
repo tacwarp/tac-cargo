@@ -13,6 +13,11 @@ declare module "bwip-js" {
   function toBuffer(options: BwipJsOptions): Promise<Buffer>;
   function toDataURL(options: BwipJsOptions): Promise<string>;
 
+  const bwipJs: {
+    toBuffer: typeof toBuffer;
+    toDataURL: typeof toDataURL;
+  };
+
   export { toBuffer, toDataURL };
-  export default { toBuffer, toDataURL };
+  export default bwipJs;
 }

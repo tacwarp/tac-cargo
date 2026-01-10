@@ -90,7 +90,7 @@ export async function generateAWBBarcode(awb: string): Promise<Buffer> {
  */
 export async function generateGS1Barcode(data: string): Promise<Buffer> {
   // Remove parentheses for barcode encoding (they're for human reading)
-  const cleanData = data.replace(/[()]/g, "");
+  const cleanData = data.replaceAll("(", "").replaceAll(")", "");
 
   return generateBarcodePNG(cleanData, {
     type: "code128", // Use code128 as fallback if gs1-128 not available
