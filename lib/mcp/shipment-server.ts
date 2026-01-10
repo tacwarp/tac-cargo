@@ -329,7 +329,7 @@ async function main() {
       },
     });
 
-    console.error("Failed to start MCP server:", error);
+    console.error("Failed to start MCP server:", error instanceof Error ? error.message : "Unknown error");
     process.exit(1);
   }
 }
@@ -347,7 +347,7 @@ const isMainModule = normalizedCurrentPath === normalizedExecutedPath;
 if (isMainModule) {
   main().catch((error) => {
     Sentry.captureException(error);
-    console.error("Server error:", error);
+    console.error("Server error:", error instanceof Error ? error.message : "Unknown error");
     process.exit(1);
   });
 }

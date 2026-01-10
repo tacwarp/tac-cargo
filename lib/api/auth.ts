@@ -42,7 +42,7 @@ export async function withAuth(
 
     return handler(context);
   } catch (error) {
-    console.error("Auth error:", error);
+    console.error("Auth error:", error instanceof Error ? error.message : "Unknown error");
     return unauthorizedResponse();
   }
 }

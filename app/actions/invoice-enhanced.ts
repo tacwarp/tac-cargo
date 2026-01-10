@@ -234,7 +234,7 @@ export async function createEnhancedInvoice(
       .single();
 
     if (insertError) {
-      console.error("Create invoice error:", insertError);
+      console.error("Create invoice error:", { code: insertError.code, message: insertError.message });
       return error(`Failed to create invoice: ${insertError.message}`, "DATABASE_ERROR");
     }
 
@@ -272,7 +272,7 @@ export async function createEnhancedInvoice(
       "Invoice created successfully"
     );
   } catch (err) {
-    console.error("Create enhanced invoice error:", err);
+    console.error("Create enhanced invoice error:", err instanceof Error ? err.message : "Unknown error");
     return error("Internal server error", "INTERNAL_ERROR");
   }
 }
@@ -309,7 +309,7 @@ export async function getInvoiceForPDF(
 
     return success(invoice);
   } catch (err) {
-    console.error("Get invoice for PDF error:", err);
+    console.error("Get invoice for PDF error:", err instanceof Error ? err.message : "Unknown error");
     return error("Internal server error", "INTERNAL_ERROR");
   }
 }
@@ -351,7 +351,7 @@ export async function updateInvoicePDFUrl(
 
     return success(undefined, "PDF URL updated");
   } catch (err) {
-    console.error("Update PDF URL error:", err);
+    console.error("Update PDF URL error:", err instanceof Error ? err.message : "Unknown error");
     return error("Internal server error", "INTERNAL_ERROR");
   }
 }
@@ -412,7 +412,7 @@ Thank you for choosing TAC Cargo!
 
     return success({ shareLink }, "WhatsApp link generated");
   } catch (err) {
-    console.error("Send WhatsApp error:", err);
+    console.error("Send WhatsApp error:", err instanceof Error ? err.message : "Unknown error");
     return error("Internal server error", "INTERNAL_ERROR");
   }
 }

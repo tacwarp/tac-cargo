@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import crypto from "crypto";
+import crypto from "node:crypto";
 
 export type WebhookEvent =
   | "shipment.created"
@@ -48,7 +48,7 @@ export async function triggerWebhooks(
       webhooks.map((webhook) => sendWebhook(webhook, payload)),
     );
   } catch (error) {
-    console.error("Webhook trigger error:", error);
+    console.error("Webhook trigger error:", error instanceof Error ? error.message : "Unknown error");
   }
 }
 
@@ -111,20 +111,20 @@ async function sendWebhook(
     error_message: errorMessage,
   });
 
-  if (!success) {
-    // Increment failure count using raw SQL to avoid incorrect RPC usage
-    await supabase.rpc("increment_webhook_failure", { webhook_id: webhook.id });
-    await supabase
-      .from("webhooks")
-      .update({ last_triggered_at: new Date().toISOString() })
-      .eq("id", webhook.id);
-  } else {
+  if (success) {
     await supabase
       .from("webhooks")
       .update({
         failure_count: 0,
         last_triggered_at: new Date().toISOString(),
       })
+      .eq("id", webhook.id);
+  } else {
+    // Increment failure count using raw SQL to avoid incorrect RPC usage
+    await supabase.rpc("increment_webhook_failure", { webhook_id: webhook.id });
+    await supabase
+      .from("webhooks")
+      .update({ last_triggered_at: new Date().toISOString() })
       .eq("id", webhook.id);
   }
 }

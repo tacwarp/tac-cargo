@@ -57,7 +57,7 @@ export async function generateBarcodePNG(
     });
     return png;
   } catch (error) {
-    console.error("Barcode generation error:", error);
+    console.error("Barcode generation error:", error instanceof Error ? error.message : "Unknown error");
     throw new Error(`Failed to generate barcode: ${error}`);
   }
 }

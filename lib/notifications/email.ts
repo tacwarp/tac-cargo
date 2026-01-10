@@ -46,14 +46,14 @@ export async function sendEmail(
 
     if (!response.ok) {
       const error = await response.text();
-      console.error("Email send failed:", error);
+      console.error("Email send failed:", typeof error === "string" ? error.substring(0, 100) : "Unknown error");
       return { success: false, error };
     }
 
     const data = await response.json();
     return { success: true, id: data.id };
   } catch (error) {
-    console.error("Email send error:", error);
+    console.error("Email send error:", error instanceof Error ? error.message : "Unknown error");
     return {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error",

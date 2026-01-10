@@ -2,7 +2,7 @@ import React from "react";
 import { createClient } from "@/lib/supabase/server";
 import { V2Header } from "../_components/v2-header";
 import { RoutesClient } from "./_components/routes-client";
-import { normalizeJoin } from "@/lib/utils";
+import { normalizeJoinSingle } from "@/lib/utils";
 
 async function getActiveManifests() {
     const supabase = await createClient();
@@ -31,8 +31,8 @@ async function getActiveManifests() {
 
     return (data || []).map(m => ({
         ...m,
-        origin_warehouse: normalizeJoin(m.origin_warehouse),
-        destination_warehouse: normalizeJoin(m.destination_warehouse),
+        origin_warehouse: normalizeJoinSingle(m.origin_warehouse),
+        destination_warehouse: normalizeJoinSingle(m.destination_warehouse),
     }));
 }
 

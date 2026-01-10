@@ -48,13 +48,13 @@ export async function createNotification(
       .single();
 
     if (error) {
-      console.error("Failed to create notification:", error);
+      console.error("Failed to create notification:", error instanceof Error ? error.message : "Unknown error");
       return null;
     }
 
     return data.id;
   } catch (error) {
-    console.error("Notification creation error:", error);
+    console.error("Notification creation error:", error instanceof Error ? error.message : "Unknown error");
     return null;
   }
 }
@@ -116,7 +116,7 @@ export async function getUserNotifications(
     const { data, error } = await query;
 
     if (error) {
-      console.error("Failed to fetch notifications:", error);
+      console.error("Failed to fetch notifications:", error instanceof Error ? error.message : "Unknown error");
       return [];
     }
 

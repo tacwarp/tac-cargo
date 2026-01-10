@@ -82,7 +82,9 @@ export class InvoiceService {
   static generateAWBNumber(): string {
     const prefix = "TAC";
     const timestamp = Date.now().toString(36).toUpperCase();
-    const random = Math.random().toString(36).substring(2, 6).toUpperCase();
+    const random = typeof crypto !== "undefined"
+      ? Array.from(crypto.getRandomValues(new Uint8Array(3))).map(b => b.toString(36)).join("").substring(0, 4).toUpperCase()
+      : Math.random().toString(36).substring(2, 6).toUpperCase();
     return `${prefix}${timestamp}${random}`;
   }
 
@@ -173,7 +175,7 @@ export class InvoiceService {
       .single();
 
     if (error) {
-      console.error("Error fetching invoice:", error);
+      console.error("Error fetching invoice:", error instanceof Error ? error.message : "Unknown error");
       return null;
     }
 

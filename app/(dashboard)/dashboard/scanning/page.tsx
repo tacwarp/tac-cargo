@@ -2,7 +2,7 @@ import React from "react";
 import { createClient } from "@/lib/supabase/server";
 import { V2Header } from "../_components/v2-header";
 import { ScannerClient } from "./_components/scanner-client";
-import { normalizeJoin } from "@/lib/utils";
+import { normalizeJoinSingle } from "@/lib/utils";
 
 async function getWarehouses() {
     const supabase = await createClient();
@@ -33,8 +33,8 @@ async function getRecentScans() {
 
     return (data || []).map(s => ({
         ...s,
-        shipments: normalizeJoin(s.shipments),
-        profiles: normalizeJoin(s.profiles),
+        shipments: normalizeJoinSingle(s.shipments),
+        profiles: normalizeJoinSingle(s.profiles),
     }));
 }
 

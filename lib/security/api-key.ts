@@ -1,4 +1,4 @@
-import crypto from "crypto";
+import crypto from "node:crypto";
 import { createClient } from "@/lib/supabase/server";
 
 const API_KEY_PREFIX = "tac_";
@@ -27,7 +27,7 @@ export async function validateApiKey(key: string): Promise<{
   scopes?: string[];
   error?: string;
 }> {
-  if (!key || !key.startsWith(API_KEY_PREFIX)) {
+  if (!key?.startsWith(API_KEY_PREFIX)) {
     return { valid: false, error: "Invalid API key format" };
   }
 
@@ -65,7 +65,7 @@ export async function validateApiKey(key: string): Promise<{
       scopes: apiKey.scopes || ["read"],
     };
   } catch (error) {
-    console.error("API key validation error:", error);
+    console.error("API key validation error:", error instanceof Error ? error.message : "Unknown error");
     return { valid: false, error: "Validation failed" };
   }
 }
@@ -103,13 +103,13 @@ export async function createApiKeyForOrg(
       .single();
 
     if (error || !data) {
-      console.error("Failed to create API key:", error);
+      console.error("Failed to create API key:", error instanceof Error ? { code: (error as { code?: string }).code } : "Unknown error");
       return null;
     }
 
     return { key, id: data.id };
   } catch (error) {
-    console.error("API key creation error:", error);
+    console.error("API key creation error:", error instanceof Error ? error.message : "Unknown error");
     return null;
   }
 }

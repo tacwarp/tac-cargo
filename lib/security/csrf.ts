@@ -1,4 +1,4 @@
-import crypto from "crypto";
+import crypto from "node:crypto";
 
 function getCSRFSecret(): string {
   const secret = process.env.CSRF_SECRET;
@@ -27,7 +27,7 @@ export function validateCSRFToken(token: string): boolean {
     const [timestamp, random, signature] = decoded.split(":");
 
     // Check expiry
-    const tokenTime = parseInt(timestamp);
+    const tokenTime = Number.parseInt(timestamp, 10);
     if (Date.now() - tokenTime > TOKEN_EXPIRY) {
       return false;
     }

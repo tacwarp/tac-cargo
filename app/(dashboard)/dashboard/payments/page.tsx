@@ -2,7 +2,7 @@ import React from "react";
 import { createClient } from "@/lib/supabase/server";
 import { V2Header } from "../_components/v2-header";
 import { PaymentsClient } from "./_components/payments-client";
-import { normalizeJoin } from "@/lib/utils";
+import { normalizeJoinSingle } from "@/lib/utils";
 
 async function getPayments() {
     const supabase = await createClient();
@@ -31,16 +31,16 @@ async function getPayments() {
         return [];
     }
 
-    return data.map(p => ({
-        ...p,
-        invoices: normalizeJoin(p.invoices) as { invoice_no: string; total_amount: number; customers: { name: string }[] | null } | null,
-    })).map(p => ({
-        ...p,
-        invoices: p.invoices ? {
-            ...p.invoices,
-            customers: normalizeJoin(p.invoices.customers),
-        } : null,
-    }));
+    return data.map(p => {
+        const invoice = normalizeJoinSingle(p.invoices);
+        return {
+            ...p,
+            invoices: invoice ? {
+                ...invoice,
+                customers: normalizeJoinSingle(invoice.customers),
+            } : null,
+        };
+    });
 }
 
 async function getOutstandingInvoices() {
@@ -64,7 +64,7 @@ async function getOutstandingInvoices() {
 
     return (data || []).map(i => ({
         ...i,
-        customers: normalizeJoin(i.customers),
+        customers: normalizeJoinSingle(i.customers),
     }));
 }
 

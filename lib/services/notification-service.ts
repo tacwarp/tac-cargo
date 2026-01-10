@@ -118,14 +118,14 @@ export class WhatsAppService {
 
       if (!response.ok) {
         const error = await response.json();
-        console.error("WhatsApp API Error:", error);
+        console.error("WhatsApp API Error:", { code: error.error?.code, message: error.error?.message });
         return { success: false, error: error.error?.message || "Failed to send WhatsApp message" };
       }
 
       const result = await response.json();
       return { success: true, messageId: result.messages?.[0]?.id };
     } catch (error) {
-      console.error("WhatsApp send error:", error);
+      console.error("WhatsApp send error:", error instanceof Error ? error.message : "Unknown error");
       return { success: false, error: String(error) };
     }
   }
@@ -227,7 +227,7 @@ export class EmailService {
       const result = await response.json();
       return { success: true, messageId: result.id };
     } catch (error) {
-      console.error("Email send error:", error);
+      console.error("Email send error:", error instanceof Error ? error.message : "Unknown error");
       return { success: false, error: String(error) };
     }
   }
@@ -365,7 +365,7 @@ export class NotificationManager {
         sent_at: new Date().toISOString(),
       });
     } catch (error) {
-      console.error("Failed to log notification:", error);
+      console.error("Failed to log notification:", error instanceof Error ? error.message : "Unknown error");
     }
   }
 

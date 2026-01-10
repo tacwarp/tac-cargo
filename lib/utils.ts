@@ -333,3 +333,17 @@ export function normalizeJoin<T>(data: T | T[] | null | undefined): T[] {
   if (Array.isArray(data)) return data;
   return [data];
 }
+
+/**
+ * Normalizes Supabase join results into a single object or null.
+ * For one-to-one relationships where you expect a single result.
+ * Returns the first element if array, the object if single, or null if empty.
+ *
+ * @param {T | T[] | null | undefined} data - Data to normalize
+ * @returns {T | null} Single object or null
+ */
+export function normalizeJoinSingle<T>(data: T | T[] | null | undefined): T | null {
+  if (data === null || data === undefined) return null;
+  if (Array.isArray(data)) return data[0] ?? null;
+  return data;
+}

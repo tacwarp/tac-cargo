@@ -116,7 +116,6 @@ export function AnalyticsClient({ data }: AnalyticsClientProps) {
                 statusDistribution={statusDistribution}
                 topCustomers={topCustomers}
                 deliveryRate={summary.deliveryRate}
-                summary={summary}
             />
         </div>
     );

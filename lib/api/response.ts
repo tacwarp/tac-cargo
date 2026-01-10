@@ -84,6 +84,6 @@ export function rateLimitResponse(retryAfter: number): NextResponse {
 }
 
 export function serverErrorResponse(error: unknown): NextResponse {
-  console.error("Server error:", error);
+  console.error("Server error:", error instanceof Error ? error.message : "Unknown error");
   return errorResponse("Internal server error", 500);
 }
