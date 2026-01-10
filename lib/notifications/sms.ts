@@ -36,14 +36,14 @@ export async function sendSMS(
 
     if (!response.ok) {
       const error = await response.text();
-      console.error("SMS send failed:", error);
+      console.error("SMS send failed:", typeof error === "string" ? error.substring(0, 100) : "Unknown error");
       return { success: false, error };
     }
 
     const data = await response.json();
     return { success: true, sid: data.sid };
   } catch (error) {
-    console.error("SMS send error:", error);
+    console.error("SMS send error:", error instanceof Error ? error.message : "Unknown error");
     return {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error",
