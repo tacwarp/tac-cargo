@@ -2,7 +2,7 @@ import React from "react";
 import { createClient } from "@/lib/supabase/server";
 import { V2Header } from "../_components/v2-header";
 import { InventoryClient } from "./_components/inventory-client";
-import { normalizeJoin } from "@/lib/utils";
+import { normalizeJoinSingle } from "@/lib/utils";
 
 async function getWarehouses() {
     const supabase = await createClient();
@@ -42,9 +42,9 @@ async function getInventorySummary() {
 
     return (shipments || []).map(s => ({
         ...s,
-        origin_warehouse: normalizeJoin(s.origin_warehouse),
-        destination_warehouse: normalizeJoin(s.destination_warehouse),
-        manifests: normalizeJoin(s.manifests),
+        origin_warehouse: normalizeJoinSingle(s.origin_warehouse),
+        destination_warehouse: normalizeJoinSingle(s.destination_warehouse),
+        manifests: normalizeJoinSingle(s.manifests),
     }));
 }
 

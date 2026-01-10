@@ -2,7 +2,7 @@ import React from "react";
 import { createClient } from "@/lib/supabase/server";
 import { V2Header } from "../_components/v2-header";
 import { ExceptionsClient } from "./_components/exceptions-client";
-import { normalizeJoin } from "@/lib/utils";
+import { normalizeJoinSingle } from "@/lib/utils";
 
 async function getAvailableShipments() {
     const supabase = await createClient();
@@ -69,8 +69,8 @@ async function getExceptions() {
         consignee_name: s.consignee_name,
         consignee_city: s.consignee_city,
         updated_at: s.updated_at,
-        origin_warehouse: normalizeJoin(s.origin_warehouse) as { name: string; code: string } | null,
-        destination_warehouse: normalizeJoin(s.destination_warehouse) as { name: string; code: string } | null,
+        origin_warehouse: normalizeJoinSingle(s.origin_warehouse),
+        destination_warehouse: normalizeJoinSingle(s.destination_warehouse),
     });
     
     const exceptions = [
