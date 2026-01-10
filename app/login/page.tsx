@@ -107,11 +107,11 @@ export default function LoginPage() {
         {/* Branding */}
         <div className="relative z-10">
           <Link href="/" className="group inline-flex items-center gap-3">
-            <div className="group-hover:border-primary/50 flex h-12 w-12 items-center justify-center rounded-xl border border-white/10 glass-effect transition-colors">
+            <div className="group-hover:border-primary/50 flex h-12 w-12 items-center justify-center rounded-xl border border-border/40 glass-effect transition-colors">
               <div className="bg-primary h-6 w-6 rounded-lg shadow-2xl shadow-primary/50" />
             </div>
             <div>
-              <div className="text-2xl font-bold tracking-tight text-white">
+              <div className="text-2xl font-bold tracking-tight text-foreground">
                 TAC
               </div>
               <div className="font-mono text-xs tracking-[0.2em] text-muted-foreground/60">
@@ -279,13 +279,13 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="group btn-primary text-primary-foreground shadow-primary/20 hover:shadow-primary/40 relative h-14 w-full overflow-hidden rounded-xl font-bold tracking-wide shadow-lg transition-all active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
+                className="group bg-primary text-primary-foreground shadow-primary/20 hover:shadow-primary/40 relative h-14 w-full overflow-hidden rounded-xl font-bold tracking-wide shadow-lg transition-all active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
               >
                 <div className="absolute inset-0 translate-x-[-100%] bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-[100%]" />
                 <span className="relative flex items-center justify-center gap-2">
                   {isLoading ? (
                     <>
-                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground/30 border-t-primary-foreground" />
                       AUTHENTICATING...
                     </>
                   ) : (

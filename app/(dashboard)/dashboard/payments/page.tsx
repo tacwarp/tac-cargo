@@ -2,7 +2,7 @@ import React from "react";
 import { createClient } from "@/lib/supabase/server";
 import { V2Header } from "../_components/v2-header";
 import { PaymentsClient } from "./_components/payments-client";
-import { normalizeJoin } from "@/lib/utils/normalize-supabase";
+import { normalizeJoin } from "@/lib/utils";
 
 async function getPayments() {
     const supabase = await createClient();

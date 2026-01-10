@@ -197,7 +197,7 @@ export function Services() {
             variants={item}
             className="group bg-secondary/20 hover:bg-secondary/30 relative overflow-hidden rounded-3xl border border-white/5 p-8 transition-all duration-300"
           >
-            <Code2 className="mb-6 h-8 w-8 text-purple-400" />
+            <Code2 className="mb-6 h-8 w-8 text-primary" />
             <h3 className="text-foreground mb-2 text-xl font-medium">
               Developer API
             </h3>

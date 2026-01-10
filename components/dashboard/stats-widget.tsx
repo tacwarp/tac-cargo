@@ -2,6 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { RiMore2Fill } from "@remixicon/react";
+import Image from "next/image";
 
 interface StatsWidgetProps {
   userName: string;
@@ -80,10 +81,12 @@ export function StatsWidget({
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform">
             <div className="relative">
               <div className="bg-primary/20 absolute inset-0 animate-pulse rounded-full blur-md" />
-              <img
+              <Image
                 alt={userName}
                 src={userAvatar}
-                className="border-card relative z-10 h-28 w-28 rounded-full border-4 object-cover"
+                width={112}
+                height={112}
+                className="border-card relative z-10 rounded-full border-4 object-cover"
               />
             </div>
           </div>

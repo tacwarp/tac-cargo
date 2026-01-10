@@ -11,7 +11,7 @@ export interface AuthContext {
   organizationId: string | null;
 }
 
-export async function withAuth<T>(
+export async function withAuth(
   handler: (context: AuthContext) => Promise<NextResponse>,
 ): Promise<NextResponse> {
   try {

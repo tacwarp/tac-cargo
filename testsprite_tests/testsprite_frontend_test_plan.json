@@ -1,0 +1,705 @@
+[
+  {
+    "id": "TC001",
+    "title": "User Authentication Success",
+    "description": "Verify user can log in successfully with valid credentials and be redirected to the Mission Control dashboard",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the login page"
+      },
+      {
+        "type": "action",
+        "description": "Enter valid username/email and password"
+      },
+      {
+        "type": "action",
+        "description": "Click the login button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the user is authenticated and redirected to the Mission Control dashboard"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the dashboard loads KPI cards, shipment pipeline, and live activity feed"
+      }
+    ]
+  },
+  {
+    "id": "TC002",
+    "title": "User Authentication Failure",
+    "description": "Verify login fails with invalid credentials and an appropriate error message is displayed",
+    "category": "error handling",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the login page"
+      },
+      {
+        "type": "action",
+        "description": "Enter invalid username/email or password"
+      },
+      {
+        "type": "action",
+        "description": "Click the login button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify login is denied with error message displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify user remains on the login page"
+      }
+    ]
+  },
+  {
+    "id": "TC003",
+    "title": "Role-Based Access Control Verification",
+    "description": "Verify that users with different roles have access only to permitted areas and data within their tenant",
+    "category": "security",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login as a user with restricted permissions"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify restricted pages are inaccessible and user is redirected appropriately"
+      },
+      {
+        "type": "action",
+        "description": "Attempt to access protected endpoints directly via URL"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify unauthorized access is blocked and session remains secure"
+      }
+    ]
+  },
+  {
+    "id": "TC004",
+    "title": "Mission Control Dashboard Rendering",
+    "description": "Verify that the Mission Control dashboard renders all core components with live real-time data",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login and navigate to the Mission Control dashboard"
+      },
+      {
+        "type": "assertion",
+        "description": "Check KPI cards display current operational metrics accurately"
+      },
+      {
+        "type": "assertion",
+        "description": "Validate shipment pipeline updates dynamically reflecting real-time shipment statuses"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm interactive Recharts load correctly with proper axis and data points"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify live activity feed updates as new events occur"
+      }
+    ]
+  },
+  {
+    "id": "TC005",
+    "title": "Create Shipment via Multi-Step Wizard",
+    "description": "Test full lifecycle of shipment creation through multi-step wizard including pricing automation and barcode scanning",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the shipment creation wizard"
+      },
+      {
+        "type": "action",
+        "description": "Complete each wizard step with valid shipment details"
+      },
+      {
+        "type": "action",
+        "description": "Use barcode scanning (camera or USB) to add shipment data"
+      },
+      {
+        "type": "action",
+        "description": "Verify pricing and automated calculations are applied correctly"
+      },
+      {
+        "type": "action",
+        "description": "Submit the shipment creation request"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify shipment is saved and visible in the shipments list"
+      },
+      {
+        "type": "assertion",
+        "description": "Check that database contains correct shipment data with status 'Created'"
+      }
+    ]
+  },
+  {
+    "id": "TC006",
+    "title": "Edit and Update Shipment Details",
+    "description": "Verify shipment details can be updated correctly including status changes and barcode rescanning",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Locate an existing shipment in the shipments table"
+      },
+      {
+        "type": "action",
+        "description": "Open shipment drawer for editing"
+      },
+      {
+        "type": "action",
+        "description": "Modify shipment attributes such as destination, weight, or status"
+      },
+      {
+        "type": "action",
+        "description": "Re-scan barcode to update shipment if needed"
+      },
+      {
+        "type": "action",
+        "description": "Save the changes"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify updated shipment details are persisted and visible in UI"
+      }
+    ]
+  },
+  {
+    "id": "TC007",
+    "title": "Delete Shipment and Confirm Removal",
+    "description": "Test deletion of shipments individually and in bulk with confirmation dialogs",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Select one or multiple shipments from the shipments table"
+      },
+      {
+        "type": "action",
+        "description": "Initiate delete action and confirm in dialog prompt"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify shipments are removed from the list and database"
+      },
+      {
+        "type": "assertion",
+        "description": "Validate that deleted shipments cannot be accessed or tracked"
+      }
+    ]
+  },
+  {
+    "id": "TC008",
+    "title": "Real-Time Shipment Tracking Updates",
+    "description": "Validate tracking system updates shipment status and timeline visuals with max 30 seconds latency",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to tracking page"
+      },
+      {
+        "type": "action",
+        "description": "Search for shipment by AWB number"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify shipment timeline visual updates with recent tracking events"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm map integration displays current shipment location correctly"
+      },
+      {
+        "type": "action",
+        "description": "Simulate shipment status changes via backend"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify UI reflects changes in under 30 seconds"
+      }
+    ]
+  },
+  {
+    "id": "TC009",
+    "title": "Manifest Creation with AI Route Optimization",
+    "description": "Verify manifest creation flow supports manual and AI-optimized route assignments and driver tracking",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to manifest creation page"
+      },
+      {
+        "type": "action",
+        "description": "Create new manifest manually by selecting shipments"
+      },
+      {
+        "type": "assertion",
+        "description": "Validate manifest displays correct shipments"
+      },
+      {
+        "type": "action",
+        "description": "Activate AI-powered route optimization"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify optimized route is suggested with cost/time minimization"
+      },
+      {
+        "type": "action",
+        "description": "Assign drivers to manifest and confirm assignments"
+      },
+      {
+        "type": "assertion",
+        "description": "Validate manifest live map tracking updates driver location"
+      },
+      {
+        "type": "action",
+        "description": "Close manifest and verify automatic closure workflow completes"
+      }
+    ]
+  },
+  {
+    "id": "TC010",
+    "title": "Invoice Generation and GST Compliance",
+    "description": "Test invoice generation for shipments with GST calculation, multi-channel delivery, and payment link integration",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Generate invoice for completed shipments"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify invoice includes GST fields correctly calculated"
+      },
+      {
+        "type": "action",
+        "description": "Send invoice via email and WhatsApp Business API"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm invoice receipt in both channels"
+      },
+      {
+        "type": "action",
+        "description": "Click payment link from invoice and complete payment"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify payment status updates in payment dashboard"
+      }
+    ]
+  },
+  {
+    "id": "TC011",
+    "title": "Analytics Dashboard Data Accuracy and Export",
+    "description": "Validate analytics dashboard charts render correctly for operational, financial and customer metrics and support data export",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to analytics dashboard"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify area, bar, pie, and radar charts display correct data"
+      },
+      {
+        "type": "action",
+        "description": "Apply date range and filter changes"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm charts update dynamically with filters"
+      },
+      {
+        "type": "action",
+        "description": "Export chart data as CSV or Excel"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify exported files contain accurate data matching displayed charts"
+      }
+    ]
+  },
+  {
+    "id": "TC012",
+    "title": "Exception Handling Workflow",
+    "description": "Test creation, categorization, auto-escalation and resolution assignment for shipment exceptions with user notifications",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Identify delayed or failed shipment and create exception record"
+      },
+      {
+        "type": "action",
+        "description": "Assign category and severity"
+      },
+      {
+        "type": "action",
+        "description": "Auto-escalate exception based on configured thresholds"
+      },
+      {
+        "type": "action",
+        "description": "Assign resolution tasks to users"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify exception notifications are sent to relevant users and customers"
+      },
+      {
+        "type": "action",
+        "description": "Update exception status and add notes"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm changes are logged and displayed correctly"
+      }
+    ]
+  },
+  {
+    "id": "TC013",
+    "title": "Route Management Vehicle Tracking and Status",
+    "description": "Verify real-time vehicle location updates on map and route status indicators are accurate and interactive",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Access route management page"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm vehicle locations update live on interactive map"
+      },
+      {
+        "type": "action",
+        "description": "Filter routes by status and validate filtering results"
+      },
+      {
+        "type": "action",
+        "description": "Update status of a route or vehicle and observe UI change"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify status flags and colors correspond to the updated status"
+      }
+    ]
+  },
+  {
+    "id": "TC014",
+    "title": "Barcode Scanning Functionality and Offline Mode",
+    "description": "Test both USB and camera barcode scanning integration with offline queuing and de-duplication",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Scan barcode using USB device"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify scanned code is recognized and shipment details are loaded"
+      },
+      {
+        "type": "action",
+        "description": "Scan barcode using camera-based scanning"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm barcode data accuracy above 98%"
+      },
+      {
+        "type": "action",
+        "description": "Disconnect network and perform barcode scans offline"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify scans are queued and synchronized when online"
+      },
+      {
+        "type": "action",
+        "description": "Scan duplicate barcode"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify de-duplication prevents duplicate entries"
+      }
+    ]
+  },
+  {
+    "id": "TC015",
+    "title": "Global Command Palette Quick Navigation",
+    "description": "Verify command palette allows quick access to navigation and action commands with keyboard shortcuts",
+    "category": "ui",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Trigger global command palette via shortcut"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify command palette opens overlay interface"
+      },
+      {
+        "type": "action",
+        "description": "Input command to navigate to shipments page"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm user navigates to shipments dashboard page instantly"
+      },
+      {
+        "type": "action",
+        "description": "Input action command, e.g., 'Create Shipment'"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify action initiates multi-step shipment creation wizard"
+      }
+    ]
+  },
+  {
+    "id": "TC016",
+    "title": "Real-Time Notification System",
+    "description": "Test that critical events trigger in-app toast notifications and notification bell updates correctly",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Perform an action that triggers a notification, e.g., shipment delayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify toast notification appears with correct message"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm notification bell icon displays updated badge counts"
+      },
+      {
+        "type": "action",
+        "description": "Click notification bell and verify notification list shows recent alerts"
+      }
+    ]
+  },
+  {
+    "id": "TC017",
+    "title": "UI Component Accessibility and Theming Compliance",
+    "description": "Validate all UI components adhere to semantic OKLCH-based design tokens and meet WCAG AA accessibility standards",
+    "category": "ui",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Render UI components with various theme settings"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify color tokens match semantic OKLCH specifications with no hardcoded colors"
+      },
+      {
+        "type": "assertion",
+        "description": "Use accessibility tools to check components meet WCAG AA requirements (contrast, keyboard navigation, ARIA attributes)"
+      },
+      {
+        "type": "action",
+        "description": "Resize viewport to test responsive design behavior"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm UI components adapt appropriately without clipping or layout breaks"
+      }
+    ]
+  },
+  {
+    "id": "TC018",
+    "title": "Performance and Load Time Validation",
+    "description": "Ensure all main dashboard pages load under 2 seconds with smooth UI animations on target browsers",
+    "category": "performance",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Load Mission Control, Shipments, Tracking, Manifest, and Analytics pages on supported browsers"
+      },
+      {
+        "type": "assertion",
+        "description": "Measure initial page load times are below 2 seconds"
+      },
+      {
+        "type": "action",
+        "description": "Interact with UI animations and transitions"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify animations run smoothly without jitter or stutter"
+      },
+      {
+        "type": "action",
+        "description": "Monitor resource usage for memory leaks or excessive CPU during user interactions"
+      }
+    ]
+  },
+  {
+    "id": "TC019",
+    "title": "Session Expiration and Secure Redirects",
+    "description": "Validate session expiration enforces logout and redirects to login page for unauthorized access attempts",
+    "category": "security",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login and remain idle until session expires"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify user is logged out and redirected to login page on next interaction"
+      },
+      {
+        "type": "action",
+        "description": "Attempt to access a protected route after logout"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm unauthorized access is blocked and redirect to login occurs"
+      }
+    ]
+  },
+  {
+    "id": "TC020",
+    "title": "Bulk Actions with Shipments Data Table",
+    "description": "Verify bulk selection and operations (edit, delete) work correctly on shipments data table with proper UI feedback",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to shipments data table"
+      },
+      {
+        "type": "action",
+        "description": "Select multiple shipments using checkbox bulk select"
+      },
+      {
+        "type": "action",
+        "description": "Perform bulk edit and modify shipment status for all selected"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify all selected shipments are updated with new status"
+      },
+      {
+        "type": "action",
+        "description": "Perform bulk delete with confirmation"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify all selected shipments removed from list and backend"
+      }
+    ]
+  },
+  {
+    "id": "TC021",
+    "title": "Exception Auto-Escalation Logic Verification",
+    "description": "Check that shipment exceptions auto-escalate after configured time thresholds and notify target users",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Create an exception with low severity category"
+      },
+      {
+        "type": "action",
+        "description": "Simulate passage of escalation threshold time"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify exception status changes to escalated"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm escalation notification is sent to assigned personnel"
+      }
+    ]
+  },
+  {
+    "id": "TC022",
+    "title": "Invoice Payment Reconciliation Dashboard Accuracy",
+    "description": "Validate payments dashboard correctly tracks payment status, reconciles invoices, and displays revenue summary charts",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to payments dashboard"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify real-time payment statuses match backend data"
+      },
+      {
+        "type": "assertion",
+        "description": "Check that invoice reconciliation statuses are accurate"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm revenue summary charts update based on payments and reflect correct figures"
+      }
+    ]
+  },
+  {
+    "id": "TC023",
+    "title": "Continuous Integration Checks",
+    "description": "Ensure linting, stylelint, and security scans run successfully and block unsafe commits",
+    "category": "error handling",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Submit code changes with hardcoded color tokens and unsafe patterns"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify CI pipeline fails with detailed lint and security errors"
+      },
+      {
+        "type": "action",
+        "description": "Fix code issues and resubmit"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm CI pipeline passes all checks"
+      }
+    ]
+  }
+]

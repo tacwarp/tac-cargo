@@ -42,6 +42,7 @@ import {
     regenerateInvoice
 } from "@/app/actions/invoices";
 import { sendInvoiceViaWhatsApp, getWhatsAppLink } from "@/app/actions/whatsapp";
+import { IllustratedEmptyState } from "@/components/dashboard/illustrated-empty-state";
 import type { InvoiceType, InvoiceStatus } from "@/types/database";
 
 interface Invoice {
@@ -214,7 +215,9 @@ export function InvoicesClient({
                         </h3>
                         <div className="space-y-2 max-h-[60vh] overflow-y-auto">
                             {unpaidInvoices.length === 0 ? (
-                                <div className="text-xs text-muted-foreground text-center py-8">No unpaid invoices</div>
+                                <div className="py-4">
+                                    <IllustratedEmptyState type="invoices" title="No unpaid invoices" description="All invoices have been paid. Great job!" />
+                                </div>
                             ) : (
                                 unpaidInvoices.map((invoice) => (
                                     <InvoiceListItem
@@ -256,7 +259,9 @@ export function InvoicesClient({
                     </div>
                     <div className="divide-y divide-border">
                         {labelInvoices.length === 0 ? (
-                            <div className="p-8 text-center text-muted-foreground">No labels generated</div>
+                            <div className="py-4">
+                                <IllustratedEmptyState type="invoices" title="No labels generated" description="Generate shipping labels from your shipments." actionLabel="Generate Label" />
+                            </div>
                         ) : (
                             labelInvoices.map((label) => (
                                 <div key={label.id} className="p-4 flex items-center justify-between hover:bg-muted/50 transition-colors">

@@ -313,3 +313,10 @@
 .animate-shimmer {
   animation: shimmer 2s infinite;
 }
+
+/* View Transitions API for animated theme toggle */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}

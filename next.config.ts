@@ -92,6 +92,16 @@ const nextConfig: NextConfig = {
         ],
       },
       {
+        // Local images - enable long-term immutable caching
+        source: "/images/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+      {
         // Static assets - enable caching
         source: "/lottie/:path*",
         headers: [
@@ -112,6 +122,11 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "cdn.shadcnstudio.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "i.pravatar.cc",
         pathname: "/**",
       },
       {

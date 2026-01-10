@@ -17,7 +17,8 @@ import {
     DialogContent,
     DialogHeader,
     DialogTitle,
-    DialogTrigger
+    DialogTrigger,
+    DialogDescription,
 } from "@/components/ui/dialog";
 import {
     DropdownMenu,
@@ -157,6 +158,9 @@ export function ManifestsClient({
                     <DialogContent>
                         <DialogHeader>
                             <DialogTitle>Create Manifest</DialogTitle>
+                            <DialogDescription>
+                                Fill in the details below to create a new manifest for shipping.
+                            </DialogDescription>
                         </DialogHeader>
                         <CreateManifestForm
                             warehouses={warehouses}

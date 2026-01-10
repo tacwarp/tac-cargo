@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 import {
   Copy,
   User,
@@ -208,9 +209,11 @@ export function ShipmentList() {
               <TableCell className="py-4">
                 <div className="flex items-center gap-2">
                   {shipment.driverAvatar ? (
-                    <img
+                    <Image
                       src={shipment.driverAvatar}
-                      className="h-6 w-6 rounded-full border border-border shadow-sm"
+                      width={24}
+                      height={24}
+                      className="rounded-full border border-border shadow-sm"
                       alt=""
                     />
                   ) : (

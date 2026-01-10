@@ -1,0 +1,157 @@
+{
+  "tech_stack": [
+    "TypeScript",
+    "Next.js 16",
+    "React 19",
+    "Supabase",
+    "TailwindCSS",
+    "Framer Motion",
+    "Recharts",
+    "shadcn/ui",
+    "TanStack Table",
+    "@dnd-kit"
+  ],
+  "auth": {
+    "username": "admin@tac.app",
+    "password": "Test@1498",
+    "loginUrl": "/auth/login",
+    "loginButtonSelector": "button[type='submit']",
+    "usernameFieldSelector": "input[name='email']",
+    "passwordFieldSelector": "input[name='password']"
+  },
+  "features": [
+    {
+      "name": "Dashboard Overview (Mission Control)",
+      "description": "Main dashboard page with KPI cards, shipment pipeline, interactive charts, and activity feed",
+      "files": [
+        "app/(dashboard)/dashboard/page.tsx",
+        "app/(dashboard)/dashboard/_components/mission-control.tsx",
+        "components/dashboard/section-cards.tsx",
+        "components/dashboard/chart-shipments-interactive.tsx",
+        "components/dashboard/status-pipeline.tsx"
+      ]
+    },
+    {
+      "name": "Shipment Management",
+      "description": "CRUD operations for shipments with tracking, status updates, and barcode scanning",
+      "files": [
+        "app/(dashboard)/dashboard/shipments/page.tsx",
+        "app/(dashboard)/dashboard/shipments/_components/shipments-client.tsx",
+        "components/dashboard/shipments-data-table.tsx"
+      ]
+    },
+    {
+      "name": "Tracking System",
+      "description": "Real-time shipment tracking with timeline and status updates",
+      "files": [
+        "app/(dashboard)/dashboard/tracking/page.tsx",
+        "app/(dashboard)/dashboard/tracking/_components/tracking-client.tsx",
+        "components/dashboard/tracking-timeline.tsx"
+      ]
+    },
+    {
+      "name": "Manifest Management",
+      "description": "Create and manage shipping manifests with route assignment",
+      "files": [
+        "app/(dashboard)/dashboard/manifests/page.tsx",
+        "app/(dashboard)/dashboard/manifests/_components/manifest-client.tsx"
+      ]
+    },
+    {
+      "name": "Invoice & Payments",
+      "description": "Invoice generation, payment tracking, and revenue analytics",
+      "files": [
+        "app/(dashboard)/dashboard/invoices/page.tsx",
+        "app/(dashboard)/dashboard/invoices/_components/invoices-client.tsx",
+        "app/(dashboard)/dashboard/payments/page.tsx",
+        "app/(dashboard)/dashboard/payments/_components/payments-client.tsx",
+        "components/dashboard/revenue-summary-chart.tsx"
+      ]
+    },
+    {
+      "name": "Analytics Dashboard",
+      "description": "Charts and metrics for business analytics including customer analytics",
+      "files": [
+        "app/(dashboard)/dashboard/analytics/page.tsx",
+        "app/(dashboard)/dashboard/analytics/_components/analytics-client.tsx",
+        "components/dashboard/customer-analytics.tsx",
+        "components/charts/area-chart-gradient.tsx",
+        "components/charts/pie-chart-interactive.tsx"
+      ]
+    },
+    {
+      "name": "Exception Handling",
+      "description": "Manage failed and delayed shipments with resolution workflows",
+      "files": [
+        "app/(dashboard)/dashboard/exceptions/page.tsx",
+        "app/(dashboard)/dashboard/exceptions/_components/exceptions-client.tsx"
+      ]
+    },
+    {
+      "name": "Route Management",
+      "description": "Route visualization and manifest routing",
+      "files": [
+        "app/(dashboard)/dashboard/routes/page.tsx",
+        "app/(dashboard)/dashboard/routes/_components/routes-client.tsx",
+        "components/dashboard/animated-route-map.tsx"
+      ]
+    },
+    {
+      "name": "Barcode Scanning",
+      "description": "Camera-based barcode scanning for shipment processing",
+      "files": [
+        "app/(dashboard)/dashboard/scanning/page.tsx",
+        "components/dashboard/enhanced-scanner.tsx"
+      ]
+    },
+    {
+      "name": "Command Palette",
+      "description": "Global command palette for quick navigation and actions",
+      "files": [
+        "components/dashboard/command-palette.tsx",
+        "hooks/use-keyboard-shortcuts.ts"
+      ]
+    },
+    {
+      "name": "Notifications",
+      "description": "Real-time notification system with bell icon and toast messages",
+      "files": [
+        "components/dashboard/notification-bell.tsx",
+        "app/(dashboard)/dashboard/_components/v2-header.tsx"
+      ]
+    },
+    {
+      "name": "Authentication",
+      "description": "Supabase-based authentication with login/signup flows",
+      "files": [
+        "app/auth/login/page.tsx",
+        "app/auth/signup/page.tsx",
+        "lib/supabase/client.ts",
+        "lib/supabase/server.ts"
+      ]
+    },
+    {
+      "name": "UI Components",
+      "description": "Reusable UI components based on shadcn/ui",
+      "files": [
+        "components/ui/button.tsx",
+        "components/ui/card.tsx",
+        "components/ui/input.tsx",
+        "components/ui/select.tsx",
+        "components/ui/table.tsx",
+        "components/ui/toggle-group.tsx",
+        "components/ui/checkbox.tsx"
+      ]
+    },
+    {
+      "name": "Dashboard Layout",
+      "description": "Main dashboard layout with sidebar, header, and providers",
+      "files": [
+        "app/(dashboard)/layout.tsx",
+        "app/(dashboard)/dashboard/_components/v2-sidebar.tsx",
+        "app/(dashboard)/dashboard/_components/v2-header.tsx",
+        "app/(dashboard)/dashboard/_components/dashboard-providers.tsx"
+      ]
+    }
+  ]
+}

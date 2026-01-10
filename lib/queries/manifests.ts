@@ -2,7 +2,6 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { createClient } from "@/lib/supabase/client";
 import type { Database } from "@/lib/supabase/types";
 
-type Manifest = Database["public"]["Tables"]["manifests"]["Row"];
 type NewManifest = Database["public"]["Tables"]["manifests"]["Insert"];
 
 /**

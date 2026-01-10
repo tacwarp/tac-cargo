@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 
 import {
   ChevronLeftIcon,
@@ -135,14 +136,16 @@ export const columns: ColumnDef<Item>[] = [
     ),
     cell: ({ row }) => (
       <div className="flex items-center gap-2 opacity-80">
-        <img
+        <Image
           src={
             row.getValue("paidBy") === "mastercard"
               ? "https://cdn.shadcnstudio.com/ss-assets/blocks/data-table/image-1.png"
               : "https://cdn.shadcnstudio.com/ss-assets/blocks/data-table/image-2.png"
           }
           alt="Payment platform"
-          className="h-3.5 brightness-200 grayscale invert"
+          width={40}
+          height={14}
+          className="h-3.5 w-auto brightness-200 grayscale invert"
         />
         <span className="text-muted-foreground text-[10px] font-medium uppercase">
           {row.getValue("paidBy")}
@@ -181,7 +184,7 @@ const TransactionDatatable = ({ data }: { data: Item[] }) => {
     },
   });
 
-  const { pages, showLeftEllipsis, showRightEllipsis } = usePagination({
+  const { pages } = usePagination({
     currentPage: table.getState().pagination.pageIndex + 1,
     totalPages: table.getPageCount(),
     paginationItemsToDisplay: 2,

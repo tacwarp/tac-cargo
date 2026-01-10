@@ -7,10 +7,10 @@ import {
     AlertCircle,
     TrendingUp,
     Scale,
-    DollarSign
+    DollarSign,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { GlassPanel } from "../../_components/glass-panel";
+import { MetricCardEnhanced } from "@/components/dashboard/metric-card-enhanced";
+import { AnalyticsCharts } from "./analytics-charts";
 
 interface AnalyticsData {
     summary: {
@@ -26,6 +26,8 @@ interface AnalyticsData {
         shipmentsByDate: Array<{ date: string; count: number }>;
         revenueByDate: Array<{ date: string; amount: number }>;
     };
+    statusDistribution?: Array<{ name: string; value: number; fill: string }>;
+    topCustomers?: Array<{ name: string; value: number }>;
 }
 
 interface AnalyticsClientProps {
@@ -35,9 +37,13 @@ interface AnalyticsClientProps {
 export function AnalyticsClient({ data }: AnalyticsClientProps) {
     const { summary, charts } = data;
 
-    // Get max values for chart scaling
-    const maxShipments = Math.max(...charts.shipmentsByDate.map(d => d.count), 1);
-    const maxRevenue = Math.max(...charts.revenueByDate.map(d => d.amount), 1);
+    const statusDistribution = data.statusDistribution || [
+        { name: "Delivered", value: summary.deliveredCount, fill: "hsl(var(--chart-2))" },
+        { name: "In Transit", value: Math.max(0, summary.totalShipments - summary.deliveredCount - summary.failedCount), fill: "hsl(var(--chart-3))" },
+        { name: "Failed", value: summary.failedCount, fill: "hsl(var(--chart-5))" },
+    ];
+
+    const topCustomers = data.topCustomers || [];
 
     return (
         <div className="space-y-6">
@@ -49,218 +55,69 @@ export function AnalyticsClient({ data }: AnalyticsClientProps) {
                 </div>
             </div>
 
-            {/* Summary Stats */}
+            {/* Summary Stats - Enhanced Cards */}
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
-                <StatCard
-                    label="Total Shipments"
-                    value={summary.totalShipments}
-                    icon={Package}
-                    color="text-foreground"
+                <MetricCardEnhanced
+                    title="Total Shipments"
+                    value={summary.totalShipments.toLocaleString()}
+                    icon={<Package className="w-5 h-5" />}
+                    color="primary"
+                    size="sm"
                 />
-                <StatCard
-                    label="Delivered"
-                    value={summary.deliveredCount}
-                    icon={CheckCircle}
-                    color="text-success"
+                <MetricCardEnhanced
+                    title="Delivered"
+                    value={summary.deliveredCount.toLocaleString()}
+                    icon={<CheckCircle className="w-5 h-5" />}
+                    color="success"
+                    size="sm"
                 />
-                <StatCard
-                    label="Failed"
-                    value={summary.failedCount}
-                    icon={AlertCircle}
-                    color="text-destructive"
-                    highlight={summary.failedCount > 0}
+                <MetricCardEnhanced
+                    title="Failed"
+                    value={summary.failedCount.toLocaleString()}
+                    icon={<AlertCircle className="w-5 h-5" />}
+                    color={summary.failedCount > 0 ? "destructive" : "default"}
+                    size="sm"
                 />
-                <StatCard
-                    label="Delivery Rate"
+                <MetricCardEnhanced
+                    title="Delivery Rate"
                     value={`${summary.deliveryRate}%`}
-                    icon={TrendingUp}
-                    color={summary.deliveryRate >= 90 ? "text-primary" : summary.deliveryRate >= 70 ? "text-warning" : "text-destructive"}
+                    icon={<TrendingUp className="w-5 h-5" />}
+                    trend={summary.deliveryRate >= 90 ? "up" : summary.deliveryRate >= 70 ? "neutral" : "down"}
+                    color={summary.deliveryRate >= 90 ? "success" : summary.deliveryRate >= 70 ? "warning" : "destructive"}
+                    size="sm"
                 />
-                <StatCard
-                    label="Total Weight"
+                <MetricCardEnhanced
+                    title="Total Weight"
                     value={`${(summary.totalWeight / 1000).toFixed(1)}T`}
-                    icon={Scale}
-                    color="text-primary"
+                    icon={<Scale className="w-5 h-5" />}
+                    color="primary"
+                    size="sm"
                 />
-                <StatCard
-                    label="Total Pieces"
-                    value={summary.totalPieces}
-                    icon={Package}
-                    color="text-primary"
+                <MetricCardEnhanced
+                    title="Total Pieces"
+                    value={summary.totalPieces.toLocaleString()}
+                    icon={<Package className="w-5 h-5" />}
+                    color="default"
+                    size="sm"
                 />
-                <StatCard
-                    label="Revenue"
+                <MetricCardEnhanced
+                    title="Revenue"
                     value={`₹${(summary.totalRevenue / 1000).toFixed(1)}K`}
-                    icon={DollarSign}
-                    color="text-success"
+                    icon={<DollarSign className="w-5 h-5" />}
+                    color="success"
+                    size="sm"
                 />
             </div>
 
-            {/* Charts */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Shipments Chart */}
-                <GlassPanel className="p-6">
-                    <h3 className="text-sm font-medium text-foreground mb-4">Shipments Volume</h3>
-                    <div className="h-48 flex items-end gap-1">
-                        {charts.shipmentsByDate.length === 0 ? (
-                            <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm">
-                                No data available
-                            </div>
-                        ) : (
-                            charts.shipmentsByDate.slice(-30).map((item, idx) => {
-                                const height = (item.count / maxShipments) * 100;
-                                return (
-                                    <div
-                                        key={idx}
-                                        className="flex-1 bg-primary/20 hover:bg-primary/40 transition-colors rounded-t group relative"
-                                        style={{ height: `${Math.max(height, 2)}%` }}
-                                    >
-                                        <div className="absolute -top-8 left-1/2 -translate-x-1/2 hidden group-hover:block bg-card border border-border px-2 py-1 rounded text-[10px] text-foreground whitespace-nowrap z-10">
-                                            {item.count} shipments
-                                            <br />
-                                            {new Date(item.date).toLocaleDateString("en-IN", { month: "short", day: "numeric" })}
-                                        </div>
-                                    </div>
-                                );
-                            })
-                        )}
-                    </div>
-                    <div className="flex justify-between text-[10px] text-muted-foreground mt-2">
-                        <span>30 days ago</span>
-                        <span>Today</span>
-                    </div>
-                </GlassPanel>
-
-                {/* Revenue Chart */}
-                <GlassPanel className="p-6">
-                    <h3 className="text-sm font-medium text-foreground mb-4">Revenue</h3>
-                    <div className="h-48 flex items-end gap-1">
-                        {charts.revenueByDate.length === 0 ? (
-                            <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm">
-                                No data available
-                            </div>
-                        ) : (
-                            charts.revenueByDate.slice(-30).map((item, idx) => {
-                                const height = (item.amount / maxRevenue) * 100;
-                                return (
-                                    <div
-                                        key={idx}
-                                        className="flex-1 bg-primary/20 hover:bg-primary/40 transition-colors rounded-t group relative"
-                                        style={{ height: `${Math.max(height, 2)}%` }}
-                                    >
-                                        <div className="absolute -top-8 left-1/2 -translate-x-1/2 hidden group-hover:block bg-card border border-border px-2 py-1 rounded text-[10px] text-foreground whitespace-nowrap z-10">
-                                            ₹{item.amount.toLocaleString("en-IN")}
-                                            <br />
-                                            {new Date(item.date).toLocaleDateString("en-IN", { month: "short", day: "numeric" })}
-                                        </div>
-                                    </div>
-                                );
-                            })
-                        )}
-                    </div>
-                    <div className="flex justify-between text-[10px] text-muted-foreground mt-2">
-                        <span>30 days ago</span>
-                        <span>Today</span>
-                    </div>
-                </GlassPanel>
-            </div>
-
-            {/* Performance Metrics */}
-            <GlassPanel className="p-6">
-                <h3 className="text-sm font-medium text-foreground mb-4">Performance Overview</h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <PerformanceMetric
-                        label="Delivery Success Rate"
-                        value={summary.deliveryRate}
-                        target={95}
-                        unit="%"
-                    />
-                    <PerformanceMetric
-                        label="Avg Daily Shipments"
-                        value={Math.round(summary.totalShipments / 30)}
-                        target={10}
-                        unit=""
-                    />
-                    <PerformanceMetric
-                        label="Avg Daily Revenue"
-                        value={Math.round(summary.totalRevenue / 30 / 1000)}
-                        target={50}
-                        unit="K"
-                        prefix="₹"
-                    />
-                </div>
-            </GlassPanel>
-        </div>
-    );
-}
-
-function StatCard({
-    label,
-    value,
-    icon: Icon,
-    color,
-    highlight
-}: {
-    label: string;
-    value: string | number;
-    icon: React.ElementType;
-    color: string;
-    highlight?: boolean;
-}) {
-    return (
-        <GlassPanel className={cn(
-            "p-4",
-            highlight && "border-destructive/30 bg-destructive/5"
-        )}>
-            <div className="flex items-center gap-2 mb-2">
-                <Icon className={cn("w-4 h-4", color)} />
-            </div>
-            <div className={cn("text-xl font-bold", color)}>{value}</div>
-            <div className="text-[10px] text-muted-foreground uppercase tracking-wider mt-1">{label}</div>
-        </GlassPanel>
-    );
-}
-
-function PerformanceMetric({
-    label,
-    value,
-    target,
-    unit,
-    prefix = ""
-}: {
-    label: string;
-    value: number;
-    target: number;
-    unit: string;
-    prefix?: string;
-}) {
-    const percentage = Math.min((value / target) * 100, 100);
-    const isGood = value >= target;
-
-    return (
-        <div>
-            <div className="flex justify-between items-end mb-2">
-                <span className="text-xs text-muted-foreground">{label}</span>
-                <span className={cn(
-                    "text-lg font-bold",
-                    isGood ? "text-success" : "text-warning"
-                )}>
-                    {prefix}{value}{unit}
-                </span>
-            </div>
-            <div className="h-2 bg-muted rounded-full overflow-hidden">
-                <div
-                    className={cn(
-                        "h-full rounded-full transition-all",
-                        isGood ? "bg-success" : "bg-warning"
-                    )}
-                    style={{ width: `${percentage}%` }}
-                />
-            </div>
-            <div className="flex justify-between text-[10px] text-muted-foreground mt-1">
-                <span>0</span>
-                <span>Target: {prefix}{target}{unit}</span>
-            </div>
+            {/* Charts Section */}
+            <AnalyticsCharts
+                shipmentsByDate={charts.shipmentsByDate}
+                revenueByDate={charts.revenueByDate}
+                statusDistribution={statusDistribution}
+                topCustomers={topCustomers}
+                deliveryRate={summary.deliveryRate}
+                summary={summary}
+            />
         </div>
     );
 }

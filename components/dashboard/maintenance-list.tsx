@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 interface MaintenanceItem {
   id: string;
@@ -59,10 +60,12 @@ export function MaintenanceList() {
             className="bg-card border-border/50 hover:border-primary/20 group flex items-center justify-between rounded-[20px] border p-3 transition-all"
           >
             <div className="flex items-center gap-3">
-              <img
+              <Image
                 src={item.avatar}
                 alt={item.name}
-                className="bg-muted h-10 w-10 rounded-full object-cover"
+                width={40}
+                height={40}
+                className="bg-muted rounded-full object-cover"
               />
               <div>
                 <h4 className="text-foreground mb-1 text-sm leading-none font-medium">

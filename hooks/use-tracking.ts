@@ -61,6 +61,7 @@ export function useTracking(trackingId?: string) {
 
   useEffect(() => {
     const controller = new AbortController();
+    const controllers = intervalControllers.current;
 
     if (trackingId) {
       fetchData(controller.signal);
@@ -80,8 +81,8 @@ export function useTracking(trackingId?: string) {
       controller.abort();
       if (timer.current) clearInterval(timer.current);
       // Abort all pending interval requests on cleanup
-      intervalControllers.current.forEach((c) => c.abort());
-      intervalControllers.current.clear();
+      controllers.forEach((c) => c.abort());
+      controllers.clear();
     };
   }, [trackingId, fetchData]);
 

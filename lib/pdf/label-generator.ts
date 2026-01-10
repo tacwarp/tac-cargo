@@ -305,9 +305,9 @@ export async function generateLabelPDF(data: LabelData): Promise<Buffer> {
  */
 export function generateQRCodeDataUrl(
   awb: string,
-  baseUrl: string = "https://taccargo.com",
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _baseUrl: string = "https://taccargo.com",
 ): string {
-  const trackingUrl = `${baseUrl}/track/${encodeURIComponent(awb)}`;
   const escapedAwb = awb
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")

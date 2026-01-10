@@ -9,10 +9,13 @@ import {
     DollarSign,
     Clock,
     ArrowUpRight,
-    Activity
+    Activity,
+    CheckCircle,
+    MapPin,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { GlassPanel } from "./glass-panel";
+import { StatusPipeline } from "@/components/dashboard/status-pipeline";
 import type { ShipmentStatus } from "@/types/database";
 
 interface DashboardStats {
@@ -99,14 +102,19 @@ export function OverviewClient({ stats, recentActivity }: OverviewClientProps) {
                 />
             </div>
 
-            {/* Secondary Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                <MiniStatCard label="Pending" value={stats.shipments.pending} color="text-muted-foreground" />
-                <MiniStatCard label="In Transit" value={stats.shipments.inTransit} color="text-primary" />
-                <MiniStatCard label="Delivered" value={stats.shipments.delivered} color="text-success" />
-                <MiniStatCard label="Failed" value={stats.shipments.failed} color="text-destructive" highlight={stats.shipments.failed > 0} />
-                <MiniStatCard label="Delayed" value={stats.shipments.delayed} color="text-warning" highlight={stats.shipments.delayed > 0} />
-            </div>
+            {/* Status Pipeline */}
+            <GlassPanel className="p-4">
+                <h3 className="text-sm font-medium text-foreground mb-4">Shipment Pipeline</h3>
+                <StatusPipeline
+                    stages={[
+                        { id: "pending", label: "Pending", count: stats.shipments.pending, icon: Clock, color: "text-slate-500 bg-slate-500/10" },
+                        { id: "in_transit", label: "In Transit", count: stats.shipments.inTransit, icon: Truck, color: "text-amber-500 bg-amber-500/10" },
+                        { id: "out_for_delivery", label: "Out for Delivery", count: 0, icon: MapPin, color: "text-purple-500 bg-purple-500/10" },
+                        { id: "delivered", label: "Delivered", count: stats.shipments.delivered, icon: CheckCircle, color: "text-emerald-500 bg-emerald-500/10" },
+                        { id: "failed", label: "Failed", count: stats.shipments.failed, icon: AlertCircle, color: "text-red-500 bg-red-500/10" },
+                    ]}
+                />
+            </GlassPanel>
 
             {/* Recent Activity & Quick Actions */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -156,12 +164,13 @@ export function OverviewClient({ stats, recentActivity }: OverviewClientProps) {
                 {/* Quick Actions */}
                 <GlassPanel className="p-4">
                     <h3 className="text-sm font-medium text-foreground mb-4">Quick Actions</h3>
-                    <div className="space-y-2">
+                    <div className="grid grid-cols-2 gap-2">
                         <QuickActionLink href="/dashboard/shipments" label="Create Shipment" icon={Package} />
                         <QuickActionLink href="/dashboard/manifests" label="New Manifest" icon={Truck} />
                         <QuickActionLink href="/dashboard/scanning" label="Scan Barcode" icon={Activity} />
                         <QuickActionLink href="/dashboard/invoices" label="Generate Invoice" icon={DollarSign} />
                         <QuickActionLink href="/dashboard/tracking" label="Track Shipment" icon={Clock} />
+                        <QuickActionLink href="/dashboard/exceptions" label="View Exceptions" icon={AlertCircle} />
                     </div>
                 </GlassPanel>
             </div>
@@ -233,28 +242,6 @@ function StatCard({
                 <div className="text-[10px] text-muted-foreground mt-1 font-mono uppercase tracking-wider">{subtitle}</div>
             </GlassPanel>
         </Link>
-    );
-}
-
-function MiniStatCard({
-    label,
-    value,
-    color,
-    highlight
-}: {
-    label: string;
-    value: number;
-    color: string;
-    highlight?: boolean;
-}) {
-    return (
-        <GlassPanel className={cn(
-            "p-3 text-center",
-            highlight && "border-warning/30 bg-warning/5"
-        )}>
-            <div className={cn("text-xl font-bold", color)}>{value}</div>
-            <div className="text-[10px] text-muted-foreground uppercase tracking-wider">{label}</div>
-        </GlassPanel>
     );
 }
 
