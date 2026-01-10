@@ -48,7 +48,7 @@ export async function triggerWebhooks(
       webhooks.map((webhook) => sendWebhook(webhook, payload)),
     );
   } catch (error) {
-    console.error("Webhook trigger error:", error);
+    console.error("Webhook trigger error:", error instanceof Error ? error.message : "Unknown error");
   }
 }
 
