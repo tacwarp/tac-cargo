@@ -65,7 +65,7 @@ export async function validateApiKey(key: string): Promise<{
       scopes: apiKey.scopes || ["read"],
     };
   } catch (error) {
-    console.error("API key validation error:", error);
+    console.error("API key validation error:", error instanceof Error ? error.message : "Unknown error");
     return { valid: false, error: "Validation failed" };
   }
 }
@@ -103,13 +103,13 @@ export async function createApiKeyForOrg(
       .single();
 
     if (error || !data) {
-      console.error("Failed to create API key:", error);
+      console.error("Failed to create API key:", error instanceof Error ? { code: (error as { code?: string }).code } : "Unknown error");
       return null;
     }
 
     return { key, id: data.id };
   } catch (error) {
-    console.error("API key creation error:", error);
+    console.error("API key creation error:", error instanceof Error ? error.message : "Unknown error");
     return null;
   }
 }

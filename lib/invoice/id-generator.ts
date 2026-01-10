@@ -12,10 +12,9 @@ export function generateInvoiceNumber(prefix = "INV"): string {
   const year = now.getFullYear();
   const month = String(now.getMonth() + 1).padStart(2, "0");
   const timestamp = Date.now().toString(36).toUpperCase();
-  const randomBytes = typeof crypto !== "undefined" 
-    ? Array.from(crypto.getRandomValues(new Uint8Array(2))).map(b => b.toString(36)).join("").substring(0, 2).toUpperCase()
-    : Math.random().toString(36).substring(2, 4).toUpperCase();
-  const random = randomBytes;
+  const random = typeof crypto === "undefined"
+    ? Math.random().toString(36).substring(2, 4).toUpperCase()
+    : Array.from(crypto.getRandomValues(new Uint8Array(2))).map(b => b.toString(36)).join("").substring(0, 2).toUpperCase();
   return `${prefix}-${year}${month}-${timestamp}${random}`;
 }
 
@@ -28,9 +27,9 @@ export function generateAWBNumber(): string {
   const prefix = "TAC";
   // Use last 8 digits of timestamp + 2 random digits = 10 digits after prefix
   const timestamp = Date.now().toString().slice(-8);
-  const random = typeof crypto !== "undefined"
-    ? (crypto.getRandomValues(new Uint8Array(1))[0] % 100).toString().padStart(2, "0")
-    : Math.floor(Math.random() * 100).toString().padStart(2, "0");
+  const random = typeof crypto === "undefined"
+    ? Math.floor(Math.random() * 100).toString().padStart(2, "0")
+    : (crypto.getRandomValues(new Uint8Array(1))[0] % 100).toString().padStart(2, "0");
   return `${prefix}${timestamp}${random}`;
 }
 
@@ -50,9 +49,9 @@ export function generateConsignmentNumber(sequence: number): string {
  */
 export function generateBarcodeNumber(): string {
   const timestamp = Date.now().toString().slice(-9);
-  const random = typeof crypto !== "undefined"
-    ? (crypto.getRandomValues(new Uint16Array(1))[0] % 1000).toString().padStart(3, "0")
-    : Math.floor(Math.random() * 1000).toString().padStart(3, "0");
+  const random = typeof crypto === "undefined"
+    ? Math.floor(Math.random() * 1000).toString().padStart(3, "0")
+    : (crypto.getRandomValues(new Uint16Array(1))[0] % 1000).toString().padStart(3, "0");
   return `${timestamp}${random}`;
 }
 
@@ -95,9 +94,9 @@ export function generateDeliveryStationCode(
   const stateAbbr = state.substring(0, 2).toUpperCase();
   
   // Sector is based on city zone
-  const sectorNum = typeof crypto !== "undefined"
-    ? (crypto.getRandomValues(new Uint8Array(1))[0] % 20) + 1
-    : Math.floor(Math.random() * 20 + 1);
+  const sectorNum = typeof crypto === "undefined"
+    ? Math.floor(Math.random() * 20 + 1)
+    : (crypto.getRandomValues(new Uint8Array(1))[0] % 20) + 1;
   const sector = `S-${sectorNum.toString().padStart(2, "0")}`;
   
   return {
