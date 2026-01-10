@@ -92,7 +92,7 @@ export async function POST(request: NextRequest) {
       shareLinks: NotificationManager.generateShareLinks(payload),
     });
   } catch (error) {
-    console.error("Send invoice notification error:", error);
+    console.error("Send invoice notification error:", error instanceof Error ? error.message : "Unknown error");
     return errorResponse("Internal server error", 500);
   }
 }
@@ -147,7 +147,7 @@ export async function GET(request: NextRequest) {
       shareLinks: NotificationManager.generateShareLinks(payload),
     });
   } catch (error) {
-    console.error("Get share links error:", error);
+    console.error("Get share links error:", error instanceof Error ? error.message : "Unknown error");
     return errorResponse("Internal server error", 500);
   }
 }
