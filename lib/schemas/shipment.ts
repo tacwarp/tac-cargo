@@ -25,9 +25,7 @@ export const shipmentSchema = z.object({
     .number()
     .int("Pieces must be a whole number")
     .positive("Pieces must be positive")
-    .max(10000, "Maximum 10,000 pieces per shipment")
-    .optional()
-    .default(1),
+    .max(10000, "Maximum 10,000 pieces per shipment"),
   consignee_name: z
     .string()
     .min(2, "Consignee name is required")
