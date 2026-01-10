@@ -111,20 +111,20 @@ async function sendWebhook(
     error_message: errorMessage,
   });
 
-  if (!success) {
-    // Increment failure count using raw SQL to avoid incorrect RPC usage
-    await supabase.rpc("increment_webhook_failure", { webhook_id: webhook.id });
-    await supabase
-      .from("webhooks")
-      .update({ last_triggered_at: new Date().toISOString() })
-      .eq("id", webhook.id);
-  } else {
+  if (success) {
     await supabase
       .from("webhooks")
       .update({
         failure_count: 0,
         last_triggered_at: new Date().toISOString(),
       })
+      .eq("id", webhook.id);
+  } else {
+    // Increment failure count using raw SQL to avoid incorrect RPC usage
+    await supabase.rpc("increment_webhook_failure", { webhook_id: webhook.id });
+    await supabase
+      .from("webhooks")
+      .update({ last_triggered_at: new Date().toISOString() })
       .eq("id", webhook.id);
   }
 }
