@@ -32,40 +32,65 @@ const server = new McpServer({
 /**
  * Tool: Query shipment by reference number
  */
-server.tool(
+server.registerTool(
   "query_shipment",
   {
-    reference: z.string().describe("Shipment reference number (e.g., SHP-2024-001)"),
+    title: "Query shipment by reference number",
+    description: "Query shipment information by reference number",
+    inputSchema: {
+      reference: z
+        .string()
+        .describe("Shipment reference number (e.g., SHP-2024-001)"),
+    },
   },
   async ({ reference }) => {
-    return await executeTool("query_shipment", { reference }, () => queryShipment(reference));
-  }
+    return await executeTool("query_shipment", { reference }, () =>
+      queryShipment(reference),
+    );
+  },
 );
 
 /**
  * Tool: List recent shipments
  */
-server.tool(
+server.registerTool(
   "list_recent_shipments",
   {
-    limit: z.number().min(1).max(100).default(10).describe("Maximum number of shipments to return (default: 10)"),
+    title: "List recent shipments",
+    description: "List recent shipments with optional limit",
+    inputSchema: {
+      limit: z
+        .number()
+        .min(1)
+        .max(100)
+        .default(10)
+        .describe("Maximum number of shipments to return (default: 10)"),
+    },
   },
   async ({ limit }) => {
-    return await executeTool("list_recent_shipments", { limit }, () => listRecentShipments(limit));
-  }
+    return await executeTool("list_recent_shipments", { limit }, () =>
+      listRecentShipments(limit),
+    );
+  },
 );
 
 /**
  * Tool: Get shipment status
  */
-server.tool(
+server.registerTool(
   "get_shipment_status",
   {
-    reference: z.string().describe("Shipment reference number"),
+    title: "Get shipment status",
+    description: "Get current status of a shipment",
+    inputSchema: {
+      reference: z.string().describe("Shipment reference number"),
+    },
   },
   async ({ reference }) => {
-    return await executeTool("get_shipment_status", { reference }, () => getShipmentStatus(reference));
-  }
+    return await executeTool("get_shipment_status", { reference }, () =>
+      getShipmentStatus(reference),
+    );
+  },
 );
 
 /**
