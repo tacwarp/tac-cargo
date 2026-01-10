@@ -7,10 +7,7 @@ early_access: false
 enable_free_tier: true
 
 # Tone settings for reviews
-tone_instructions: |
-  Be constructive and helpful. Focus on security, performance, and maintainability.
-  This is a Next.js 16 application with React 19, TypeScript, Supabase, and TailwindCSS.
-  Prioritize security issues given this is a cargo logistics SaaS platform handling sensitive data.
+tone_instructions: "Be constructive. Focus on security, performance, maintainability. Next.js 16 + React 19 + TypeScript + Supabase cargo logistics SaaS."
 
 reviews:
   # Review style - "chill" is less nitpicky, "assertive" provides more feedback
@@ -227,7 +224,7 @@ knowledge_base:
   # Learn from feedback
   learnings:
     enabled: true
-    scope: "organization"
+    scope: "global"
   
   # Issue tracker integration
   issues:
