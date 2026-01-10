@@ -88,7 +88,7 @@ export interface ShipmentRow {
   date: string;
 }
 
-function DragHandle({ id }: { id: string }) {
+function DragHandle({ id }: Readonly<{ id: string }>) {
   const { attributes, listeners } = useSortable({ id });
 
   return (
@@ -218,7 +218,7 @@ const columns: ColumnDef<ShipmentRow>[] = [
   },
 ];
 
-function DraggableRow({ row }: { row: Row<ShipmentRow> }) {
+function DraggableRow({ row }: Readonly<{ row: Row<ShipmentRow> }>) {
   const { transform, transition, setNodeRef, isDragging } = useSortable({
     id: row.original.id,
   });
@@ -244,8 +244,8 @@ function DraggableRow({ row }: { row: Row<ShipmentRow> }) {
 }
 
 interface ShipmentsDataTableProps {
-  data: ShipmentRow[];
-  title?: string;
+  readonly data: ShipmentRow[];
+  readonly title?: string;
 }
 
 export function ShipmentsDataTable({ data: initialData, title = "Recent Shipments" }: ShipmentsDataTableProps) {
