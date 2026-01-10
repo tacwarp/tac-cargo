@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 
 interface ShortcutAction {
@@ -26,17 +26,20 @@ const defaultShortcuts: ShortcutAction[] = [
 export function useKeyboardShortcuts(customShortcuts?: ShortcutAction[]) {
   const router = useRouter();
 
-  const shortcuts: ShortcutAction[] = [
-    { key: "d", ctrl: true, action: () => router.push("/dashboard"), description: "Go to Dashboard" },
-    { key: "s", ctrl: true, action: () => router.push("/dashboard/shipments"), description: "Go to Shipments" },
-    { key: "t", ctrl: true, action: () => router.push("/dashboard/tracking"), description: "Go to Tracking" },
-    { key: "m", ctrl: true, action: () => router.push("/dashboard/manifests"), description: "Go to Manifests" },
-    { key: "a", ctrl: true, action: () => router.push("/dashboard/analytics"), description: "Go to Analytics" },
-    { key: "i", ctrl: true, action: () => router.push("/dashboard/invoices"), description: "Go to Invoices" },
-    { key: "p", ctrl: true, action: () => router.push("/dashboard/payments"), description: "Go to Payments" },
-    { key: "r", ctrl: true, action: () => router.push("/dashboard/routes"), description: "Go to Routes" },
-    ...(customShortcuts || []),
-  ];
+  const shortcuts: ShortcutAction[] = useMemo(
+    () => [
+      { key: "d", ctrl: true, action: () => router.push("/dashboard"), description: "Go to Dashboard" },
+      { key: "s", ctrl: true, action: () => router.push("/dashboard/shipments"), description: "Go to Shipments" },
+      { key: "t", ctrl: true, action: () => router.push("/dashboard/tracking"), description: "Go to Tracking" },
+      { key: "m", ctrl: true, action: () => router.push("/dashboard/manifests"), description: "Go to Manifests" },
+      { key: "a", ctrl: true, action: () => router.push("/dashboard/analytics"), description: "Go to Analytics" },
+      { key: "i", ctrl: true, action: () => router.push("/dashboard/invoices"), description: "Go to Invoices" },
+      { key: "p", ctrl: true, action: () => router.push("/dashboard/payments"), description: "Go to Payments" },
+      { key: "r", ctrl: true, action: () => router.push("/dashboard/routes"), description: "Go to Routes" },
+      ...(customShortcuts || []),
+    ],
+    [router, customShortcuts],
+  );
 
   const handleKeyDown = useCallback((event: KeyboardEvent) => {
     // Don't trigger shortcuts when typing in inputs

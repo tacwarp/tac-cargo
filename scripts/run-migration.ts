@@ -42,7 +42,7 @@ async function runMigrations() {
       } else {
         console.log(`✓ ${sql.substring(0, 50)}...`);
       }
-    } catch (e) {
+    } catch {
       console.log(`Skip: ${sql.substring(0, 50)}...`);
     }
   }

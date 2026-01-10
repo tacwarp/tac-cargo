@@ -333,3 +333,13 @@ export function normalizeJoin<T>(data: T | T[] | null | undefined): T[] {
   if (Array.isArray(data)) return data;
   return [data];
 }
+
+export function normalizeJoinSingle<T>(
+  data: T | T[] | null | undefined,
+): T | null {
+  if (data === null || data === undefined) return null;
+  if (Array.isArray(data)) {
+    return data.length > 0 ? data[0] ?? null : null;
+  }
+  return data;
+}
