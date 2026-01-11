@@ -2,17 +2,17 @@
   "status": "commited",
   "type": "frontend",
   "scope": "codebase",
-  "localEndpoint": "http://localhost:3000/dashboard",
+  "localEndpoint": "http://localhost:3000",
   "loginUser": "admin@tac.app",
   "loginPassword": "Test@1498",
   "executionArgs": {
     "projectName": "tac-cargo",
     "projectPath": "c:\\tac-saas\\tac-cargo",
     "testIds": [],
-    "additionalInstruction": "Authentication: username=admin@tac.app password=Test@1498 at /auth/login. Test the new features: multi-step shipment wizard (click Wizard button), bulk selection (checkboxes in shipments table), exception creation form (Report Exception button on exceptions page), and barcode scanning.",
+    "additionalInstruction": "",
     "envs": {
-      "API_KEY": "sk-user-qslmUUzkyOpveXyCIc877cSfI1VSzvkzlKT1Z2J-aPHtQEzMzwPav8fjXUiUO42dP7QaIoX2tzFxMspU4v1LUpxtqYZDbGK3pfAlXSz3uZDbVaqulSSOercbmJl6NTdgApo"
+      "API_KEY": "sk-user-c6WXH1xmwVonxLyrnSbigSzmYxK4Eb-8G-2cOgnyheWeyHo41847q_wB6pkf6Pv4IrZ3Gkv3Ubs8czn4eZqUufMEnzSGlqKmN4YxupABaYZYAosIOCabIjAanCOB03lcSWQ"
     }
   },
-  "proxy": "http://8ab0029e-8b03-4826-8eaa-79aae9026779:bVYuevA9VcfqQb7wuS8PQo0t6WWrPmne@tun.testsprite.com:8080"
+  "proxy": "http://c9aa654f-b82b-45d3-b9b6-adc751198205:hvFA4DI2GhT64XQOiN9cBVX5zWZqAFWg@tun.testsprite.com:8080"
 }

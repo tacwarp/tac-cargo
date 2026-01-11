@@ -107,20 +107,10 @@ export async function createEnhancedInvoice(
       .eq("id", user.id)
       .single();
 
-    // Get next sequence number for consignment
-    const { data: lastInvoice } = await supabase
-      .from("invoices")
-      .select("id")
-      .order("created_at", { ascending: false })
-      .limit(1)
-      .single();
-
-    const sequence = lastInvoice ? 2 : 1; // Simplified sequence logic
-
-    // Generate unique IDs
+    // Generate unique IDs (no sequence needed - IDs are timestamp + random based)
     const invoiceNo = generateInvoiceNumber();
     const awbNo = generateAWBNumber();
-    const consignmentNo = generateConsignmentNumber(sequence);
+    const consignmentNo = generateConsignmentNumber();
     const barcodeData = generateBarcodeNumber();
 
     // Build package details for calculation
@@ -256,6 +246,16 @@ export async function createEnhancedInvoice(
 
     revalidatePath("/dashboard/invoices");
     revalidatePath("/dashboard/shipments");
+
+    // Auto-generate PDFs in background (don't wait for completion)
+    try {
+      const { generateAllPDFs } = await import("./pdf-generation");
+      generateAllPDFs(invoice.id).catch(err => {
+        console.error("PDF generation error (non-blocking):", err);
+      });
+    } catch (pdfError) {
+      console.error("PDF generation import error:", pdfError);
+    }
 
     return success(
       {

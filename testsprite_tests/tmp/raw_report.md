@@ -5,7 +5,7 @@
 
 ## 1️⃣ Document Metadata
 - **Project Name:** tac-cargo
-- **Date:** 2026-01-09
+- **Date:** 2026-01-11
 - **Prepared by:** TestSprite AI Team
 
 ---
@@ -13,413 +13,150 @@
 ## 2️⃣ Requirement Validation Summary
 
 #### Test TC001
-- **Test Name:** User Authentication Success
-- **Test Code:** [TC001_User_Authentication_Success.py](./TC001_User_Authentication_Success.py)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/04ae6389-9dcd-486a-a902-5389a2758d00/1dd00d78-4ca9-40a0-bc69-9385bdb037ef
+- **Test Name:** User Login Success with Valid Credentials
+- **Test Code:** [TC001_User_Login_Success_with_Valid_Credentials.py](./TC001_User_Login_Success_with_Valid_Credentials.py)
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/4e0af205-16bb-46a5-8765-f539834007de/46608691-d2d4-404d-89c6-1f5403059c8a
 - **Status:** ✅ Passed
 - **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
 ---
 
 #### Test TC002
-- **Test Name:** User Authentication Failure
-- **Test Code:** [TC002_User_Authentication_Failure.py](./TC002_User_Authentication_Failure.py)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/04ae6389-9dcd-486a-a902-5389a2758d00/04e851b0-9e58-4300-9f82-7c33e230f974
+- **Test Name:** User Login Failure with Invalid Credentials
+- **Test Code:** [TC002_User_Login_Failure_with_Invalid_Credentials.py](./TC002_User_Login_Failure_with_Invalid_Credentials.py)
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/4e0af205-16bb-46a5-8765-f539834007de/eb358dcc-75d4-4817-b8e0-bc367885af63
 - **Status:** ✅ Passed
 - **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
 ---
 
 #### Test TC003
-- **Test Name:** Role-Based Access Control Verification
-- **Test Code:** [TC003_Role_Based_Access_Control_Verification.py](./TC003_Role_Based_Access_Control_Verification.py)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/04ae6389-9dcd-486a-a902-5389a2758d00/7c5a72c9-fb6b-42e4-9c4d-97be61fc7033
+- **Test Name:** Dashboard Overview Load Performance and Data Accuracy
+- **Test Code:** [TC003_Dashboard_Overview_Load_Performance_and_Data_Accuracy.py](./TC003_Dashboard_Overview_Load_Performance_and_Data_Accuracy.py)
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/4e0af205-16bb-46a5-8765-f539834007de/c1d2dfdd-379e-431f-8177-c0a75f9f83d6
 - **Status:** ✅ Passed
 - **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
 ---
 
 #### Test TC004
-- **Test Name:** Mission Control Dashboard Rendering
-- **Test Code:** [TC004_Mission_Control_Dashboard_Rendering.py](./TC004_Mission_Control_Dashboard_Rendering.py)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/04ae6389-9dcd-486a-a902-5389a2758d00/2cc5a3b6-1fc7-433a-ac4a-1ba508ca0c5f
-- **Status:** ✅ Passed
+- **Test Name:** Shipment Creation Multi-step Wizard
+- **Test Code:** [TC004_Shipment_Creation_Multi_step_Wizard.py](./TC004_Shipment_Creation_Multi_step_Wizard.py)
+- **Test Error:** Stopped testing due to inability to initiate shipment creation. The 'Start Shipping' link does not work as expected, preventing further form validation and submission tests.
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/4e0af205-16bb-46a5-8765-f539834007de/838257b4-da9e-4f4b-89c0-7e5a0dd3e8d5
+- **Status:** ❌ Failed
 - **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
 ---
 
 #### Test TC005
-- **Test Name:** Create Shipment via Multi-Step Wizard
-- **Test Code:** [TC005_Create_Shipment_via_Multi_Step_Wizard.py](./TC005_Create_Shipment_via_Multi_Step_Wizard.py)
-- **Test Error:** The full lifecycle test of shipment creation through the multi-step wizard could not be completed due to a login issue. The login fails to proceed after entering valid credentials and clicking the INITIATE SESSION button. The issue has been reported. No further testing is possible without successful login.
+- **Test Name:** Shipment Management - Barcode Scanning with Offline Queue
+- **Test Code:** [TC005_Shipment_Management___Barcode_Scanning_with_Offline_Queue.py](./TC005_Shipment_Management___Barcode_Scanning_with_Offline_Queue.py)
+- **Test Error:** Barcode scanning workflow test completed with failure to associate scanned barcodes with shipments. Live scanning blocked by camera permission issues. Offline queuing and synchronization could not be validated due to unrecognized barcodes. Please investigate backend or test data issues.
 Browser Console Logs:
-[WARNING] Image with src "/images/dashboard-welcome.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes (at http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2298:27)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/04ae6389-9dcd-486a-a902-5389a2758d00/15cd6575-f98f-49d3-ac90-31229d511a60
+[ERROR] Permissions policy violation: camera is not allowed in this document. (at http://localhost:3000/_next/static/chunks/node_modules_html5-qrcode_esm_03101fc2._.js:1925:0)
+[ERROR] Permissions policy violation: camera is not allowed in this document. (at http://localhost:3000/_next/static/chunks/node_modules_html5-qrcode_esm_03101fc2._.js:1925:0)
+[ERROR] Failed to get cameras: NotFoundError: Requested device not found (at http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3128:31)
+[ERROR] Failed to get cameras: NotFoundError: Requested device not found (at http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3128:31)
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/4e0af205-16bb-46a5-8765-f539834007de/dd3bd471-2e34-472b-b21f-ede74f2aae64
 - **Status:** ❌ Failed
 - **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
 ---
 
 #### Test TC006
-- **Test Name:** Edit and Update Shipment Details
-- **Test Code:** [TC006_Edit_and_Update_Shipment_Details.py](./TC006_Edit_and_Update_Shipment_Details.py)
-- **Test Error:** Shipment detail editing interface is not accessible from the shipments page. Only status changes via dropdown are possible. Barcode rescanning and attribute modification cannot be tested. Reporting this issue and stopping further testing.
-Browser Console Logs:
-[WARNING] Image with src "/images/dashboard-welcome.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes (at http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2298:27)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/04ae6389-9dcd-486a-a902-5389a2758d00/d0ee7f0a-b8e7-4b8c-a53b-78e10f5fb20b
-- **Status:** ❌ Failed
-- **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
----
-
-#### Test TC007
-- **Test Name:** Delete Shipment and Confirm Removal
-- **Test Code:** [TC007_Delete_Shipment_and_Confirm_Removal.py](./TC007_Delete_Shipment_and_Confirm_Removal.py)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/04ae6389-9dcd-486a-a902-5389a2758d00/405f33b2-3890-4432-9546-a620fdb8532f
+- **Test Name:** Real-time Shipment Tracking with Status Filters
+- **Test Code:** [TC006_Real_time_Shipment_Tracking_with_Status_Filters.py](./TC006_Real_time_Shipment_Tracking_with_Status_Filters.py)
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/4e0af205-16bb-46a5-8765-f539834007de/a70bf2f8-2f57-48bd-9a0b-ab70086ae33f
 - **Status:** ✅ Passed
 - **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
 ---
 
+#### Test TC007
+- **Test Name:** Manifest Management - AI-powered Route Optimization and Driver Assignment
+- **Test Code:** [TC007_Manifest_Management___AI_powered_Route_Optimization_and_Driver_Assignment.py](./TC007_Manifest_Management___AI_powered_Route_Optimization_and_Driver_Assignment.py)
+- **Test Error:** Manifest management feature is not accessible or visible on the website. Testing cannot proceed further without access to this critical functionality. Reporting issue and stopping further actions.
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/4e0af205-16bb-46a5-8765-f539834007de/d0125597-b29b-4afe-addd-42d647ba7cc0
+- **Status:** ❌ Failed
+- **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
+---
+
 #### Test TC008
-- **Test Name:** Real-Time Shipment Tracking Updates
-- **Test Code:** [TC008_Real_Time_Shipment_Tracking_Updates.py](./TC008_Real_Time_Shipment_Tracking_Updates.py)
-- **Test Error:** The tracking system was accessed and shipment selection was attempted multiple times. However, no shipments are currently available on the tracking page to validate the shipment timeline visuals or map integration. Therefore, it was not possible to verify that the shipment timeline visual updates with recent tracking events or confirm that the map integration displays the current shipment location correctly. Also, simulation of shipment status changes via backend and verification of UI updates within 30 seconds latency could not be performed due to lack of shipments. The task is incomplete as the key validations could not be performed due to missing shipment data on the tracking page.
-Browser Console Logs:
-[WARNING] Image with src "/images/dashboard-welcome.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes (at http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2298:27)
-[WARNING] Image with src "/images/empty-shipments.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes (at http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2298:27)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/04ae6389-9dcd-486a-a902-5389a2758d00/1cb6a349-d515-4865-8f81-7906ee02782a
+- **Test Name:** Invoice Generation and Multi-channel Delivery
+- **Test Code:** [TC008_Invoice_Generation_and_Multi_channel_Delivery.py](./TC008_Invoice_Generation_and_Multi_channel_Delivery.py)
+- **Test Error:** Invoice creation form was filled with multi-currency and GST details. However, input validation issues with the receiver phone number field prevented successful invoice generation. Due to this, sending the invoice via WhatsApp Business API and fallback channels, as well as verifying delivery confirmation metrics, could not be tested. The task is partially completed with invoice creation form preparation done but final submission and sending steps remain unverified.
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/4e0af205-16bb-46a5-8765-f539834007de/f7ea277b-72bd-43ba-9a78-d5b509244072
 - **Status:** ❌ Failed
 - **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
 ---
 
 #### Test TC009
-- **Test Name:** Manifest Creation with AI Route Optimization
-- **Test Code:** [TC009_Manifest_Creation_with_AI_Route_Optimization.py](./TC009_Manifest_Creation_with_AI_Route_Optimization.py)
-- **Test Error:** The manifest creation flow was tested manually by filling all required fields and selecting shipments. However, the manifest creation form did not submit successfully, and no manifests appeared in the list after submission. Due to this failure, AI-optimized route assignment and driver tracking could not be tested. The manifest creation process needs fixing before further testing can continue. Task is incomplete.
-Browser Console Logs:
-[WARNING] Image with src "/images/dashboard-welcome.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes (at http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2298:27)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/04ae6389-9dcd-486a-a902-5389a2758d00/9680c95b-b881-415d-83ad-81c7e6bba31e
+- **Test Name:** Analytics Dashboard Charts and Export Reporting
+- **Test Code:** [TC009_Analytics_Dashboard_Charts_and_Export_Reporting.py](./TC009_Analytics_Dashboard_Charts_and_Export_Reporting.py)
+- **Test Error:** Stopped testing due to critical UI issue: shipment creation form does not appear after clicking '+' button on Shipments page. Cannot proceed with dataset creation and further validation of analytics charts and export functionality. Please fix this issue to continue testing.
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/4e0af205-16bb-46a5-8765-f539834007de/4c6c1dd9-b6e0-4891-bb18-1a9e4cbba704
 - **Status:** ❌ Failed
 - **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
 ---
 
 #### Test TC010
-- **Test Name:** Invoice Generation and GST Compliance
-- **Test Code:** [TC010_Invoice_Generation_and_GST_Compliance.py](./TC010_Invoice_Generation_and_GST_Compliance.py)
-- **Test Error:** Stopped testing due to critical UI issue: 'Start Shipping' button does not open shipment wizard or shipment management interface, preventing further progress on invoice generation and related tests.
-Browser Console Logs:
-[WARNING] Image with src "/images/operational-visibility.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes (at http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2298:27)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/04ae6389-9dcd-486a-a902-5389a2758d00/35be32b9-fe7a-4549-b087-5ba9464b1c0a
+- **Test Name:** Exception Handling Workflow for Failed and Delayed Shipments
+- **Test Code:** [TC010_Exception_Handling_Workflow_for_Failed_and_Delayed_Shipments.py](./TC010_Exception_Handling_Workflow_for_Failed_and_Delayed_Shipments.py)
+- **Test Error:** User was able to access the exceptions management page and open the report exception modal. However, the creation of a shipment exception was blocked because the 'Create Exception' button was disabled despite all required fields being filled. This prevents further testing of resolution workflows and status updates. Task is incomplete due to this blocker.
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/4e0af205-16bb-46a5-8765-f539834007de/b9648072-25f0-4528-a418-eb7947963435
 - **Status:** ❌ Failed
 - **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
 ---
 
 #### Test TC011
-- **Test Name:** Analytics Dashboard Data Accuracy and Export
-- **Test Code:** [TC011_Analytics_Dashboard_Data_Accuracy_and_Export.py](./TC011_Analytics_Dashboard_Data_Accuracy_and_Export.py)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/04ae6389-9dcd-486a-a902-5389a2758d00/de65d98c-0bee-4074-bff4-d7f17469b025
-- **Status:** ✅ Passed
+- **Test Name:** Barcode Scanning UI Accessibility and Multi-mode Input
+- **Test Code:** [TC011_Barcode_Scanning_UI_Accessibility_and_Multi_mode_Input.py](./TC011_Barcode_Scanning_UI_Accessibility_and_Multi_mode_Input.py)
+- **Test Error:** Stopped testing due to inability to navigate to barcode scanning page. Reported issue for resolution before further testing.
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/4e0af205-16bb-46a5-8765-f539834007de/05cef304-5dec-4ecc-b62d-1853ff1dfe5e
+- **Status:** ❌ Failed
 - **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
 ---
 
 #### Test TC012
-- **Test Name:** Exception Handling Workflow
-- **Test Code:** [TC012_Exception_Handling_Workflow.py](./TC012_Exception_Handling_Workflow.py)
-- **Test Error:** Tested creation of shipment exception for delayed shipment. Exception creation form fields were filled correctly but the 'Create Exception' button remained disabled, preventing submission. Unable to proceed with auto-escalation, resolution assignment, and notification verification due to this issue.
-Browser Console Logs:
-[WARNING] Image with src "/images/dashboard-welcome.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes (at http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2298:27)
-[WARNING] Image with src "/images/no-exceptions.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes (at http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2298:27)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/04ae6389-9dcd-486a-a902-5389a2758d00/56cde61d-6c95-4658-834b-ef9bc1f41812
+- **Test Name:** Security - Role-Based Access and RLS Enforcement
+- **Test Code:** [TC012_Security___Role_Based_Access_and_RLS_Enforcement.py](./TC012_Security___Role_Based_Access_and_RLS_Enforcement.py)
+- **Test Error:** Testing stopped due to missing logout functionality. Admin user is logged in but cannot log out to test other roles. This blocks verification of role-based access control and RLS enforcement. Please fix logout functionality to proceed.
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/4e0af205-16bb-46a5-8765-f539834007de/43358046-ef28-4cad-8171-9358c4c22d1a
 - **Status:** ❌ Failed
 - **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
 ---
 
 #### Test TC013
-- **Test Name:** Route Management Vehicle Tracking and Status
-- **Test Code:** [TC013_Route_Management_Vehicle_Tracking_and_Status.py](./TC013_Route_Management_Vehicle_Tracking_and_Status.py)
-- **Test Error:** The task to verify real-time vehicle location updates on the map and route status indicators was partially completed. Login and navigation to the route management and shipments pages were successful. Shipment status was updated and UI status flags and colors reflected the changes correctly. However, no active routes or vehicles were present on the Live Routes page to fully verify live vehicle location updates and interactivity on the map. Therefore, the task is marked as partially complete with success=false.
-Browser Console Logs:
-[WARNING] Image with src "/images/dashboard-welcome.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes (at http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2298:27)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/04ae6389-9dcd-486a-a902-5389a2758d00/6cd28836-b71f-47ec-b432-5f7d856ec369
-- **Status:** ❌ Failed
+- **Test Name:** Accessibility Audit for Dashboard and Core Pages
+- **Test Code:** [TC013_Accessibility_Audit_for_Dashboard_and_Core_Pages.py](./TC013_Accessibility_Audit_for_Dashboard_and_Core_Pages.py)
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/4e0af205-16bb-46a5-8765-f539834007de/9c055813-e6b3-4497-bac8-065ea7b1cdba
+- **Status:** ✅ Passed
 - **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
 ---
 
 #### Test TC014
-- **Test Name:** Barcode Scanning Functionality and Offline Mode
-- **Test Code:** [TC014_Barcode_Scanning_Functionality_and_Offline_Mode.py](./TC014_Barcode_Scanning_Functionality_and_Offline_Mode.py)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/04ae6389-9dcd-486a-a902-5389a2758d00/496ec610-fab7-4e76-95b2-3bf36576c262
+- **Test Name:** Notification System Delivery and UI Behavior
+- **Test Code:** [TC014_Notification_System_Delivery_and_UI_Behavior.py](./TC014_Notification_System_Delivery_and_UI_Behavior.py)
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/4e0af205-16bb-46a5-8765-f539834007de/c50433ae-4b93-45ab-9220-f3abdb148126
 - **Status:** ✅ Passed
 - **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
 ---
 
 #### Test TC015
-- **Test Name:** Global Command Palette Quick Navigation
-- **Test Code:** [TC015_Global_Command_Palette_Quick_Navigation.py](./TC015_Global_Command_Palette_Quick_Navigation.py)
-- **Test Error:** Testing stopped due to critical error preventing the multi-step shipment creation wizard from initiating. The command palette opens and navigation commands work, but the action command 'Create Shipment' fails with a runtime error related to locale and select item value. Please fix this issue to enable full testing.
-Browser Console Logs:
-[WARNING] Image with src "/images/dashboard-welcome.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes (at http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2298:27)
-[ERROR] `DialogContent` requires a `DialogTitle` for the component to be accessible for screen reader users.
-
-If you want to hide the `DialogTitle`, you can wrap it with our VisuallyHidden component.
-
-For more information, see https://radix-ui.com/primitives/docs/components/dialog (at http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3128:31)
-[WARNING] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}. (at http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2298:27)
-[ERROR] `DialogContent` requires a `DialogTitle` for the component to be accessible for screen reader users.
-
-If you want to hide the `DialogTitle`, you can wrap it with our VisuallyHidden component.
-
-For more information, see https://radix-ui.com/primitives/docs/components/dialog (at http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3128:31)
-[WARNING] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}. (at http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2298:27)
-[ERROR] [Global Error] Error: A <Select.Item /> must have a value prop that is not an empty string. This is because the Select value can be set to an empty string to clear the selection and show the placeholder.
-    at SelectItem (http://localhost:3000/_next/static/chunks/node_modules_d27844ba._.js:18561:15)
-    at Object.react_stack_bottom_frame (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:14827:24)
-    at renderWithHooks (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:4652:24)
-    at updateForwardRef (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:5940:21)
-    at beginWork (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:6784:24)
-    at runWithFiberInDEV (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:966:74)
-    at performUnitOfWork (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:9563:97)
-    at workLoopSync (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:9457:40)
-    at renderRootSync (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:9441:13)
-    at performWorkOnRoot (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:9106:47)
-    at performSyncWorkOnRoot (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:10239:9)
-    at flushSyncWorkAcrossRoots_impl (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:10155:316)
-    at processRootScheduleInMicrotask (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:10176:106)
-    at http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:10250:158 (at http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3128:31)
-[ERROR] [Global Error] Error: A <Select.Item /> must have a value prop that is not an empty string. This is because the Select value can be set to an empty string to clear the selection and show the placeholder.
-    at SelectItem (http://localhost:3000/_next/static/chunks/node_modules_d27844ba._.js:18561:15)
-    at Object.react_stack_bottom_frame (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:14827:24)
-    at renderWithHooks (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:4652:24)
-    at updateForwardRef (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:5940:21)
-    at beginWork (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:6784:24)
-    at runWithFiberInDEV (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:966:74)
-    at performUnitOfWork (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:9563:97)
-    at workLoopSync (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:9457:40)
-    at renderRootSync (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:9441:13)
-    at performWorkOnRoot (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:9106:47)
-    at performSyncWorkOnRoot (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:10239:9)
-    at flushSyncWorkAcrossRoots_impl (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:10155:316)
-    at processRootScheduleInMicrotask (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:10176:106)
-    at http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:10250:158 (at http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3128:31)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/04ae6389-9dcd-486a-a902-5389a2758d00/c658edcb-6320-4774-a234-bceccead7107
-- **Status:** ❌ Failed
-- **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
----
-
-#### Test TC016
-- **Test Name:** Real-Time Notification System
-- **Test Code:** [TC016_Real_Time_Notification_System.py](./TC016_Real_Time_Notification_System.py)
-- **Test Error:** Testing stopped due to critical error on Shipments page preventing further actions. The error message is: 'A <Select.Item /> must have a value prop that is not an empty string'. No notifications could be triggered or verified. Please fix this issue to continue testing.
-Browser Console Logs:
-[WARNING] Image with src "/images/dashboard-welcome.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes (at http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2298:27)
-[ERROR] `DialogContent` requires a `DialogTitle` for the component to be accessible for screen reader users.
-
-If you want to hide the `DialogTitle`, you can wrap it with our VisuallyHidden component.
-
-For more information, see https://radix-ui.com/primitives/docs/components/dialog (at http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3128:31)
-[WARNING] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}. (at http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2298:27)
-[ERROR] `DialogContent` requires a `DialogTitle` for the component to be accessible for screen reader users.
-
-If you want to hide the `DialogTitle`, you can wrap it with our VisuallyHidden component.
-
-For more information, see https://radix-ui.com/primitives/docs/components/dialog (at http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3128:31)
-[WARNING] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}. (at http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2298:27)
-[ERROR] [Global Error] Error: A <Select.Item /> must have a value prop that is not an empty string. This is because the Select value can be set to an empty string to clear the selection and show the placeholder.
-    at SelectItem (http://localhost:3000/_next/static/chunks/node_modules_d27844ba._.js:18561:15)
-    at Object.react_stack_bottom_frame (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:14827:24)
-    at renderWithHooks (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:4652:24)
-    at updateForwardRef (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:5940:21)
-    at beginWork (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:6784:24)
-    at runWithFiberInDEV (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:966:74)
-    at performUnitOfWork (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:9563:97)
-    at workLoopSync (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:9457:40)
-    at renderRootSync (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:9441:13)
-    at performWorkOnRoot (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:9106:47)
-    at performSyncWorkOnRoot (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:10239:9)
-    at flushSyncWorkAcrossRoots_impl (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:10155:316)
-    at processRootScheduleInMicrotask (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:10176:106)
-    at http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:10250:158 (at http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3128:31)
-[ERROR] [Global Error] Error: A <Select.Item /> must have a value prop that is not an empty string. This is because the Select value can be set to an empty string to clear the selection and show the placeholder.
-    at SelectItem (http://localhost:3000/_next/static/chunks/node_modules_d27844ba._.js:18561:15)
-    at Object.react_stack_bottom_frame (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:14827:24)
-    at renderWithHooks (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:4652:24)
-    at updateForwardRef (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:5940:21)
-    at beginWork (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:6784:24)
-    at runWithFiberInDEV (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:966:74)
-    at performUnitOfWork (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:9563:97)
-    at workLoopSync (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:9457:40)
-    at renderRootSync (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:9441:13)
-    at performWorkOnRoot (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:9106:47)
-    at performSyncWorkOnRoot (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:10239:9)
-    at flushSyncWorkAcrossRoots_impl (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:10155:316)
-    at processRootScheduleInMicrotask (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:10176:106)
-    at http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:10250:158 (at http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3128:31)
-[WARNING] WebSocket connection to 'wss://dqthizzubvoxmclkcubc.supabase.co/realtime/v1/websocket?apikey=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxdGhpenp1YnZveG1jbGtjdWJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxMjA3OTYsImV4cCI6MjA4MjY5Njc5Nn0.k0rDSffBDpXiS0RtrEKB8YBT95QTVDJIdvS_kNVKRsg&vsn=1.0.0' failed: WebSocket is closed before the connection is established. (at http://localhost:3000/_next/static/chunks/node_modules_%40supabase_realtime-js_dist_module_65527103._.js:1791:0)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/04ae6389-9dcd-486a-a902-5389a2758d00/d351b396-29f3-426e-9ba8-f7c486ab157e
-- **Status:** ❌ Failed
-- **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
----
-
-#### Test TC017
-- **Test Name:** UI Component Accessibility and Theming Compliance
-- **Test Code:** [TC017_UI_Component_Accessibility_and_Theming_Compliance.py](./TC017_UI_Component_Accessibility_and_Theming_Compliance.py)
-- **Test Error:** Validation of semantic OKLCH color tokens and WCAG AA accessibility standards on the Scanner page is incomplete due to missing keyboard navigation support and ARIA attributes. The website issue has been reported. Task stopped.
-Browser Console Logs:
-[WARNING] Image with src "/images/dashboard-welcome.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes (at http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2298:27)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/04ae6389-9dcd-486a-a902-5389a2758d00/286f51e4-1f64-4af1-bc1f-b5fa99fe0a07
-- **Status:** ❌ Failed
-- **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
----
-
-#### Test TC018
-- **Test Name:** Performance and Load Time Validation
-- **Test Code:** [TC018_Performance_and_Load_Time_Validation.py](./TC018_Performance_and_Load_Time_Validation.py)
-- **Test Error:** The application is currently in a critical error state preventing any further testing of dashboard pages. The error message indicates a missing 'value' prop in a Select.Item component and a runtime RangeError due to incorrect locale information. Because of this, it is not possible to proceed with loading or testing the main dashboard pages for load time or UI animation smoothness. Please report this issue to the development team for resolution before retrying the performance tests.
-Browser Console Logs:
-[WARNING] Image with src "/images/dashboard-welcome.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes (at http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2298:27)
-[ERROR] `DialogContent` requires a `DialogTitle` for the component to be accessible for screen reader users.
-
-If you want to hide the `DialogTitle`, you can wrap it with our VisuallyHidden component.
-
-For more information, see https://radix-ui.com/primitives/docs/components/dialog (at http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3128:31)
-[WARNING] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}. (at http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2298:27)
-[ERROR] `DialogContent` requires a `DialogTitle` for the component to be accessible for screen reader users.
-
-If you want to hide the `DialogTitle`, you can wrap it with our VisuallyHidden component.
-
-For more information, see https://radix-ui.com/primitives/docs/components/dialog (at http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3128:31)
-[WARNING] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}. (at http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2298:27)
-[ERROR] [Global Error] Error: A <Select.Item /> must have a value prop that is not an empty string. This is because the Select value can be set to an empty string to clear the selection and show the placeholder.
-    at SelectItem (http://localhost:3000/_next/static/chunks/node_modules_d27844ba._.js:18561:15)
-    at Object.react_stack_bottom_frame (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:14827:24)
-    at renderWithHooks (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:4652:24)
-    at updateForwardRef (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:5940:21)
-    at beginWork (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:6784:24)
-    at runWithFiberInDEV (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:966:74)
-    at performUnitOfWork (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:9563:97)
-    at workLoopSync (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:9457:40)
-    at renderRootSync (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:9441:13)
-    at performWorkOnRoot (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:9106:47)
-    at performSyncWorkOnRoot (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:10239:9)
-    at flushSyncWorkAcrossRoots_impl (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:10155:316)
-    at processRootScheduleInMicrotask (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:10176:106)
-    at http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:10250:158 (at http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3128:31)
-[ERROR] [Global Error] Error: A <Select.Item /> must have a value prop that is not an empty string. This is because the Select value can be set to an empty string to clear the selection and show the placeholder.
-    at SelectItem (http://localhost:3000/_next/static/chunks/node_modules_d27844ba._.js:18561:15)
-    at Object.react_stack_bottom_frame (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:14827:24)
-    at renderWithHooks (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:4652:24)
-    at updateForwardRef (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:5940:21)
-    at beginWork (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:6784:24)
-    at runWithFiberInDEV (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:966:74)
-    at performUnitOfWork (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:9563:97)
-    at workLoopSync (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:9457:40)
-    at renderRootSync (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:9441:13)
-    at performWorkOnRoot (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:9106:47)
-    at performSyncWorkOnRoot (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:10239:9)
-    at flushSyncWorkAcrossRoots_impl (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:10155:316)
-    at processRootScheduleInMicrotask (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:10176:106)
-    at http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:10250:158 (at http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3128:31)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/04ae6389-9dcd-486a-a902-5389a2758d00/fd5a59fc-9c24-4c96-84b5-b3d0085eb798
-- **Status:** ❌ Failed
-- **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
----
-
-#### Test TC019
-- **Test Name:** Session Expiration and Secure Redirects
-- **Test Code:** [TC019_Session_Expiration_and_Secure_Redirects.py](./TC019_Session_Expiration_and_Secure_Redirects.py)
-- **Test Error:** Session expiration enforcement failed: user was not logged out or redirected to login page after session expiration time. Unauthorized access to protected routes was possible. Test stopped and issue reported.
-Browser Console Logs:
-[WARNING] Image with src "/images/dashboard-welcome.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes (at http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2298:27)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/04ae6389-9dcd-486a-a902-5389a2758d00/35523737-68d9-4532-98ff-880d82ae1254
-- **Status:** ❌ Failed
-- **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
----
-
-#### Test TC020
-- **Test Name:** Bulk Actions with Shipments Data Table
-- **Test Code:** [TC020_Bulk_Actions_with_Shipments_Data_Table.py](./TC020_Bulk_Actions_with_Shipments_Data_Table.py)
-- **Test Error:** Testing stopped due to critical UI error on shipments page preventing bulk selection and bulk edit/delete operations. Error message: '<Select.Item /> must have a value prop that is not an empty string.'
-Browser Console Logs:
-[WARNING] Image with src "/images/dashboard-welcome.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes (at http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2298:27)
-[ERROR] `DialogContent` requires a `DialogTitle` for the component to be accessible for screen reader users.
-
-If you want to hide the `DialogTitle`, you can wrap it with our VisuallyHidden component.
-
-For more information, see https://radix-ui.com/primitives/docs/components/dialog (at http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3128:31)
-[WARNING] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}. (at http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2298:27)
-[ERROR] `DialogContent` requires a `DialogTitle` for the component to be accessible for screen reader users.
-
-If you want to hide the `DialogTitle`, you can wrap it with our VisuallyHidden component.
-
-For more information, see https://radix-ui.com/primitives/docs/components/dialog (at http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3128:31)
-[WARNING] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}. (at http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2298:27)
-[ERROR] [Global Error] Error: A <Select.Item /> must have a value prop that is not an empty string. This is because the Select value can be set to an empty string to clear the selection and show the placeholder.
-    at SelectItem (http://localhost:3000/_next/static/chunks/node_modules_d27844ba._.js:18561:15)
-    at Object.react_stack_bottom_frame (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:14827:24)
-    at renderWithHooks (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:4652:24)
-    at updateForwardRef (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:5940:21)
-    at beginWork (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:6784:24)
-    at runWithFiberInDEV (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:966:74)
-    at performUnitOfWork (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:9563:97)
-    at workLoopSync (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:9457:40)
-    at renderRootSync (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:9441:13)
-    at performWorkOnRoot (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:9106:47)
-    at performSyncWorkOnRoot (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:10239:9)
-    at flushSyncWorkAcrossRoots_impl (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:10155:316)
-    at processRootScheduleInMicrotask (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:10176:106)
-    at http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:10250:158 (at http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3128:31)
-[ERROR] [Global Error] Error: A <Select.Item /> must have a value prop that is not an empty string. This is because the Select value can be set to an empty string to clear the selection and show the placeholder.
-    at SelectItem (http://localhost:3000/_next/static/chunks/node_modules_d27844ba._.js:18561:15)
-    at Object.react_stack_bottom_frame (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:14827:24)
-    at renderWithHooks (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:4652:24)
-    at updateForwardRef (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:5940:21)
-    at beginWork (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:6784:24)
-    at runWithFiberInDEV (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:966:74)
-    at performUnitOfWork (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:9563:97)
-    at workLoopSync (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:9457:40)
-    at renderRootSync (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:9441:13)
-    at performWorkOnRoot (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:9106:47)
-    at performSyncWorkOnRoot (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:10239:9)
-    at flushSyncWorkAcrossRoots_impl (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:10155:316)
-    at processRootScheduleInMicrotask (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:10176:106)
-    at http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js:10250:158 (at http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3128:31)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/04ae6389-9dcd-486a-a902-5389a2758d00/6e4f0610-bd66-40ef-9ff5-1fe843c3a459
-- **Status:** ❌ Failed
-- **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
----
-
-#### Test TC021
-- **Test Name:** Exception Auto-Escalation Logic Verification
-- **Test Code:** [TC021_Exception_Auto_Escalation_Logic_Verification.py](./TC021_Exception_Auto_Escalation_Logic_Verification.py)
-- **Test Error:** The shipment exception auto-escalation test was partially completed. A low severity exception was created successfully for shipment 'Harry Potter' with status 'Delayed'. After simulating the passage of escalation threshold time by waiting 5 seconds, there was no visible change in the exception status to 'Escalated' nor any notification sent to assigned personnel observed on the UI. This indicates that either the escalation time threshold is longer than simulated or the auto-escalation and notification features are not functioning as expected in this test environment. Further investigation or longer simulation time may be required to fully verify auto-escalation and notification functionality.
-Browser Console Logs:
-[WARNING] Image with src "/images/dashboard-welcome.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes (at http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2298:27)
-[WARNING] Image with src "/images/no-exceptions.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes (at http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2298:27)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/04ae6389-9dcd-486a-a902-5389a2758d00/951556e3-8407-4faf-84ae-f19cc5581608
-- **Status:** ❌ Failed
-- **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
----
-
-#### Test TC022
-- **Test Name:** Invoice Payment Reconciliation Dashboard Accuracy
-- **Test Code:** [TC022_Invoice_Payment_Reconciliation_Dashboard_Accuracy.py](./TC022_Invoice_Payment_Reconciliation_Dashboard_Accuracy.py)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/04ae6389-9dcd-486a-a902-5389a2758d00/cb45efe6-6629-4211-a29c-e1f966441d3c
+- **Test Name:** Mobile PWA Barcode Scanning Offline Support for Warehouse Staff
+- **Test Code:** [TC015_Mobile_PWA_Barcode_Scanning_Offline_Support_for_Warehouse_Staff.py](./TC015_Mobile_PWA_Barcode_Scanning_Offline_Support_for_Warehouse_Staff.py)
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/4e0af205-16bb-46a5-8765-f539834007de/8d956765-b9d2-40d9-9b48-36c6864bfcc9
 - **Status:** ✅ Passed
 - **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
 ---
 
-#### Test TC023
-- **Test Name:** Continuous Integration Checks
-- **Test Code:** [TC023_Continuous_Integration_Checks.py](./TC023_Continuous_Integration_Checks.py)
-- **Test Error:** No UI commands or settings found for linting, stylelint, or security scans. The next step is to submit code changes with hardcoded color tokens and unsafe patterns externally (outside this UI) to trigger lint and security scan failures. Then verify the CI pipeline fails with detailed lint and security errors, fix the issues, and resubmit to confirm the pipeline passes all checks. Task is paused here awaiting external code submission and CI pipeline verification.
-Browser Console Logs:
-[WARNING] Image with src "/images/dashboard-welcome.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes (at http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2298:27)
-[WARNING] Image with src "/images/no-exceptions.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes (at http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2298:27)
-[ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) (at http://localhost:3000/repository:0:0)
-[WARNING] Image with src "/images/dashboard-welcome.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes (at http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2298:27)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/04ae6389-9dcd-486a-a902-5389a2758d00/111746bb-3e77-4d03-b0b5-c091b233b014
-- **Status:** ❌ Failed
+#### Test TC016
+- **Test Name:** Command Palette Keyboard Shortcuts and Navigation
+- **Test Code:** [TC016_Command_Palette_Keyboard_Shortcuts_and_Navigation.py](./TC016_Command_Palette_Keyboard_Shortcuts_and_Navigation.py)
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/4e0af205-16bb-46a5-8765-f539834007de/431c69f3-dc83-4d9c-ae95-14d02e4a5e43
+- **Status:** ✅ Passed
 - **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
 ---
 
 
 ## 3️⃣ Coverage & Matching Metrics
 
-- **34.78** of tests passed
+- **50.00** of tests passed
 
 | Requirement        | Total Tests | ✅ Passed | ❌ Failed  |
 |--------------------|-------------|-----------|------------|

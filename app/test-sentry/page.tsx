@@ -38,6 +38,7 @@ export default function TestSentryPage() {
         setStatus(`Response: ${JSON.stringify(data)}`);
       }
     } catch (error) {
+      console.error(error);
       setStatus(`✅ Server error triggered (network error caught)`);
     }
   };

@@ -43,6 +43,12 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   /**
+   * Build directory - using relative path but pointing to F: drive via symlink
+   * Alternative: Clean up C: drive space instead
+   */
+  // distDir: "../.next-build",  // Commented out - causes path issues
+
+  /**
    * React strict mode for development
    */
   reactStrictMode: true,

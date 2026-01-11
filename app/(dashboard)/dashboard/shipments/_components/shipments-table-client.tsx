@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useTransition, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import { GlassPanel } from "../../_components/glass-panel";
 import {
     Search,
@@ -108,6 +109,7 @@ export function ShipmentsTableClient({
     warehouses,
     customers
 }: Readonly<ShipmentsTableClientProps>) {
+    const router = useRouter();
     const [shipments, setShipments] = useState(initialShipments);
     const [searchQuery, setSearchQuery] = useState("");
     const [statusFilter, setStatusFilter] = useState<ShipmentStatus | "all">("all");
@@ -300,6 +302,7 @@ export function ShipmentsTableClient({
                         size="sm"
                         className="h-8 gap-1"
                         onClick={() => setIsWizardOpen(true)}
+                        data-testid="shipment-wizard-button"
                     >
                         <Wand2 className="w-3.5 h-3.5" />
                         Wizard
@@ -308,7 +311,7 @@ export function ShipmentsTableClient({
                     {/* Quick Create Button */}
                     <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
                         <DialogTrigger asChild>
-                            <Button size="sm" className="h-8 gap-1">
+                            <Button size="sm" className="h-8 gap-1" data-testid="shipment-quick-create-button">
                                 <Plus className="w-3.5 h-3.5" />
                                 Quick Create
                             </Button>
@@ -414,11 +417,15 @@ export function ShipmentsTableClient({
                                 const isSelected = selectedIds.has(shipment.id);
 
                                 return (
-                                    <tr key={shipment.id} className={cn(
-                                        "group hover:bg-muted/40 transition-colors",
-                                        isSelected && "bg-primary/5"
-                                    )}>
-                                        <td className="p-4">
+                                    <tr 
+                                        key={shipment.id} 
+                                        className={cn(
+                                            "group hover:bg-muted/40 transition-colors cursor-pointer",
+                                            isSelected && "bg-primary/5"
+                                        )}
+                                        onClick={() => router.push(`/dashboard/shipments/${shipment.id}`)}
+                                    >
+                                        <td className="p-4" onClick={(e) => e.stopPropagation()}>
                                             <Checkbox
                                                 checked={isSelected}
                                                 onCheckedChange={() => toggleSelect(shipment.id)}
@@ -474,7 +481,7 @@ export function ShipmentsTableClient({
                                                 <span className="text-[10px] text-muted-foreground">Not assigned</span>
                                             )}
                                         </td>
-                                        <td className="p-4 text-right">
+                                        <td className="p-4 text-right" onClick={(e) => e.stopPropagation()}>
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger asChild>
                                                     <button

@@ -337,5 +337,30 @@
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;
-  mix-blend-mode: normal;
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  .print-area,
+  .print-area * {
+    visibility: visible;
+  }
+
+  .print-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+
+  /* Hide specific UI elements just in case */
+  nav,
+  header,
+  aside,
+  .sidebar {
+    display: none !important;
+  }
 }

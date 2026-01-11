@@ -1,66 +1,57 @@
 {
   "meta": {
     "project": "TAC Cargo Logistics Platform",
-    "date": "2025-12-30",
+    "date": "2026-01-09",
     "prepared_by": "Software Development Manager"
   },
-  "product_overview": "TAC Cargo is a comprehensive enterprise logistics management platform designed to streamline shipment operations, real-time tracking, invoicing, and analytics. Built with Next.js 16, React 19, Supabase, and TailwindCSS using a production-grade design system and modular architecture, it serves logistics operators, managers, and customers with high reliability, security, and operational efficiency.",
+  "product_overview": "TAC Cargo is an enterprise-grade logistics and freight management platform designed for real-time shipment tracking, operational dashboards, invoicing, analytics, and automated customer communications. Built on Next.js 16, React 19, Supabase, and TailwindCSS with an advanced design system using OKLCH colors, TAC Cargo transforms logistics operations into a high-efficiency, production-ready platform tailored for scale and compliance.",
   "core_goals": [
-    "Provide real-time shipment tracking and status updates to enable proactive logistics management.",
-    "Offer a centralized dashboard (Mission Control) with operational KPIs, pipeline tracking, and live activity feeds.",
-    "Enable full lifecycle shipment management including CRUD, barcode scanning, and status workflows.",
-    "Support efficient manifest creation and route assignment with driver tracking and optimization.",
-    "Automate invoice generation and payments with integrated revenue analytics.",
-    "Deliver comprehensive business intelligence through analytics dashboards covering customer, route, and operational metrics.",
-    "Manage exceptions with workflows for failed or delayed shipments and resolution tracking.",
-    "Facilitate role-based authentication and secure access to tenant data with Supabase and middleware protection.",
-    "Maintain a scalable, performance-optimized frontend using React Server Components, TanStack Query, and a semantic OKLCH-based design system.",
-    "Ensure accessibility, responsiveness, and high UX standards for operational staff and customer portals."
+    "Deliver real-time shipment and fleet tracking with geolocation and status updates.",
+    "Provide comprehensive operational dashboards featuring KPIs, charts, and live activity feeds.",
+    "Enable full shipment lifecycle management including creation, bulk actions, barcode scanning, and exception workflows.",
+    "Automate customer communication via WhatsApp Business API, SMS, and Email with predefined templates and fallback mechanisms.",
+    "Implement advanced manifest and route optimization with driver assignment and tracking.",
+    "Offer detailed invoice and payment management including multi-currency, GST compliance, and integration with payment gateways.",
+    "Provide comprehensive analytics covering operational, financial, and customer metrics with predictive capabilities.",
+    "Ensure enterprise-grade security with role-based access, RLS, audit logging, and compliance with standards such as GDPR and ISO.",
+    "Maintain high performance via SSR, ISR, lazy loading, and optimized bundle sizes adhering to strict web vitals targets.",
+    "Deliver accessible, mobile-responsive UI conforming to WCAG 2.1 AA standards with a utilitarian and command-console aesthetic."
   ],
   "key_features": [
-    "Mission Control Dashboard with KPI cards, shipment pipeline, interactive Recharts visualizations, and live activity feed powered by Supabase Realtime.",
-    "Advanced Shipment Management module supporting server-side pagination, bulk actions, multi-step creation wizard with pricing automation, barcode scanning integration (camera/USB), and detailed shipment drawers.",
-    "Real-time Tracking System with visual timelines, map integration, and status filtering for transparent shipment monitoring.",
-    "Smart Manifest Management including AI-powered route optimization, driver assignment, live manifest tracking, and automatic manifest closure workflows.",
-    "Invoice & Payment Management featuring GST-compliant invoicing, multi-channel delivery via WhatsApp Business API, payment gateway integration, and reconciliation dashboards.",
-    "Analytics Dashboard offering multiple chart types (area, bar, pie, radar) for operational, financial, and customer insights.",
-    "Exception Handling workflow with categories, auto-escalation, note-taking, and customer notification management.",
-    "Route Management with map-based vehicle tracking, status indicators, and route listing panels.",
-    "Barcode Scanning supporting USB scanners and camera-based scanning with offline queue and action triggers.",
-    "Global Command Palette for quick navigation and action execution.",
-    "Real-time Notification System via in-app toasts and notification bell icon.",
-    "Supabase-based Authentication with login/signup pages, session management, and role controls.",
-    "Reusable, theme-compliant UI components built on shadcn/ui primitives.",
-    "Consistent dashboard layout with sidebar, header, and provider composition."
+    "Dashboard Overview (Mission Control) with live metrics grid, Kanban shipment pipeline, real-time vehicle map, and quick actions panel.",
+    "Shipment Management supporting server-side pagination, advanced filtering, multi-step creation wizard, detail drawer with tabs, and barcode scanning with offline queue.",
+    "Real-time Tracking with search and status filters, shipment cards, visual timeline, and map integration.",
+    "Manifest Management with AI-powered optimization, driver assignment, route preview, live tracking, and closure workflows.",
+    "Inventory & Warehouse Management providing visual maps, location tracking, inbound/outbound workflows, and inventory reporting.",
+    "Invoice and Payment System with multi-format invoicing, WhatsApp and multi-channel delivery, payment gateway integration, and reconciliation dashboard.",
+    "Analytics Dashboard offering BI charts, operational KPIs, financial and customer analytics, and custom reporting tools.",
+    "Automation via WhatsApp Business API for paperless communication with interactive message templates and fallback.",
+    "Mobile Experience including PWA for drivers and warehouse staff with barcode scanning and offline support.",
+    "Comprehensive security, compliance, and auditing mechanisms supporting multi-factor authentication and rate limiting."
   ],
   "user_flow_summary": [
-    "User logs in via a secure Supabase-authenticated flow; unauthorized users redirected to login page.",
-    "Upon login, the user accesses the Mission Control dashboard presenting real-time KPIs, shipment pipeline status, live maps, and notification feeds.",
-    "Users can create, edit, and delete shipments through an advanced table interface with bulk action support and barcode scanning capabilities.",
-    "Users interact with manifests by creating new manifests manually or via AI assistance with route optimization; assign drivers and track manifest status live on maps.",
-    "Users view shipment tracking with timeline visualization and map integration, filtering shipments by status or searching by AWB number.",
-    "Finance personnel generate and send GST-compliant invoices through automated workflows, delivering payment links via WhatsApp and email.",
-    "Users monitor analytics dashboards to assess operational performance, customer metrics, and financial KPIs with dynamic charts and exportable data.",
-    "Exception management workflows allow users to identify delayed or failed shipments, assign resolution tasks and notify customers.",
-    "Route management presents real-time vehicle locations on interactive maps; drivers and dispatchers update statuses accordingly.",
-    "Users can scan shipment barcodes via USB or camera input, triggering status updates or manifest additions.",
-    "Global commands allow quick navigation and action execution, enhancing productivity.",
-    "Notification system alerts users to critical events with badges and toasts, ensuring timely awareness."
+    "User logs in via secure Supabase authentication; upon success redirected to dashboard.",
+    "User views the Overview Mission Control dashboard with real-time metrics, activity feed, charts, and maps.",
+    "User performs shipment management tasks: create shipments with multi-step forms, update statuses, scan barcodes to process packages, and manage exceptions.",
+    "User accesses manifest management to create optimized vehicle manifests, assign drivers, and track manifest completion.",
+    "Finance users generate invoices, send them automatically via WhatsApp or email, track payments, and reconcile accounts.",
+    "Operations users monitor real-time tracking of shipments, view timelines and maps, and react to exceptions with resolution workflows.",
+    "Warehouse staff use a mobile PWA to scan packages for inbound and outbound processing, updating inventory locations.",
+    "Users explore analytics dashboards with date range selectors, charts, KPI cards, and export reporting.",
+    "System sends automated notifications to customers using templated WhatsApp messages and fallback channels.",
+    "Users switch themes, navigate via command palette and sidebar, with UI components ensuring accessible and responsive interactions."
   ],
   "validation_criteria": [
-    "Dashboard renders KPI cards, shipment pipeline, live activity feed, and interactive charts with real-time data updates.",
-    "Shipment module supports creating, reading, updating, and deleting shipments with barcode scanning validated by camera or USB devices.",
-    "Real-time tracking updates and timeline visualizations reflect shipment movements accurately within a 30-second latency.",
-    "Manifest management enables route optimization, driver assignment, manifest closure, and displays current statuses on maps.",
-    "Invoices are generated in GST-compliant format and can be sent automatically via WhatsApp Business API with payment links.",
-    "Analytics dashboard renders multiple chart types accurately with filterable date ranges and exports data correctly.",
-    "Exception workflows allow categorizing, assigning, and escalating shipment exceptions with proper user notifications and audit logs.",
-    "Authentication enforces role-based access, session expiration, and redirects protected routes for unauthorized access.",
-    "All UI components comply with semantic OKLCH color tokens, accessibility standards (WCAG AA), and responsive design rules.",
-    "Performance metrics show sub-2 second page load times, smooth animations, and efficient resource usage on target browsers.",
-    "Barcode scanning accuracy exceeds 98% with offline queuing and de-duplication.",
-    "Automated and manual testing cover 80% of code base including unit, integration, and E2E tests for critical flows.",
-    "CI/CD pipelines run linting, stylelint checks, and security scans preventing hardcoded color usage and unsafe patterns."
+    "All pages and components use semantic OKLCH color tokens enforced by stylelint and ESLint.",
+    "Core user flows (login, shipment creation, tracking, manifest management) fully operational with >98% scan accuracy and zero data inconsistency.",
+    "Real-time updates function through Supabase Realtime with latency under 500ms for state changes.",
+    "Barcode scanning supports multi-mode input with offline queuing and sync.",
+    "Invoice generation and WhatsApp notifications send successfully with delivery confirmation metrics.",
+    "Charts render accurately with lazy loading and no perceptible lag on datasets up to 10,000 records.",
+    "Accessibility audits confirm WCAG 2.1 AA compliance including keyboard navigation and screen reader support.",
+    "Security measures including RLS and MFA fully enforced with no unauthorized data access detected in testing.",
+    "Performance budgets met: initial JS <50KB, total JS <200KB per dashboard route, page load under 2 seconds on 4G.",
+    "Documentation and coding standards adhered to, including full JSDoc coverage and strict TypeScript use without `any`."
   ],
   "code_summary": {
     "tech_stack": [
@@ -75,6 +66,14 @@
       "TanStack Table",
       "@dnd-kit"
     ],
+    "auth": {
+      "username": "admin@tac.app",
+      "password": "Test@1498",
+      "loginUrl": "/auth/login",
+      "loginButtonSelector": "button[type='submit']",
+      "usernameFieldSelector": "input[name='email']",
+      "passwordFieldSelector": "input[name='password']"
+    },
     "features": [
       {
         "name": "Dashboard Overview (Mission Control)",

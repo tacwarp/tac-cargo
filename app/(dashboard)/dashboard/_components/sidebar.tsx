@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -70,6 +70,13 @@ function NavItem({ href, icon: Icon, children, badge, active }: NavItemProps) {
 
 export function V2Sidebar() {
     const pathname = usePathname();
+    const [isHydrated, setIsHydrated] = useState(false);
+
+    // Prevent hydration mismatch by only rendering Radix components after mount
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setIsHydrated(true);
+    }, []);
 
     const isActive = (path: string) => {
         return pathname === path || pathname?.startsWith(`${path}/`);
@@ -233,47 +240,64 @@ export function V2Sidebar() {
 
             {/* Profile Widget */}
             <div className="p-4 border-t border-sidebar-border bg-sidebar">
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <div className="glass-panel p-2 rounded-lg flex items-center gap-3 cursor-pointer hover:bg-muted/60 transition-colors group">
-                            <div className="w-8 h-8 rounded-md bg-muted border border-border flex items-center justify-center">
-                                <span className="text-xs font-bold text-muted-foreground group-hover:text-foreground">AL</span>
+                {isHydrated ? (
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <div className="glass-panel p-2 rounded-lg flex items-center gap-3 cursor-pointer hover:bg-muted/60 transition-colors group">
+                                <div className="w-8 h-8 rounded-md bg-muted border border-border flex items-center justify-center">
+                                    <span className="text-xs font-bold text-muted-foreground group-hover:text-foreground">AL</span>
+                                </div>
+                                <div className="flex flex-col min-w-0 text-left">
+                                    <span className="text-xs text-foreground font-medium truncate">
+                                        Alex Logistics
+                                    </span>
+                                    <span className="text-[10px] text-muted-foreground truncate">
+                                        Station Chief
+                                    </span>
+                                </div>
+                                <ChevronsUpDown className="ml-auto text-muted-foreground text-xs w-4 h-4" />
                             </div>
-                            <div className="flex flex-col min-w-0 text-left">
-                                <span className="text-xs text-foreground font-medium truncate">
-                                    Alex Logistics
-                                </span>
-                                <span className="text-[10px] text-muted-foreground truncate">
-                                    Station Chief
-                                </span>
-                            </div>
-                            <ChevronsUpDown className="ml-auto text-muted-foreground text-xs w-4 h-4" />
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-[228px]">
+                            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem>
+                                <Users className="mr-2 h-4 w-4" />
+                                <span>Profile</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                                <Settings2 className="mr-2 h-4 w-4" />
+                                <span>Settings</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                                className="text-destructive focus:text-destructive"
+                                onClick={async () => {
+                                    await signOutUser();
+                                    window.location.href = "/auth/login";
+                                }}
+                            >
+                                <LogOut className="mr-2 h-4 w-4" />
+                                <span>Log out</span>
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                ) : (
+                    <div className="glass-panel p-2 rounded-lg flex items-center gap-3 cursor-pointer hover:bg-muted/60 transition-colors group">
+                        <div className="w-8 h-8 rounded-md bg-muted border border-border flex items-center justify-center">
+                            <span className="text-xs font-bold text-muted-foreground group-hover:text-foreground">AL</span>
                         </div>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-[228px]">
-                        <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>
-                            <Users className="mr-2 h-4 w-4" />
-                            <span>Profile</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                            <Settings2 className="mr-2 h-4 w-4" />
-                            <span>Settings</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                            className="text-destructive focus:text-destructive"
-                            onClick={async () => {
-                                await signOutUser();
-                                window.location.href = "/auth/login";
-                            }}
-                        >
-                            <LogOut className="mr-2 h-4 w-4" />
-                            <span>Log out</span>
-                        </DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
+                        <div className="flex flex-col min-w-0 text-left">
+                            <span className="text-xs text-foreground font-medium truncate">
+                                Alex Logistics
+                            </span>
+                            <span className="text-[10px] text-muted-foreground truncate">
+                                Station Chief
+                            </span>
+                        </div>
+                        <ChevronsUpDown className="ml-auto text-muted-foreground text-xs w-4 h-4" />
+                    </div>
+                )}
             </div>
         </aside>
     );

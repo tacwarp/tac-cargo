@@ -12,9 +12,21 @@ export async function updateSession(request: NextRequest) {
   const isApiRoute = pathname.startsWith("/api/");
   const isDashboardRoute = pathname.startsWith("/dashboard");
 
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!supabaseUrl || !supabaseKey) {
+    if (process.env.NODE_ENV === "development") {
+      console.warn("Supabase credentials missing in middleware. Skipping auth check.");
+      return supabaseResponse;
+    }
+    // In production, we can't function without auth, but maybe better to not crash
+    throw new Error("Missing Supabase credentials in middleware");
+  }
+
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    supabaseUrl,
+    supabaseKey,
     {
       cookies: {
         getAll() {

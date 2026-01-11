@@ -7,7 +7,7 @@ import Currency from "currency.js";
 
 // Volumetric factor for different transport modes
 export const VOLUMETRIC_FACTORS = {
-  air: 6000, // kg/m³ - standard air freight
+  air: 5000, // kg/m³ - updated to 5000 as per TAC Enterprise v4.0.0
   surface: 4000, // kg/m³ - surface transport
   express: 5000, // kg/m³ - express delivery
   economy: 4000, // kg/m³ - economy
@@ -72,10 +72,10 @@ export function calculateVolumetricWeight(
 ): number {
   const { length, width, height } = dimensions;
   const factor = VOLUMETRIC_FACTORS[transportMode];
-  
+
   // Convert cm³ to volumetric weight in kg
   const volumetricWeight = (length * width * height) / factor;
-  
+
   return Math.round(volumetricWeight * 100) / 100; // Round to 2 decimals
 }
 
@@ -159,7 +159,7 @@ export function calculateInvoice(
   packages.forEach((pkg) => {
     const qty = pkg.quantity || 1;
     totalActualWeight += pkg.actualWeight * qty;
-    
+
     if (pkg.dimensions) {
       const volWeight = calculateVolumetricWeight(pkg.dimensions, transportMode);
       totalVolumetricWeight += volWeight * qty;
@@ -174,7 +174,7 @@ export function calculateInvoice(
   // Calculate charges
   const freightCharge = calculateFreightCharge(chargeableWeight, ratePerKg);
   const insuranceCharge = charges.insuranceCharge ?? calculateInsuranceCharge(declaredValue);
-  
+
   const fullCharges: ChargeBreakdown = {
     freightCharge,
     pickupCharge: charges.pickupCharge ?? 0,

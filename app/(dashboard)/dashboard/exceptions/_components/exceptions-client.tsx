@@ -246,10 +246,15 @@ export function ExceptionsClient({ initialExceptions, availableShipments = [] }:
                         </div>
                     </div>
                     <div className="flex justify-end gap-2">
-                        <Button variant="outline" onClick={() => setIsCreateOpen(false)}>
+                        <Button variant="outline" onClick={() => setIsCreateOpen(false)} data-testid="cancel-exception-button">
                             Cancel
                         </Button>
-                        <Button onClick={handleCreateException} disabled={isPending || !createForm.shipmentId}>
+                        <Button 
+                            onClick={handleCreateException} 
+                            disabled={isPending || !createForm.shipmentId}
+                            data-testid="create-exception-button"
+                            title={!createForm.shipmentId ? "Please select a shipment first" : "Create exception"}
+                        >
                             {isPending ? "Creating..." : "Create Exception"}
                         </Button>
                     </div>

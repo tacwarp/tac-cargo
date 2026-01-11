@@ -63,7 +63,7 @@ export function AddressAutocomplete({
   // Filter cities based on search
   const filteredCities = useMemo(() => {
     // If search is empty, show priority cities first
-    let cities = citySearch.length === 0 
+    const cities = citySearch.length === 0 
       ? PRIORITY_CITIES 
       : INDIAN_CITIES.filter(
           (city) =>
