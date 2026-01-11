@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 
 export function DispatchList() {
   return (
@@ -11,9 +12,11 @@ export function DispatchList() {
         {/* Item 1 */}
         <div className="bg-card border-border/50 hover:bg-muted/50 group flex cursor-pointer items-center justify-between rounded-2xl border p-4 transition-colors">
           <div className="flex items-center gap-3">
-            <img
+            <Image
               src="https://i.pravatar.cc/100?img=60"
               alt="Liam"
+              width={40}
+              height={40}
               className="h-10 w-10 rounded-full"
             />
             <div>
@@ -28,9 +31,11 @@ export function DispatchList() {
         {/* Item 2 */}
         <div className="bg-card border-border/50 hover:bg-muted/50 group flex cursor-pointer items-center justify-between rounded-2xl border p-4 transition-colors">
           <div className="flex items-center gap-3">
-            <img
+            <Image
               src="https://i.pravatar.cc/100?img=32"
               alt="Mia"
+              width={40}
+              height={40}
               className="h-10 w-10 rounded-full"
             />
             <div>

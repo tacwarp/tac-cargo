@@ -33,13 +33,16 @@ export function ThemeAwareQRCode({
   "aria-label": ariaLabel,
 }: ThemeAwareQRCodeProps) {
   const { resolvedTheme } = useTheme();
-  
+  const [mounted, setMounted] = useState(false);
+  const [colors, setColors] = useState<{ bg: string; fg: string } | null>(() => {
+    // Initialize with default colors
+    return resolvedTheme === "dark"
+      ? { bg: "#0a0a0a", fg: "#fafafa" }
+      : { bg: "#ffffff", fg: "#0a0a0a" };
+  });
+
   const resolveColors = useCallback(() => {
-    if (typeof window === "undefined") {
-      return resolvedTheme === "dark"
-        ? { bg: "#0a0a0a", fg: "#fafafa" }
-        : { bg: "#ffffff", fg: "#0a0a0a" };
-    }
+    if (typeof globalThis === "undefined") return null;
 
     const root = document.documentElement;
     const styles = getComputedStyle(root);
@@ -58,16 +61,22 @@ export function ThemeAwareQRCode({
       : { bg: "#ffffff", fg: "#0a0a0a" };
   }, [resolvedTheme]);
 
-  // Simple hydration check without state
-  const isClient = typeof window !== "undefined";
-  
-  // Resolve colors on each render when client-side
-  const colors = isClient ? resolveColors() : {
-    bg: resolvedTheme === "dark" ? "#0a0a0a" : "#ffffff",
-    fg: resolvedTheme === "dark" ? "#fafafa" : "#0a0a0a"
-  };
+  // Hydration-safe mounting check
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
-  if (!isClient || !colors) {
+  // Update colors when theme changes (only after mounted)
+  useEffect(() => {
+    if (mounted) {
+      const resolved = resolveColors();
+      if (resolved) {
+        setColors(resolved);
+      }
+    }
+  }, [mounted, resolvedTheme, resolveColors]);
+
+  if (!mounted || !colors) {
     return (
       <div
         className={className}

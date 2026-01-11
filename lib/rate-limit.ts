@@ -92,7 +92,7 @@ export const RATE_LIMITS = {
  * @example
  * ```tsx
  * const ip = request.headers.get('x-forwarded-for') || 'unknown'
- * const result = checkRateLimit(ip, RATE_LIMITS.api)
+ * const _result = checkRateLimit(ip, RATE_LIMITS.api)
  *
  * if (!result.success) {
  *   return new Response('Too Many Requests', { status: 429 })
@@ -142,7 +142,7 @@ export function checkRateLimit(
  *
  * @example
  * ```tsx
- * const result = checkRateLimit(ip, config)
+ * const _result = checkRateLimit(ip, config)
  * const headers = getRateLimitHeaders(result)
  * return NextResponse.json(data, { headers })
  * ```
@@ -166,7 +166,7 @@ export function getRateLimitHeaders(
  * @example
  * ```tsx
  * const apiLimiter = createRateLimiter(RATE_LIMITS.api)
- * const result = apiLimiter(clientIp)
+ * const _result = apiLimiter(clientIp)
  * ```
  */
 export function createRateLimiter(config: RateLimitConfig) {

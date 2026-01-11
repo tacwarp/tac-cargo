@@ -181,7 +181,7 @@ const TransactionDatatable = ({ data }: { data: Item[] }) => {
     },
   });
 
-  const { pages, showLeftEllipsis, showRightEllipsis } = usePagination({
+  const { pages, showLeftEllipsis: _showLeftEllipsis, showRightEllipsis: _showRightEllipsis } = usePagination({
     currentPage: table.getState().pagination.pageIndex + 1,
     totalPages: table.getPageCount(),
     paginationItemsToDisplay: 2,
