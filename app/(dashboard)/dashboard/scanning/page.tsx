@@ -1,60 +1,20 @@
-import React from "react";
-import { createClient } from "@/lib/supabase/server";
-import { V2Header } from "../_components/v2-header";
-import { ScannerClient } from "./_components/scanner-client";
-import { normalizeJoin } from "@/lib/utils/normalize-supabase";
+import { PageLayout } from '@/components/dashboard/page-layout'
+import { StatusBadge } from '@/components/dashboard/status-badge'
+import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { ScanIcon } from 'lucide-react'
 
-async function getWarehouses() {
-    const supabase = await createClient();
-    
-    const { data } = await supabase
-        .from("warehouses")
-        .select("id, name, code")
-        .eq("is_active", true)
-        .order("name");
-
-    return data || [];
-}
-
-async function getRecentScans() {
-    const supabase = await createClient();
-    
-    const { data } = await supabase
-        .from("scan_events")
-        .select(`
-            id,
-            scan_type,
-            created_at,
-            shipments(reference, consignee_name, status),
-            profiles(full_name)
-        `)
-        .order("created_at", { ascending: false })
-        .limit(20);
-
-    return (data || []).map(s => ({
-        ...s,
-        shipments: normalizeJoin(s.shipments),
-        profiles: normalizeJoin(s.profiles),
-    }));
-}
-
-export default async function ScanningPage() {
-    const [warehouses, recentScans] = await Promise.all([
-        getWarehouses(),
-        getRecentScans(),
-    ]);
-
-    return (
-        <>
-            <V2Header title="Scanner" section="Operations" />
-            <main className="flex-1 overflow-y-auto p-8 scroll-smooth" id="main-scroll">
-                <div className="max-w-[1200px] mx-auto">
-                    <ScannerClient 
-                        warehouses={warehouses}
-                        initialRecentScans={recentScans}
-                    />
-                </div>
-            </main>
-        </>
-    );
+export default function ScanningPage() {
+  return (
+    <PageLayout title="Barcode Scanner" description="Scan packages for manifest">
+      <Card className="p-8 text-center">
+        <div className="mx-auto flex size-24 items-center justify-center rounded-full bg-muted">
+          <ScanIcon className="size-12 text-muted-foreground" />
+        </div>
+        <h3 className="mt-4 text-lg font-semibold">Ready to Scan</h3>
+        <p className="mt-2 text-sm text-muted-foreground">Click below or use a barcode scanner</p>
+        <Button className="mt-6" size="lg">Start Scanning</Button>
+      </Card>
+    </PageLayout>
+  )
 }
