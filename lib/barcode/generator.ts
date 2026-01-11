@@ -290,6 +290,6 @@ export function generateAWBPackage(options?: {
     invoiceNo,
     awbNo,
     barcodeData,
-    trackingUrl,
+    trackingUrl: _trackingUrl,
   };
 }

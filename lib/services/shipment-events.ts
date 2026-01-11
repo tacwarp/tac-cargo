@@ -135,7 +135,7 @@ async function sendStatusNotifications(
           const emailContent = generateShipmentCreatedEmail({
             awbNo: shipment.reference,
             consigneeName: shipment.consignee_name,
-            trackingUrl,
+            trackingUrl: _trackingUrl,
           });
           await sendEmail({
             to: shipment.consignee_email,
@@ -150,14 +150,14 @@ async function sendStatusNotifications(
             message: generateShipmentSMS({
               awbNo: shipment.reference,
               status,
-              trackingUrl,
+              trackingUrl: _trackingUrl,
             }),
           });
 
           await sendWhatsAppTemplate({
             to: shipment.consignee_phone,
             templateName: WHATSAPP_TEMPLATES.SHIPMENT_BOOKED,
-            templateParams: [shipment.reference, trackingUrl],
+            templateParams: [shipment.reference, _trackingUrl],
           });
         }
         break;
@@ -169,7 +169,7 @@ async function sendStatusNotifications(
             message: generateShipmentSMS({
               awbNo: shipment.reference,
               status,
-              trackingUrl,
+              trackingUrl: _trackingUrl,
             }),
           });
 
@@ -202,7 +202,7 @@ async function sendStatusNotifications(
             message: generateShipmentSMS({
               awbNo: shipment.reference,
               status,
-              trackingUrl,
+              trackingUrl: _trackingUrl,
             }),
           });
 
@@ -232,7 +232,7 @@ async function sendStatusNotifications(
           await sendWhatsAppTemplate({
             to: shipment.consignee_phone,
             templateName: WHATSAPP_TEMPLATES.EXCEPTION,
-            templateParams: [shipment.reference, trackingUrl],
+            templateParams: [shipment.reference, _trackingUrl],
           });
         }
         break;
