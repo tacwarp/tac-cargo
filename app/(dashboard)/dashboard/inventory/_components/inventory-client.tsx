@@ -57,7 +57,7 @@ export function InventoryClient({ warehouses, initialInventory }: InventoryClien
     const [inventory] = useState(initialInventory);
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedWarehouse, setSelectedWarehouse] = useState<string>("all");
-    const [isPending, startTransition] = useTransition();
+    const [, startTransition] = useTransition();
 
     // Group inventory by warehouse
     const warehouseGroups = warehouses.map((warehouse) => {

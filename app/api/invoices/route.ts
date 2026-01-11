@@ -87,7 +87,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
 
     // Extract packages from the request
-    const { packages, sendWhatsApp, sendEmail, printLabel, ...invoiceFields } =
+    const { packages, ...invoiceFields } =
       body;
 
     // Map frontend field names to database column names

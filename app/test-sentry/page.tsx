@@ -43,7 +43,7 @@ export default function TestSentryPage() {
       }
       const data = await response.json();
       alert(data.message || "Server error triggered!");
-    } catch (error) {
+    } catch {
       alert("Server error captured! Check Sentry dashboard.");
     }
   };
@@ -55,7 +55,7 @@ export default function TestSentryPage() {
         name: "Test Performance Transaction",
         op: "test.performance",
       },
-      async (span) => {
+      async () => {
         try {
           // Simulate some work
           await Sentry.startSpan(
