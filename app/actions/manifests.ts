@@ -381,6 +381,159 @@ export async function listManifests(options?: {
 }
 
 /**
+ * Unlock manifest (allow edits again) - only for locked, not dispatched
+ */
+export async function unlockManifest(
+  manifestId: string
+): Promise<ActionResult<Manifest>> {
+  try {
+    const supabase = await createClient();
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) {
+      return error("Unauthorized", "UNAUTHORIZED");
+    }
+
+    const { data, error: dbError } = await supabase
+      .from("manifests")
+      .update({ status: "open", updated_at: new Date().toISOString() })
+      .eq("id", manifestId)
+      .eq("status", "locked")
+      .select()
+      .single();
+
+    if (dbError) {
+      return error("Cannot unlock manifest - it may be dispatched already", "CONFLICT");
+    }
+
+    revalidatePath("/dashboard/manifests");
+    revalidatePath(`/dashboard/manifests/${manifestId}`);
+    return success(data as Manifest, "Manifest unlocked");
+  } catch (err) {
+    console.error("Unlock manifest error:", err);
+    return error("Internal server error", "INTERNAL_ERROR");
+  }
+}
+
+/**
+ * Mark manifest as arrived at destination
+ */
+export async function arriveManifest(
+  manifestId: string
+): Promise<ActionResult<Manifest>> {
+  try {
+    const supabase = await createClient();
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) {
+      return error("Unauthorized", "UNAUTHORIZED");
+    }
+
+    const { data, error: dbError } = await supabase
+      .from("manifests")
+      .update({
+        status: "arrived",
+        actual_arrival: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", manifestId)
+      .eq("status", "dispatched")
+      .select()
+      .single();
+
+    if (dbError) {
+      return error("Manifest must be dispatched first", "CONFLICT");
+    }
+
+    // Update shipments to at_destination_hub
+    const { error: shipmentsError } = await supabase
+      .from("shipments")
+      .update({ status: "at_destination_hub", updated_at: new Date().toISOString() })
+      .eq("manifest_id", manifestId);
+
+    if (shipmentsError) {
+      console.error("Failed to update shipments:", shipmentsError);
+    }
+
+    // Create tracking events
+    const { data: shipments } = await supabase
+      .from("shipments")
+      .select("id")
+      .eq("manifest_id", manifestId);
+
+    if (shipments && shipments.length > 0) {
+      const trackingEvents = shipments.map((s) => ({
+        shipment_id: s.id,
+        status: "at_destination_hub" as const,
+        description: `Arrived at destination hub via manifest ${(data as Manifest).manifest_number}`,
+        is_public: true,
+      }));
+
+      await supabase.from("tracking_events").insert(trackingEvents);
+    }
+
+    revalidatePath("/dashboard/manifests");
+    revalidatePath("/dashboard/shipments");
+    revalidatePath(`/dashboard/manifests/${manifestId}`);
+    return success(data as Manifest, "Manifest arrived at destination");
+  } catch (err) {
+    console.error("Arrive manifest error:", err);
+    return error("Internal server error", "INTERNAL_ERROR");
+  }
+}
+
+/**
+ * Remove shipment from manifest
+ */
+export async function removeShipmentFromManifest(
+  manifestId: string,
+  shipmentId: string
+): Promise<ActionResult<{ shipmentId: string }>> {
+  try {
+    const supabase = await createClient();
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) {
+      return error("Unauthorized", "UNAUTHORIZED");
+    }
+
+    // Check manifest is editable
+    const { data: manifest } = await supabase
+      .from("manifests")
+      .select("status")
+      .eq("id", manifestId)
+      .single();
+
+    if (!manifest || (manifest.status !== "draft" && manifest.status !== "open")) {
+      return error("Cannot modify locked or dispatched manifest", "CONFLICT");
+    }
+
+    const { error: updateError } = await supabase
+      .from("shipments")
+      .update({ manifest_id: null, updated_at: new Date().toISOString() })
+      .eq("id", shipmentId)
+      .eq("manifest_id", manifestId);
+
+    if (updateError) {
+      return error("Failed to remove shipment", "DATABASE_ERROR");
+    }
+
+    revalidatePath("/dashboard/manifests");
+    revalidatePath(`/dashboard/manifests/${manifestId}`);
+    return success({ shipmentId }, "Shipment removed from manifest");
+  } catch (err) {
+    console.error("Remove shipment error:", err);
+    return error("Internal server error", "INTERNAL_ERROR");
+  }
+}
+
+/**
  * Complete manifest (all shipments delivered)
  */
 export async function completeManifest(

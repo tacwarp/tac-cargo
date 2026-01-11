@@ -2,7 +2,6 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { createClient } from "@/lib/supabase/client";
 import type { Database } from "@/lib/supabase/types";
 
-type Invoice = Database["public"]["Tables"]["invoices"]["Row"];
 type NewInvoice = Database["public"]["Tables"]["invoices"]["Insert"];
 
 /**

@@ -17,7 +17,8 @@ import {
     DialogContent,
     DialogHeader,
     DialogTitle,
-    DialogTrigger
+    DialogTrigger,
+    DialogDescription,
 } from "@/components/ui/dialog";
 import {
     DropdownMenu,
@@ -78,9 +79,10 @@ interface ManifestsClientProps {
 
 const statusConfig: Record<ManifestStatus, { label: string; color: string; icon: React.ElementType }> = {
     draft: { label: "Draft", color: "bg-muted text-muted-foreground border-border", icon: FileText },
-    open: { label: "Open", color: "bg-primary/10 text-primary border-primary/20", icon: Package },
-    locked: { label: "Locked", color: "bg-warning/10 text-warning border-warning/20", icon: Lock },
+    finalized: { label: "Finalized", color: "bg-warning/10 text-warning border-warning/20", icon: Lock },
     dispatched: { label: "Dispatched", color: "bg-primary/10 text-primary border-primary/20", icon: Truck },
+    in_transit: { label: "In Transit", color: "bg-primary/10 text-primary border-primary/20", icon: Truck },
+    arrived: { label: "Arrived", color: "bg-primary/10 text-primary border-primary/20", icon: Package },
     completed: { label: "Completed", color: "bg-success/10 text-success border-success/20", icon: CheckCircle },
 };
 
@@ -94,16 +96,16 @@ export function ManifestsClient({
     const [isCreateOpen, setIsCreateOpen] = useState(false);
     const [isPending, startTransition] = useTransition();
 
-    const draftManifests = manifests.filter(m => m.status === "draft" || m.status === "open");
-    const lockedManifests = manifests.filter(m => m.status === "locked");
-    const dispatchedManifests = manifests.filter(m => m.status === "dispatched" || m.status === "completed");
+    const draftManifests = manifests.filter(m => m.status === "draft");
+    const finalizedManifests = manifests.filter(m => m.status === "finalized");
+    const dispatchedManifests = manifests.filter(m => m.status === "dispatched" || m.status === "in_transit" || m.status === "arrived" || m.status === "completed");
 
     const handleLock = async (manifestId: string) => {
         startTransition(async () => {
             const result = await lockManifest(manifestId);
             if (result.success) {
                 setManifests(prev =>
-                    prev.map(m => m.id === manifestId ? { ...m, status: "locked" as ManifestStatus } : m)
+                    prev.map(m => m.id === manifestId ? { ...m, status: "finalized" as ManifestStatus } : m)
                 );
                 toast.success("Manifest locked");
             } else {
@@ -157,6 +159,9 @@ export function ManifestsClient({
                     <DialogContent>
                         <DialogHeader>
                             <DialogTitle>Create Manifest</DialogTitle>
+                            <DialogDescription>
+                                Fill in the details below to create a new manifest for shipping.
+                            </DialogDescription>
                         </DialogHeader>
                         <CreateManifestForm
                             warehouses={warehouses}
@@ -233,17 +238,17 @@ export function ManifestsClient({
                     <div className="flex items-center justify-between px-1 mb-2">
                         <span className="text-xs font-bold text-warning uppercase tracking-widest">Locked</span>
                         <span className="text-[10px] font-mono bg-warning/10 px-2 py-0.5 rounded text-warning">
-                            {lockedManifests.length}
+                            {finalizedManifests.length}
                         </span>
                     </div>
 
-                    {lockedManifests.length === 0 ? (
+                    {finalizedManifests.length === 0 ? (
                         <div className="h-32 flex items-center justify-center border-2 border-dashed border-border rounded-lg">
                             <span className="text-xs text-muted-foreground">No locked manifests</span>
                         </div>
                     ) : (
                         <div className="space-y-3 max-h-[60vh] overflow-y-auto">
-                            {lockedManifests.map((manifest) => (
+                            {finalizedManifests.map((manifest) => (
                                 <ManifestCard
                                     key={manifest.id}
                                     manifest={manifest}
@@ -305,7 +310,7 @@ function ManifestCard({
     return (
         <div className={cn(
             "p-4 bg-card border rounded-lg transition-all",
-            manifest.status === "locked" ? "border-warning/20" :
+            manifest.status === "finalized" ? "border-warning/20" :
                 manifest.status === "dispatched" ? "border-primary/20" :
                     "border-border hover:border-primary/50"
         )}>
@@ -323,13 +328,13 @@ function ManifestCard({
                         </button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                        {manifest.status === "draft" || manifest.status === "open" ? (
+                        {manifest.status === "draft" ? (
                             <DropdownMenuItem onClick={() => onLock(manifest.id)}>
                                 <Lock className="w-4 h-4 mr-2" />
                                 Lock Manifest
                             </DropdownMenuItem>
                         ) : null}
-                        {manifest.status === "locked" && (
+                        {manifest.status === "finalized" && (
                             <DropdownMenuItem onClick={() => onDispatch(manifest.id)}>
                                 <Truck className="w-4 h-4 mr-2" />
                                 Dispatch

@@ -54,20 +54,20 @@ export async function createShipment(
       .from("shipments")
       .insert({
         reference,
-        customer_id: parsed.data.customer_id,
+        customer_id: parsed.data.customer_id || null,
         consignee_name: parsed.data.consignee_name,
         consignee_phone: parsed.data.consignee_phone,
         consignee_email: parsed.data.consignee_email || null,
         consignee_address: parsed.data.consignee_address,
-        // consignee_city: parsed.data.consignee_city, // Column removed from DB
+        consignee_city: parsed.data.consignee_city,
         consignee_state: parsed.data.consignee_state,
         consignee_pincode: parsed.data.consignee_pincode,
-        origin_warehouse_id: parsed.data.origin_warehouse_id,
-        destination_warehouse_id: parsed.data.destination_warehouse_id,
+        origin_warehouse_id: parsed.data.origin_warehouse_id || null,
+        destination_warehouse_id: parsed.data.destination_warehouse_id || null,
         transport_mode: parsed.data.transport_mode,
-        service_level_id: parsed.data.service_level_id,
-        weight_kg: parsed.data.weight_kg,
-        pieces: parsed.data.pieces,
+        service_level_id: parsed.data.service_level_id || null,
+        weight_kg: parsed.data.weight_kg || null,
+        pieces: parsed.data.pieces || 1,
         declared_value: parsed.data.declared_value || null,
         notes: parsed.data.notes || null,
         status: "pending",
@@ -282,6 +282,38 @@ export async function getShipmentByReference(
 }
 
 /**
+ * Cancel/Delete shipment
+ */
+export async function cancelShipment(shipmentId: string): Promise<ActionResult<void>> {
+  try {
+    const supabase = await createClient();
+
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      return error("Unauthorized", "UNAUTHORIZED");
+    }
+
+    const { error: updateError } = await supabase
+      .from("shipments")
+      .update({ 
+        status: "cancelled",
+        updated_at: new Date().toISOString() 
+      })
+      .eq("id", shipmentId);
+
+    if (updateError) {
+      return error("Failed to cancel shipment", "DATABASE_ERROR");
+    }
+
+    revalidatePath("/dashboard/shipments");
+    return success(undefined, "Shipment cancelled successfully");
+  } catch (err) {
+    console.error("Cancel shipment error:", err);
+    return error("Internal server error", "INTERNAL_ERROR");
+  }
+}
+
+/**
  * Search shipments
  */
 export async function searchShipments(
@@ -308,8 +340,10 @@ export async function searchShipments(
       .limit(options?.limit || 50);
 
     if (query) {
+      // Sanitize query to prevent SQL injection via pattern characters
+      const sanitizedQuery = query.replace(/[%_\\]/g, "\\$&");
       queryBuilder = queryBuilder.or(
-        `reference.ilike.%${query}%,consignee_name.ilike.%${query}%,consignee_phone.ilike.%${query}%`
+        `reference.ilike.%${sanitizedQuery}%,consignee_name.ilike.%${sanitizedQuery}%,consignee_phone.ilike.%${sanitizedQuery}%`
       );
     }
 
@@ -326,6 +360,172 @@ export async function searchShipments(
     return success((data || []) as Shipment[]);
   } catch (err) {
     console.error("Search shipments error:", err);
+    return error("Internal server error", "INTERNAL_ERROR");
+  }
+}
+
+/**
+ * Bulk update shipment status
+ */
+export async function bulkUpdateStatus(
+  shipmentIds: string[],
+  status: ShipmentStatus,
+  notes?: string
+): Promise<ActionResult<{ updated: number; failed: number }>> {
+  try {
+    const supabase = await createClient();
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) {
+      return error("Unauthorized", "UNAUTHORIZED");
+    }
+
+    if (!shipmentIds.length) {
+      return error("No shipments selected", "VALIDATION_ERROR");
+    }
+
+    // Update all shipments
+    const { data, error: dbError } = await supabase
+      .from("shipments")
+      .update({ status, updated_at: new Date().toISOString() })
+      .in("id", shipmentIds)
+      .select("id");
+
+    if (dbError) {
+      return error("Failed to update shipments", "DATABASE_ERROR");
+    }
+
+    const updatedCount = data?.length || 0;
+
+    // Create tracking events for all updated shipments
+    if (updatedCount > 0) {
+      const trackingEvents = (data || []).map((s) => ({
+        shipment_id: s.id,
+        status,
+        description: notes || `Bulk status update to ${status}`,
+        is_public: true,
+      }));
+
+      await supabase.from("tracking_events").insert(trackingEvents);
+    }
+
+    revalidatePath("/dashboard/shipments");
+    revalidatePath("/dashboard/tracking");
+
+    return success(
+      { updated: updatedCount, failed: shipmentIds.length - updatedCount },
+      `Updated ${updatedCount} shipments`
+    );
+  } catch (err) {
+    console.error("Bulk update error:", err);
+    return error("Internal server error", "INTERNAL_ERROR");
+  }
+}
+
+/**
+ * Bulk assign shipments to manifest
+ */
+export async function bulkAssignToManifest(
+  shipmentIds: string[],
+  manifestId: string
+): Promise<ActionResult<{ assigned: number; failed: number; errors: string[] }>> {
+  try {
+    const supabase = await createClient();
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) {
+      return error("Unauthorized", "UNAUTHORIZED");
+    }
+
+    // Check manifest status
+    const { data: manifest } = await supabase
+      .from("manifests")
+      .select("status, manifest_number")
+      .eq("id", manifestId)
+      .single();
+
+    if (!manifest) {
+      return error("Manifest not found", "NOT_FOUND");
+    }
+
+    if (manifest.status !== "open" && manifest.status !== "draft") {
+      return error("Manifest is locked or dispatched", "CONFLICT");
+    }
+
+    let assignedCount = 0;
+    const errors: string[] = [];
+
+    for (const shipmentId of shipmentIds) {
+      const { error: updateError } = await supabase
+        .from("shipments")
+        .update({ manifest_id: manifestId, updated_at: new Date().toISOString() })
+        .eq("id", shipmentId)
+        .is("manifest_id", null);
+
+      if (updateError) {
+        errors.push(`${shipmentId}: ${updateError.message}`);
+      } else {
+        assignedCount++;
+      }
+    }
+
+    revalidatePath("/dashboard/shipments");
+    revalidatePath("/dashboard/manifests");
+    revalidatePath(`/dashboard/manifests/${manifestId}`);
+
+    return success(
+      { assigned: assignedCount, failed: errors.length, errors },
+      `Assigned ${assignedCount} shipments to manifest ${manifest.manifest_number}`
+    );
+  } catch (err) {
+    console.error("Bulk assign error:", err);
+    return error("Internal server error", "INTERNAL_ERROR");
+  }
+}
+
+/**
+ * Bulk delete (cancel) shipments
+ */
+export async function bulkDeleteShipments(
+  shipmentIds: string[]
+): Promise<ActionResult<{ deleted: number; failed: number }>> {
+  try {
+    const supabase = await createClient();
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) {
+      return error("Unauthorized", "UNAUTHORIZED");
+    }
+
+    // Only cancel shipments that are not in transit or delivered
+    const { data, error: dbError } = await supabase
+      .from("shipments")
+      .update({ status: "cancelled", updated_at: new Date().toISOString() })
+      .in("id", shipmentIds)
+      .is("manifest_id", null)
+      .not("status", "in", '("in_transit","delivered")')
+      .select("id");
+
+    if (dbError) {
+      return error("Failed to delete shipments", "DATABASE_ERROR");
+    }
+
+    const deletedCount = data?.length || 0;
+
+    revalidatePath("/dashboard/shipments");
+
+    return success(
+      { deleted: deletedCount, failed: shipmentIds.length - deletedCount },
+      `Cancelled ${deletedCount} shipments`
+    );
+  } catch (err) {
+    console.error("Bulk delete error:", err);
     return error("Internal server error", "INTERNAL_ERROR");
   }
 }

@@ -2,7 +2,21 @@ import React from "react";
 import { createClient } from "@/lib/supabase/server";
 import { V2Header } from "../_components/v2-header";
 import { ExceptionsClient } from "./_components/exceptions-client";
-import { normalizeJoin } from "@/lib/utils/normalize-supabase";
+import { normalizeJoinSingle } from "@/lib/utils";
+
+async function getAvailableShipments() {
+    const supabase = await createClient();
+    
+    // Get shipments that can be marked as exceptions (in transit, out for delivery, picked up)
+    const { data } = await supabase
+        .from("shipments")
+        .select("id, reference, consignee_name, consignee_city, status")
+        .in("status", ["in_transit", "out_for_delivery", "picked_up", "pending"])
+        .order("created_at", { ascending: false })
+        .limit(100);
+
+    return data || [];
+}
 
 async function getExceptions() {
     const supabase = await createClient();
@@ -47,10 +61,16 @@ async function getExceptions() {
         .limit(20);
 
     // Normalize and combine into exceptions with type
-    const normalizeShipment = (s: typeof failedShipments extends (infer T)[] | null ? T : never) => ({
-        ...s,
-        origin_warehouse: normalizeJoin(s.origin_warehouse),
-        destination_warehouse: normalizeJoin(s.destination_warehouse),
+    type RawShipment = NonNullable<typeof failedShipments>[number];
+    const normalizeShipment = (s: RawShipment) => ({
+        id: s.id,
+        reference: s.reference,
+        status: s.status,
+        consignee_name: s.consignee_name,
+        consignee_city: s.consignee_city,
+        updated_at: s.updated_at,
+        origin_warehouse: normalizeJoinSingle(s.origin_warehouse),
+        destination_warehouse: normalizeJoinSingle(s.destination_warehouse),
     });
     
     const exceptions = [
@@ -62,14 +82,20 @@ async function getExceptions() {
 }
 
 export default async function ExceptionsPage() {
-    const exceptions = await getExceptions();
+    const [exceptions, availableShipments] = await Promise.all([
+        getExceptions(),
+        getAvailableShipments(),
+    ]);
 
     return (
         <>
             <V2Header title="Exceptions" section="Ops Control" />
             <main className="flex-1 overflow-y-auto p-6 scroll-smooth" id="main-scroll">
                 <div className="max-w-6xl mx-auto">
-                    <ExceptionsClient initialExceptions={exceptions} />
+                    <ExceptionsClient 
+                        initialExceptions={exceptions} 
+                        availableShipments={availableShipments}
+                    />
                 </div>
             </main>
         </>

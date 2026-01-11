@@ -74,6 +74,7 @@ export function TrackingSection() {
             <div className="mb-8 flex justify-center">
               <Tabs
                 defaultValue="gps"
+                value={trackingMode}
                 onValueChange={(v: string) =>
                   setTrackingMode(v as "gps" | "custody")
                 }
@@ -170,12 +171,12 @@ export function TrackingSection() {
             transition={{ delay: 0.6 }}
             className="mt-8 text-center"
           >
-            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-4 py-1.5 backdrop-blur-sm">
+            <div className="inline-flex items-center gap-2 rounded-full border border-success/20 bg-success/10 px-4 py-1.5 backdrop-blur-sm">
               <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-75" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-success" />
               </span>
-              <span className="font-mono text-[10px] font-semibold tracking-widest text-emerald-500">
+              <span className="font-mono text-[10px] font-semibold tracking-widest text-success">
                 SATELLITE UPLINK ACTIVE
               </span>
             </div>

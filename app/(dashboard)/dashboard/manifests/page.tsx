@@ -2,7 +2,7 @@ import React from "react";
 import { createClient } from "@/lib/supabase/server";
 import { V2Header } from "../_components/v2-header";
 import { ManifestsClient } from "./_components/manifests-client";
-import { normalizeJoin } from "@/lib/utils/normalize-supabase";
+import { normalizeJoinSingle } from "@/lib/utils";
 
 async function getManifests() {
     const supabase = await createClient();
@@ -38,8 +38,8 @@ async function getManifests() {
 
     return data.map(m => ({
         ...m,
-        origin_warehouse: normalizeJoin(m.origin_warehouse),
-        destination_warehouse: normalizeJoin(m.destination_warehouse),
+        origin_warehouse: normalizeJoinSingle(m.origin_warehouse),
+        destination_warehouse: normalizeJoinSingle(m.destination_warehouse),
     }));
 }
 
@@ -65,8 +65,8 @@ async function getUnassignedShipments() {
 
     return (data || []).map(s => ({
         ...s,
-        origin_warehouse: normalizeJoin(s.origin_warehouse),
-        destination_warehouse: normalizeJoin(s.destination_warehouse),
+        origin_warehouse: normalizeJoinSingle(s.origin_warehouse),
+        destination_warehouse: normalizeJoinSingle(s.destination_warehouse),
     }));
 }
 

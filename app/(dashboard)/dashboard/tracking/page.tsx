@@ -2,7 +2,7 @@ import React from "react";
 import { createClient } from "@/lib/supabase/server";
 import { V2Header } from "../_components/v2-header";
 import { TrackingClient } from "./_components/tracking-client";
-import { normalizeJoin } from "@/lib/utils/normalize-supabase";
+import { normalizeJoinSingle } from "@/lib/utils";
 
 async function getTrackingStats() {
     const supabase = await createClient();
@@ -66,9 +66,9 @@ async function getShipmentsByStatus(status?: string) {
     const { data } = await query;
     return (data || []).map(s => ({
         ...s,
-        origin_warehouse: normalizeJoin(s.origin_warehouse),
-        destination_warehouse: normalizeJoin(s.destination_warehouse),
-        manifests: normalizeJoin(s.manifests),
+        origin_warehouse: normalizeJoinSingle(s.origin_warehouse),
+        destination_warehouse: normalizeJoinSingle(s.destination_warehouse),
+        manifests: normalizeJoinSingle(s.manifests),
     }));
 }
 

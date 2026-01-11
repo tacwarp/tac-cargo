@@ -50,7 +50,7 @@ export function NavUser({
   const handleSignOut = async () => {
     // Use robust sign-out with forced local cleanup
     // This prevents authentication state inconsistency even if server sign-out fails
-    const result = await signOutUser();
+    await signOutUser();
 
     // Always redirect to login regardless of result
     // Local cleanup is guaranteed to have been performed

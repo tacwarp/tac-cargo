@@ -2,7 +2,7 @@ import React from "react";
 import { createClient } from "@/lib/supabase/server";
 import { V2Header } from "../_components/v2-header";
 import { ShipmentsTableClient } from "./_components/shipments-table-client";
-import { normalizeJoin } from "@/lib/utils/normalize-supabase";
+import { normalizeJoinSingle } from "@/lib/utils";
 
 async function getShipments() {
     const supabase = await createClient();
@@ -41,11 +41,10 @@ async function getShipments() {
     // Normalize joined relations
     return data.map(s => ({
         ...s,
-        origin_warehouse: normalizeJoin(s.origin_warehouse),
-        destination_warehouse: normalizeJoin(s.destination_warehouse),
-        customers: normalizeJoin(s.customers),
+        origin_warehouse: normalizeJoinSingle(s.origin_warehouse),
+        destination_warehouse: normalizeJoinSingle(s.destination_warehouse),
+        customers: normalizeJoinSingle(s.customers),
         manifests: null,
-
     }));
 }
 

@@ -16,6 +16,7 @@ import { GlassPanel } from "../../_components/glass-panel";
 import {
     Dialog,
     DialogContent,
+    DialogDescription,
     DialogHeader,
     DialogTitle,
     DialogTrigger
@@ -128,6 +129,7 @@ export function CustomersClient({ initialCustomers, stats }: CustomersClientProp
                         <DialogContent className="max-w-lg">
                             <DialogHeader>
                                 <DialogTitle>Add Customer</DialogTitle>
+                                <DialogDescription>Fill in the details below to add a new customer.</DialogDescription>
                             </DialogHeader>
                             <CreateCustomerForm
                                 onSuccess={(newCustomer) => {

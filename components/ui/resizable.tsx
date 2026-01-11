@@ -22,8 +22,6 @@ const ResizablePanelGroup = ({
 const ResizablePanel = ({
     className,
     defaultSize,
-    minSize,
-    maxSize,
     ...props
 }: React.HTMLAttributes<HTMLDivElement> & {
     defaultSize?: number;

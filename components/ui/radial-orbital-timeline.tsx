@@ -33,11 +33,11 @@ export default function RadialOrbitalTimeline({
   const [expandedItems, setExpandedItems] = useState<Record<number, boolean>>(
     {},
   );
-  const [viewMode, setViewMode] = useState<"orbital">("orbital");
+  const [viewMode] = useState<"orbital">("orbital");
   const [rotationAngle, setRotationAngle] = useState<number>(0);
   const [autoRotate, setAutoRotate] = useState<boolean>(true);
   const [pulseEffect, setPulseEffect] = useState<Record<number, boolean>>({});
-  const [centerOffset, setCenterOffset] = useState<{ x: number; y: number }>({
+  const [centerOffset] = useState<{ x: number; y: number }>({
     x: 0,
     y: 0,
   });
@@ -221,9 +221,8 @@ export default function RadialOrbitalTimeline({
               >
                 {/* Energy Field */}
                 <div
-                  className={`absolute -inset-1 rounded-full ${
-                    isPulsing ? "animate-pulse duration-1000" : ""
-                  }`}
+                  className={`absolute -inset-1 rounded-full ${isPulsing ? "animate-pulse duration-1000" : ""
+                    }`}
                   style={{
                     background: `radial-gradient(circle, rgba(var(--primary),0.1) 0%, rgba(255,255,255,0) 70%)`,
                     width: `${item.energy * 0.5 + 40}px`,

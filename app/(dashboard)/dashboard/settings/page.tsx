@@ -2,7 +2,7 @@ import React from "react";
 import { createClient } from "@/lib/supabase/server";
 import { V2Header } from "../_components/v2-header";
 import { SettingsClient } from "./_components/settings-client";
-import { normalizeJoin } from "@/lib/utils/normalize-supabase";
+import { normalizeJoinSingle } from "@/lib/utils";
 
 async function getUserProfile() {
     const supabase = await createClient();
@@ -31,8 +31,8 @@ async function getUserProfile() {
 
     return {
         ...profile,
-        warehouses: normalizeJoin(profile.warehouses),
-        organizations: normalizeJoin(profile.organizations),
+        warehouses: normalizeJoinSingle(profile.warehouses),
+        organizations: normalizeJoinSingle(profile.organizations),
     };
 }
 

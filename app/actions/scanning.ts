@@ -35,7 +35,7 @@ const scanToStatusMap: Record<ScanType, ShipmentStatus> = {
   manifest_unload: "in_transit",
   out_for_delivery: "out_for_delivery",
   delivered: "delivered",
-  failed_delivery: "failed",
+  failed_delivery: "exception",
   returned: "returned",
 };
 

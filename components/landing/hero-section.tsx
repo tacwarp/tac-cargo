@@ -34,12 +34,13 @@ export function HeroSection() {
           src="/images/tac-hero-bg.jpeg"
           alt="TAC Cargo Logistics Network"
           fill
-          className="object-cover opacity-20 opacity-40 contrast-125 grayscale-[20%] saturate-50 dark:opacity-40"
+          className="object-cover opacity-40 contrast-125 grayscale-[20%] saturate-50 dark:opacity-40"
           priority
         />
         <div className="from-background via-background/60 absolute inset-0 bg-gradient-to-t to-transparent" />
-        <div className="bg-grid-white/[0.02] dark:bg-grid-white/[0.02] bg-grid-black/[0.05] absolute inset-0 bg-[size:32px_32px]" />
+        <div className="bg-grid absolute inset-0 opacity-20" />
       </div>
+
 
       <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-8">

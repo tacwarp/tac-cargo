@@ -4,27 +4,28 @@
  */
 
 export type ShipmentStatus =
-  | "pending"
+  | "booked"
   | "picked_up"
+  | "at_origin_hub"
   | "in_transit"
+  | "at_destination_hub"
   | "out_for_delivery"
   | "delivered"
-  | "failed"
+  | "exception"
   | "returned"
   | "cancelled";
 
-export type ManifestStatus = "draft" | "open" | "locked" | "dispatched" | "completed";
+export type ManifestStatus = "draft" | "finalized" | "dispatched" | "in_transit" | "arrived" | "completed";
 
 export type InvoiceType = "label" | "customer";
 
 export type InvoiceStatus =
   | "draft"
-  | "generated"
-  | "sent"
+  | "pending"
   | "paid"
+  | "partial"
   | "overdue"
-  | "cancelled"
-  | "generation_failed";
+  | "cancelled";
 
 export type TransportMode = "air" | "surface" | "express" | "economy";
 

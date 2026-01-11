@@ -10,7 +10,8 @@ import {
     Clock,
     ArrowRight,
     MoreHorizontal,
-    RefreshCw
+    RefreshCw,
+    MapPin
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { GlassPanel } from "../../_components/glass-panel";
@@ -23,6 +24,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 import { getTrackingInfo, markAsDelivered } from "@/app/actions/tracking";
+import { StatusPipeline } from "@/components/dashboard/status-pipeline";
+import { IllustratedEmptyState } from "@/components/dashboard/illustrated-empty-state";
 import type { ShipmentStatus } from "@/types/database";
 
 interface TrackingStats {
@@ -55,12 +58,14 @@ interface TrackingClientProps {
 }
 
 const statusConfig: Record<ShipmentStatus, { label: string; color: string; bgColor: string; icon: React.ElementType }> = {
-    pending: { label: "Pending", color: "text-muted-foreground", bgColor: "bg-muted", icon: Clock },
+    booked: { label: "Booked", color: "text-muted-foreground", bgColor: "bg-muted", icon: Clock },
     picked_up: { label: "Picked Up", color: "text-primary", bgColor: "bg-primary/10", icon: Package },
+    at_origin_hub: { label: "At Origin Hub", color: "text-primary", bgColor: "bg-primary/10", icon: Package },
     in_transit: { label: "In Transit", color: "text-primary", bgColor: "bg-primary/10", icon: Truck },
+    at_destination_hub: { label: "At Destination Hub", color: "text-primary", bgColor: "bg-primary/10", icon: Package },
     out_for_delivery: { label: "Out for Delivery", color: "text-warning", bgColor: "bg-warning/10", icon: Truck },
     delivered: { label: "Delivered", color: "text-success", bgColor: "bg-success/10", icon: CheckCircle },
-    failed: { label: "Failed", color: "text-destructive", bgColor: "bg-destructive/10", icon: AlertCircle },
+    exception: { label: "Exception", color: "text-destructive", bgColor: "bg-destructive/10", icon: AlertCircle },
     returned: { label: "Returned", color: "text-warning", bgColor: "bg-warning/10", icon: RefreshCw },
     cancelled: { label: "Cancelled", color: "text-muted-foreground", bgColor: "bg-muted", icon: Clock },
 };
@@ -125,16 +130,21 @@ export function TrackingClient({ stats, initialShipments }: Readonly<TrackingCli
 
     return (
         <div className="space-y-6">
-            {/* Stats Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
-                <StatCard label="Pending" value={stats.pending} color="text-muted-foreground" />
-                <StatCard label="Picked Up" value={stats.pickedUp} color="text-primary" />
-                <StatCard label="In Transit" value={stats.inTransit} color="text-primary" />
-                <StatCard label="Out for Delivery" value={stats.outForDelivery} color="text-warning" />
-                <StatCard label="Delivered" value={stats.delivered} color="text-success" />
-                <StatCard label="Failed" value={stats.failed} color="text-destructive" />
-                <StatCard label="Delayed" value={stats.delayed} color="text-destructive" highlight />
-            </div>
+            {/* Status Pipeline */}
+            <GlassPanel className="p-4">
+                <StatusPipeline
+                    stages={[
+                        { id: "pending", label: "Pending", count: stats.pending, icon: Clock, color: "text-slate-500 bg-slate-500/10" },
+                        { id: "picked_up", label: "Picked Up", count: stats.pickedUp, icon: Package, color: "text-blue-500 bg-blue-500/10" },
+                        { id: "in_transit", label: "In Transit", count: stats.inTransit, icon: Truck, color: "text-amber-500 bg-amber-500/10" },
+                        { id: "out_for_delivery", label: "Out for Delivery", count: stats.outForDelivery, icon: MapPin, color: "text-purple-500 bg-purple-500/10" },
+                        { id: "delivered", label: "Delivered", count: stats.delivered, icon: CheckCircle, color: "text-emerald-500 bg-emerald-500/10" },
+                        { id: "failed", label: "Failed", count: stats.failed, icon: AlertCircle, color: "text-red-500 bg-red-500/10" },
+                    ]}
+                    onStageClick={(stageId) => setStatusFilter(stageId as ShipmentStatus | "all")}
+                    activeStage={statusFilter !== "all" ? statusFilter : undefined}
+                />
+            </GlassPanel>
 
             {/* Search & Filter */}
             <GlassPanel className="p-4">
@@ -173,10 +183,10 @@ export function TrackingClient({ stats, initialShipments }: Readonly<TrackingCli
                         </div>
                         <div className="divide-y divide-border max-h-[60vh] overflow-y-auto">
                             {filteredShipments.length === 0 ? (
-                                <div className="p-8 text-center text-muted-foreground">No shipments found</div>
+                                <IllustratedEmptyState type="tracking" />
                             ) : (
                                 filteredShipments.map((shipment) => {
-                                    const status = statusConfig[shipment.status] || statusConfig.pending;
+                                    const status = statusConfig[shipment.status] || statusConfig.booked;
                                     const StatusIcon = status.icon;
 
                                     return (
@@ -303,27 +313,5 @@ export function TrackingClient({ stats, initialShipments }: Readonly<TrackingCli
                 </GlassPanel>
             </div>
         </div>
-    );
-}
-
-function StatCard({
-    label,
-    value,
-    color,
-    highlight
-}: {
-    label: string;
-    value: number;
-    color: string;
-    highlight?: boolean;
-}) {
-    return (
-        <GlassPanel className={cn(
-            "p-4 text-center",
-            highlight && value > 0 && "border-destructive/30 bg-destructive/5"
-        )}>
-            <div className={cn("text-2xl font-bold", color)}>{value}</div>
-            <div className="text-[10px] text-muted-foreground uppercase tracking-wider mt-1">{label}</div>
-        </GlassPanel>
     );
 }

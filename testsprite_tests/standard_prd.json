@@ -1,0 +1,213 @@
+{
+  "meta": {
+    "project": "TAC Cargo Logistics Platform",
+    "date": "2026-01-09",
+    "prepared_by": "Software Development Manager"
+  },
+  "product_overview": "TAC Cargo is an enterprise-grade logistics and freight management platform designed for real-time shipment tracking, operational dashboards, invoicing, analytics, and automated customer communications. Built on Next.js 16, React 19, Supabase, and TailwindCSS with an advanced design system using OKLCH colors, TAC Cargo transforms logistics operations into a high-efficiency, production-ready platform tailored for scale and compliance.",
+  "core_goals": [
+    "Deliver real-time shipment and fleet tracking with geolocation and status updates.",
+    "Provide comprehensive operational dashboards featuring KPIs, charts, and live activity feeds.",
+    "Enable full shipment lifecycle management including creation, bulk actions, barcode scanning, and exception workflows.",
+    "Automate customer communication via WhatsApp Business API, SMS, and Email with predefined templates and fallback mechanisms.",
+    "Implement advanced manifest and route optimization with driver assignment and tracking.",
+    "Offer detailed invoice and payment management including multi-currency, GST compliance, and integration with payment gateways.",
+    "Provide comprehensive analytics covering operational, financial, and customer metrics with predictive capabilities.",
+    "Ensure enterprise-grade security with role-based access, RLS, audit logging, and compliance with standards such as GDPR and ISO.",
+    "Maintain high performance via SSR, ISR, lazy loading, and optimized bundle sizes adhering to strict web vitals targets.",
+    "Deliver accessible, mobile-responsive UI conforming to WCAG 2.1 AA standards with a utilitarian and command-console aesthetic."
+  ],
+  "key_features": [
+    "Dashboard Overview (Mission Control) with live metrics grid, Kanban shipment pipeline, real-time vehicle map, and quick actions panel.",
+    "Shipment Management supporting server-side pagination, advanced filtering, multi-step creation wizard, detail drawer with tabs, and barcode scanning with offline queue.",
+    "Real-time Tracking with search and status filters, shipment cards, visual timeline, and map integration.",
+    "Manifest Management with AI-powered optimization, driver assignment, route preview, live tracking, and closure workflows.",
+    "Inventory & Warehouse Management providing visual maps, location tracking, inbound/outbound workflows, and inventory reporting.",
+    "Invoice and Payment System with multi-format invoicing, WhatsApp and multi-channel delivery, payment gateway integration, and reconciliation dashboard.",
+    "Analytics Dashboard offering BI charts, operational KPIs, financial and customer analytics, and custom reporting tools.",
+    "Automation via WhatsApp Business API for paperless communication with interactive message templates and fallback.",
+    "Mobile Experience including PWA for drivers and warehouse staff with barcode scanning and offline support.",
+    "Comprehensive security, compliance, and auditing mechanisms supporting multi-factor authentication and rate limiting."
+  ],
+  "user_flow_summary": [
+    "User logs in via secure Supabase authentication; upon success redirected to dashboard.",
+    "User views the Overview Mission Control dashboard with real-time metrics, activity feed, charts, and maps.",
+    "User performs shipment management tasks: create shipments with multi-step forms, update statuses, scan barcodes to process packages, and manage exceptions.",
+    "User accesses manifest management to create optimized vehicle manifests, assign drivers, and track manifest completion.",
+    "Finance users generate invoices, send them automatically via WhatsApp or email, track payments, and reconcile accounts.",
+    "Operations users monitor real-time tracking of shipments, view timelines and maps, and react to exceptions with resolution workflows.",
+    "Warehouse staff use a mobile PWA to scan packages for inbound and outbound processing, updating inventory locations.",
+    "Users explore analytics dashboards with date range selectors, charts, KPI cards, and export reporting.",
+    "System sends automated notifications to customers using templated WhatsApp messages and fallback channels.",
+    "Users switch themes, navigate via command palette and sidebar, with UI components ensuring accessible and responsive interactions."
+  ],
+  "validation_criteria": [
+    "All pages and components use semantic OKLCH color tokens enforced by stylelint and ESLint.",
+    "Core user flows (login, shipment creation, tracking, manifest management) fully operational with >98% scan accuracy and zero data inconsistency.",
+    "Real-time updates function through Supabase Realtime with latency under 500ms for state changes.",
+    "Barcode scanning supports multi-mode input with offline queuing and sync.",
+    "Invoice generation and WhatsApp notifications send successfully with delivery confirmation metrics.",
+    "Charts render accurately with lazy loading and no perceptible lag on datasets up to 10,000 records.",
+    "Accessibility audits confirm WCAG 2.1 AA compliance including keyboard navigation and screen reader support.",
+    "Security measures including RLS and MFA fully enforced with no unauthorized data access detected in testing.",
+    "Performance budgets met: initial JS <50KB, total JS <200KB per dashboard route, page load under 2 seconds on 4G.",
+    "Documentation and coding standards adhered to, including full JSDoc coverage and strict TypeScript use without `any`."
+  ],
+  "code_summary": {
+    "tech_stack": [
+      "TypeScript",
+      "Next.js 16",
+      "React 19",
+      "Supabase",
+      "TailwindCSS",
+      "Framer Motion",
+      "Recharts",
+      "shadcn/ui",
+      "TanStack Table",
+      "@dnd-kit"
+    ],
+    "auth": {
+      "username": "admin@tac.app",
+      "password": "Test@1498",
+      "loginUrl": "/auth/login",
+      "loginButtonSelector": "button[type='submit']",
+      "usernameFieldSelector": "input[name='email']",
+      "passwordFieldSelector": "input[name='password']"
+    },
+    "features": [
+      {
+        "name": "Dashboard Overview (Mission Control)",
+        "description": "Main dashboard page with KPI cards, shipment pipeline, interactive charts, and activity feed",
+        "files": [
+          "app/(dashboard)/dashboard/page.tsx",
+          "app/(dashboard)/dashboard/_components/mission-control.tsx",
+          "components/dashboard/section-cards.tsx",
+          "components/dashboard/chart-shipments-interactive.tsx",
+          "components/dashboard/status-pipeline.tsx"
+        ]
+      },
+      {
+        "name": "Shipment Management",
+        "description": "CRUD operations for shipments with tracking, status updates, and barcode scanning",
+        "files": [
+          "app/(dashboard)/dashboard/shipments/page.tsx",
+          "app/(dashboard)/dashboard/shipments/_components/shipments-client.tsx",
+          "components/dashboard/shipments-data-table.tsx"
+        ]
+      },
+      {
+        "name": "Tracking System",
+        "description": "Real-time shipment tracking with timeline and status updates",
+        "files": [
+          "app/(dashboard)/dashboard/tracking/page.tsx",
+          "app/(dashboard)/dashboard/tracking/_components/tracking-client.tsx",
+          "components/dashboard/tracking-timeline.tsx"
+        ]
+      },
+      {
+        "name": "Manifest Management",
+        "description": "Create and manage shipping manifests with route assignment",
+        "files": [
+          "app/(dashboard)/dashboard/manifests/page.tsx",
+          "app/(dashboard)/dashboard/manifests/_components/manifest-client.tsx"
+        ]
+      },
+      {
+        "name": "Invoice & Payments",
+        "description": "Invoice generation, payment tracking, and revenue analytics",
+        "files": [
+          "app/(dashboard)/dashboard/invoices/page.tsx",
+          "app/(dashboard)/dashboard/invoices/_components/invoices-client.tsx",
+          "app/(dashboard)/dashboard/payments/page.tsx",
+          "app/(dashboard)/dashboard/payments/_components/payments-client.tsx",
+          "components/dashboard/revenue-summary-chart.tsx"
+        ]
+      },
+      {
+        "name": "Analytics Dashboard",
+        "description": "Charts and metrics for business analytics including customer analytics",
+        "files": [
+          "app/(dashboard)/dashboard/analytics/page.tsx",
+          "app/(dashboard)/dashboard/analytics/_components/analytics-client.tsx",
+          "components/dashboard/customer-analytics.tsx",
+          "components/charts/area-chart-gradient.tsx",
+          "components/charts/pie-chart-interactive.tsx"
+        ]
+      },
+      {
+        "name": "Exception Handling",
+        "description": "Manage failed and delayed shipments with resolution workflows",
+        "files": [
+          "app/(dashboard)/dashboard/exceptions/page.tsx",
+          "app/(dashboard)/dashboard/exceptions/_components/exceptions-client.tsx"
+        ]
+      },
+      {
+        "name": "Route Management",
+        "description": "Route visualization and manifest routing",
+        "files": [
+          "app/(dashboard)/dashboard/routes/page.tsx",
+          "app/(dashboard)/dashboard/routes/_components/routes-client.tsx",
+          "components/dashboard/animated-route-map.tsx"
+        ]
+      },
+      {
+        "name": "Barcode Scanning",
+        "description": "Camera-based barcode scanning for shipment processing",
+        "files": [
+          "app/(dashboard)/dashboard/scanning/page.tsx",
+          "components/dashboard/enhanced-scanner.tsx"
+        ]
+      },
+      {
+        "name": "Command Palette",
+        "description": "Global command palette for quick navigation and actions",
+        "files": [
+          "components/dashboard/command-palette.tsx",
+          "hooks/use-keyboard-shortcuts.ts"
+        ]
+      },
+      {
+        "name": "Notifications",
+        "description": "Real-time notification system with bell icon and toast messages",
+        "files": [
+          "components/dashboard/notification-bell.tsx",
+          "app/(dashboard)/dashboard/_components/v2-header.tsx"
+        ]
+      },
+      {
+        "name": "Authentication",
+        "description": "Supabase-based authentication with login/signup flows",
+        "files": [
+          "app/auth/login/page.tsx",
+          "app/auth/signup/page.tsx",
+          "lib/supabase/client.ts",
+          "lib/supabase/server.ts"
+        ]
+      },
+      {
+        "name": "UI Components",
+        "description": "Reusable UI components based on shadcn/ui",
+        "files": [
+          "components/ui/button.tsx",
+          "components/ui/card.tsx",
+          "components/ui/input.tsx",
+          "components/ui/select.tsx",
+          "components/ui/table.tsx",
+          "components/ui/toggle-group.tsx",
+          "components/ui/checkbox.tsx"
+        ]
+      },
+      {
+        "name": "Dashboard Layout",
+        "description": "Main dashboard layout with sidebar, header, and providers",
+        "files": [
+          "app/(dashboard)/layout.tsx",
+          "app/(dashboard)/dashboard/_components/v2-sidebar.tsx",
+          "app/(dashboard)/dashboard/_components/v2-header.tsx",
+          "app/(dashboard)/dashboard/_components/dashboard-providers.tsx"
+        ]
+      }
+    ]
+  }
+}

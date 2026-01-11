@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { RiArrowRightLine } from "@remixicon/react";
 
@@ -71,14 +72,16 @@ export function HeroBanner({
         </p>
 
         <div className="pt-4">
-          <Button className="group/btn bg-primary text-primary-foreground hover:bg-primary/90 animate-orbit-glow relative overflow-hidden rounded-full border-none px-8 py-6 font-bold tracking-wide">
-            <span className="relative z-10 flex items-center gap-3">
-              {ctaText}
-              <span className="bg-background text-foreground flex h-8 w-8 items-center justify-center rounded-full transition-transform duration-300 group-hover/btn:translate-x-1">
-                <RiArrowRightLine size={18} />
+          <Link href={ctaLink}>
+            <Button className="group/btn bg-primary text-primary-foreground hover:bg-primary/90 animate-orbit-glow relative overflow-hidden rounded-full border-none px-8 py-6 font-bold tracking-wide">
+              <span className="relative z-10 flex items-center gap-3">
+                {ctaText}
+                <span className="bg-background text-foreground flex h-8 w-8 items-center justify-center rounded-full transition-transform duration-300 group-hover/btn:translate-x-1">
+                  <RiArrowRightLine size={18} />
+                </span>
               </span>
-            </span>
-          </Button>
+            </Button>
+          </Link>
         </div>
       </div>
 

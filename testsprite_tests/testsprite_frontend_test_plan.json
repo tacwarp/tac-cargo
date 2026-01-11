@@ -1,0 +1,566 @@
+[
+  {
+    "id": "TC001",
+    "title": "User Login Success with Valid Credentials",
+    "description": "Verify that user can successfully log in using valid email and password through Supabase authentication and is redirected to the dashboard.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth/login page"
+      },
+      {
+        "type": "action",
+        "description": "Enter valid email 'admin@tac.app' and correct password 'Test@1498'"
+      },
+      {
+        "type": "action",
+        "description": "Click login button"
+      },
+      {
+        "type": "assertion",
+        "description": "Check user is redirected to dashboard overview page"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify user session is active and Supabase authentication token is set"
+      }
+    ]
+  },
+  {
+    "id": "TC002",
+    "title": "User Login Failure with Invalid Credentials",
+    "description": "Verify that login fails when user inputs invalid email or password and appropriate error message is displayed.",
+    "category": "error handling",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth/login page"
+      },
+      {
+        "type": "action",
+        "description": "Enter invalid email or incorrect password"
+      },
+      {
+        "type": "action",
+        "description": "Click login button"
+      },
+      {
+        "type": "assertion",
+        "description": "Check error message for invalid credentials is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify user is not redirected and remains on login page"
+      }
+    ]
+  },
+  {
+    "id": "TC003",
+    "title": "Dashboard Overview Load Performance and Data Accuracy",
+    "description": "Validate Dashboard Overview loads within performance budgets and all live metrics, charts, shipment pipeline, and maps display accurate real-time data.",
+    "category": "performance",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Log in and navigate to Dashboard Overview (Mission Control)"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm page load time is under 2 seconds on 4G network simulation"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify initial JS bundle is less than 50KB and total JS less than 200KB for this route"
+      },
+      {
+        "type": "assertion",
+        "description": "Check live metrics grid shows correct up-to-date KPI values"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm Kanban shipment pipeline reflects latest shipment statuses with correct data"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify vehicle map shows real-time geolocation updates with latency under 500ms"
+      },
+      {
+        "type": "assertion",
+        "description": "Check quick actions panel buttons are enabled and functional"
+      }
+    ]
+  },
+  {
+    "id": "TC004",
+    "title": "Shipment Creation Multi-step Wizard",
+    "description": "Verify shipment creation via multi-step form works correctly including form validation, data persistence between steps, and final submission.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to shipment management page"
+      },
+      {
+        "type": "action",
+        "description": "Initiate new shipment creation"
+      },
+      {
+        "type": "action",
+        "description": "Fill in required fields in step 1 and click Next"
+      },
+      {
+        "type": "assertion",
+        "description": "Validate no errors and progress to step 2"
+      },
+      {
+        "type": "action",
+        "description": "Fill in optional and required fields in step 2 and click Next"
+      },
+      {
+        "type": "assertion",
+        "description": "Validate data persists from step 1 and no form validation errors"
+      },
+      {
+        "type": "action",
+        "description": "Confirm and submit shipment creation in final step"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify shipment details appear in shipment list and database updated"
+      }
+    ]
+  },
+  {
+    "id": "TC005",
+    "title": "Shipment Management - Barcode Scanning with Offline Queue",
+    "description": "Verify barcode scanning workflow supports live scanning, multi-mode inputs, and offline queuing with synchronization upon reconnect.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Access shipment scanning page on mobile PWA"
+      },
+      {
+        "type": "action",
+        "description": "Scan barcode using camera input"
+      },
+      {
+        "type": "assertion",
+        "description": "Validate scanned package is correctly associated with shipment in system"
+      },
+      {
+        "type": "action",
+        "description": "Turn off network connection"
+      },
+      {
+        "type": "action",
+        "description": "Scan multiple barcodes offline"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify scanned barcodes are queued offline locally"
+      },
+      {
+        "type": "action",
+        "description": "Restore network connection"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm queued barcodes synchronize with backend without data loss"
+      }
+    ]
+  },
+  {
+    "id": "TC006",
+    "title": "Real-time Shipment Tracking with Status Filters",
+    "description": "Verify real-time tracking page updates shipment location, timeline, and status with filters applied; ensure UI updates smoothly without lag on large datasets.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to tracking page"
+      },
+      {
+        "type": "action",
+        "description": "Apply various status filters (e.g., In Transit, Delivered, Exception)"
+      },
+      {
+        "type": "assertion",
+        "description": "Check shipment cards update according to filter criteria"
+      },
+      {
+        "type": "assertion",
+        "description": "Validate timeline visualizations reflect real-time status changes within 500ms latency"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm map integration updates shipment positions interactively"
+      }
+    ]
+  },
+  {
+    "id": "TC007",
+    "title": "Manifest Management - AI-powered Route Optimization and Driver Assignment",
+    "description": "Validate creation and editing of manifests using AI optimization, correct driver assignment, and route preview with live tracking updates.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Open manifest management page"
+      },
+      {
+        "type": "action",
+        "description": "Create new manifest selecting shipments for optimization"
+      },
+      {
+        "type": "action",
+        "description": "Trigger AI-powered route optimization"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify routes generated are logically optimized for distance and time"
+      },
+      {
+        "type": "action",
+        "description": "Assign drivers to routes"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm driver assignment saves correctly and is reflected on manifest"
+      },
+      {
+        "type": "action",
+        "description": "Preview route on map with animated tracking"
+      },
+      {
+        "type": "assertion",
+        "description": "Validate live tracking updates are received and displayed in realtime"
+      },
+      {
+        "type": "action",
+        "description": "Close manifest and mark as completed"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm manifest status updates and is removed from active list"
+      }
+    ]
+  },
+  {
+    "id": "TC008",
+    "title": "Invoice Generation and Multi-channel Delivery",
+    "description": "Test invoice creation with multi-currency and GST compliance, sending invoice via WhatsApp Business API and fallback channels with delivery confirmation metrics.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Access invoice creation page"
+      },
+      {
+        "type": "action",
+        "description": "Generate invoice for shipment with multi-currency selection and GST fields"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify invoice displays correct amounts, taxes, and formatting"
+      },
+      {
+        "type": "action",
+        "description": "Send invoice via WhatsApp Business API using predefined templates"
+      },
+      {
+        "type": "assertion",
+        "description": "Check delivery confirmation is received and logged"
+      },
+      {
+        "type": "action",
+        "description": "Simulate WhatsApp failure and verify fallback SMS/email delivery"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm fallback channel delivery is successful and logged"
+      }
+    ]
+  },
+  {
+    "id": "TC009",
+    "title": "Analytics Dashboard Charts and Export Reporting",
+    "description": "Validate interactive BI charts for operations, finance, and customer analytics render correctly with lazy loading and data export functionality works on large datasets.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to analytics dashboard"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify charts render correctly with accurate data and visual fidelity"
+      },
+      {
+        "type": "assertion",
+        "description": "Check charts support lazy loading with no perceptible lag on datasets up to 10,000 records"
+      },
+      {
+        "type": "action",
+        "description": "Use date range selectors to filter analytics"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm charts and KPI cards update accordingly"
+      },
+      {
+        "type": "action",
+        "description": "Export current analytics report as CSV and PDF"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify exported files contain correct and complete data"
+      }
+    ]
+  },
+  {
+    "id": "TC010",
+    "title": "Exception Handling Workflow for Failed and Delayed Shipments",
+    "description": "Validate user ability to manage shipment exceptions including identifying delayed shipments, applying resolution workflows, and updating statuses.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Access exceptions management page"
+      },
+      {
+        "type": "action",
+        "description": "Filter shipments by delayed or failed status"
+      },
+      {
+        "type": "assertion",
+        "description": "Check exception list correctly displays all matching shipments"
+      },
+      {
+        "type": "action",
+        "description": "Select a delayed shipment and initiate resolution workflow"
+      },
+      {
+        "type": "action",
+        "description": "Update shipment status post resolution and add audit log entry"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm shipment status reflects update and audit log records changes"
+      }
+    ]
+  },
+  {
+    "id": "TC011",
+    "title": "Barcode Scanning UI Accessibility and Multi-mode Input",
+    "description": "Verify barcode scanning component supports camera, manual input, and keyboard modes with accessibility compliance and offline support.",
+    "category": "ui",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to barcode scanning page"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify all UI controls have proper ARIA labels and keyboard focus management"
+      },
+      {
+        "type": "action",
+        "description": "Input barcode manually and validate processing"
+      },
+      {
+        "type": "action",
+        "description": "Use keyboard input mode to enter barcode"
+      },
+      {
+        "type": "assertion",
+        "description": "Check barcode data is accepted and processed identically to camera input"
+      },
+      {
+        "type": "action",
+        "description": "Test offline scanning queue behavior with multiple inputs"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify UI shows offline queue indicator and sync status updates on reconnect"
+      }
+    ]
+  },
+  {
+    "id": "TC012",
+    "title": "Security - Role-Based Access and RLS Enforcement",
+    "description": "Ensure role-based access control and Row Level Security (RLS) are enforced correctly, preventing unauthorized data access across all modules.",
+    "category": "security",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Log in as different roles (admin, operations, finance, warehouse)"
+      },
+      {
+        "type": "action",
+        "description": "Attempt to access restricted pages and data beyond role permissions"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify user is blocked or access denied messages are shown"
+      },
+      {
+        "type": "action",
+        "description": "Perform data queries directly hitting backend endpoints to test RLS enforcement"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm data returned complies with role restrictions, no unauthorized data leaks"
+      },
+      {
+        "type": "action",
+        "description": "Test audit log captures all access attempts"
+      },
+      {
+        "type": "assertion",
+        "description": "Validate audit logs record user, time, action, and success/failure status"
+      }
+    ]
+  },
+  {
+    "id": "TC013",
+    "title": "Accessibility Audit for Dashboard and Core Pages",
+    "description": "Conduct accessibility checks to ensure WCAG 2.1 AA compliance for keyboard navigation, screen reader compatibility, and color contrast across dashboard and key components.",
+    "category": "ui",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate through dashboard pages using keyboard only"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm logical tab order and visible focus outlines on all interactive elements"
+      },
+      {
+        "type": "action",
+        "description": "Use screen reader to navigate dashboard overview and shipment management"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify correct ARIA roles and labels announced, descriptive contextual information present"
+      },
+      {
+        "type": "assertion",
+        "description": "Ensure semantic OKLCH color tokens meet WCAG contrast ratio requirements"
+      }
+    ]
+  },
+  {
+    "id": "TC014",
+    "title": "Notification System Delivery and UI Behavior",
+    "description": "Validate real-time notification system shows notifications via bell icon and toast messages, with correct content and dismissal behaviors.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Trigger system notifications such as shipment status updates, invoice sent, or exceptions"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify notification bell icon shows unread count"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm toast notification appears with correct message content and icon"
+      },
+      {
+        "type": "action",
+        "description": "Dismiss toast notification manually"
+      },
+      {
+        "type": "assertion",
+        "description": "Check toast disappears correctly and bell count updates"
+      },
+      {
+        "type": "action",
+        "description": "Reload page and verify persisted notification status in bell"
+      }
+    ]
+  },
+  {
+    "id": "TC015",
+    "title": "Mobile PWA Barcode Scanning Offline Support for Warehouse Staff",
+    "description": "Test PWA mobile experience with offline barcode scanning, ensuring scans queue offline and sync correctly, and UI is responsive on different device sizes.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Access barcode scanning PWA on mobile devices with varying screen sizes"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify UI adapts responsively and maintains WCAG compliance"
+      },
+      {
+        "type": "action",
+        "description": "Disable network connection and perform multiple barcode scans"
+      },
+      {
+        "type": "assertion",
+        "description": "Validate scans are stored offline with UI indication"
+      },
+      {
+        "type": "action",
+        "description": "Re-enable network and observe synchronization of all queued scans"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm backend database is updated and local queue cleared"
+      }
+    ]
+  },
+  {
+    "id": "TC016",
+    "title": "Command Palette Keyboard Shortcuts and Navigation",
+    "description": "Verify global command palette accessibility, supported keyboard shortcuts for quick navigation, and that commands execute expected actions.",
+    "category": "ui",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Press configured keyboard shortcut to open command palette"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm palette UI appears with focus in input field"
+      },
+      {
+        "type": "action",
+        "description": "Type keywords related to navigation or actions (e.g., 'shipments', 'create manifest')"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify relevant commands appear filtered in the palette"
+      },
+      {
+        "type": "action",
+        "description": "Select command from palette and execute"
+      },
+      {
+        "type": "assertion",
+        "description": "Validate UI navigates or performs requested action"
+      }
+    ]
+  }
+]

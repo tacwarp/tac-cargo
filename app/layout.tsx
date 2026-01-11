@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Syne, Manrope, JetBrains_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { QueryProvider } from "@/lib/providers/query-provider";
-import { Toaster } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
 const syne = Syne({

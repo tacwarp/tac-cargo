@@ -43,6 +43,12 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   /**
+   * Build directory - using relative path but pointing to F: drive via symlink
+   * Alternative: Clean up C: drive space instead
+   */
+  // distDir: "../.next-build",  // Commented out - causes path issues
+
+  /**
    * React strict mode for development
    */
   reactStrictMode: true,
@@ -92,6 +98,16 @@ const nextConfig: NextConfig = {
         ],
       },
       {
+        // Local images - enable long-term immutable caching
+        source: "/images/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+      {
         // Static assets - enable caching
         source: "/lottie/:path*",
         headers: [
@@ -112,6 +128,11 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "cdn.shadcnstudio.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "i.pravatar.cc",
         pathname: "/**",
       },
       {
@@ -163,6 +184,29 @@ const nextConfig: NextConfig = {
     resolveAlias: {
       "@": "./",
     },
+  },
+
+  /**
+   * Webpack configuration to reduce file watcher usage
+   * Helps prevent ENOSPC errors on systems with limited inotify watchers
+   */
+  webpack: (config, { dev }) => {
+    if (dev) {
+      // Reduce file watching overhead in development
+      config.watchOptions = {
+        ...config.watchOptions,
+        poll: 1000, // Check for changes every second instead of using inotify
+        aggregateTimeout: 300, // Delay rebuild after first change
+        ignored: [
+          "**/node_modules/**",
+          "**/.git/**",
+          "**/.next/**",
+          "**/dist/**",
+          "**/coverage/**",
+        ],
+      };
+    }
+    return config;
   },
 
   /**

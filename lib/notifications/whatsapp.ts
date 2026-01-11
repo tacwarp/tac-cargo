@@ -52,14 +52,14 @@ export async function sendWhatsAppTemplate(
 
     if (!response.ok) {
       const error = await response.text();
-      console.error("WhatsApp send failed:", error);
+      console.error("WhatsApp send failed:", typeof error === "string" ? error.substring(0, 100) : "Unknown error");
       return { success: false, error };
     }
 
     const data = await response.json();
     return { success: true, messageId: data.messages?.[0]?.id };
   } catch (error) {
-    console.error("WhatsApp send error:", error);
+    console.error("WhatsApp send error:", error instanceof Error ? error.message : "Unknown error");
     return {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error",
@@ -94,14 +94,14 @@ export async function sendWhatsAppText(
 
     if (!response.ok) {
       const error = await response.text();
-      console.error("WhatsApp text send failed:", error);
+      console.error("WhatsApp text send failed:", typeof error === "string" ? error.substring(0, 100) : "Unknown error");
       return { success: false, error };
     }
 
     const data = await response.json();
     return { success: true, messageId: data.messages?.[0]?.id };
   } catch (error) {
-    console.error("WhatsApp text send error:", error);
+    console.error("WhatsApp text send error:", error instanceof Error ? error.message : "Unknown error");
     return {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error",

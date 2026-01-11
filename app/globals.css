@@ -61,6 +61,17 @@
   --shadow-lg: var(--shadow-lg);
   --shadow-xl: var(--shadow-xl);
   --shadow-2xl: var(--shadow-2xl);
+  --spacing: 0.25rem;
+
+  /* Form Layout Widths */
+  --max-width-form: 1240px;
+  --max-width-form-min: 1100px;
+  --max-width-summary: 380px;
+
+  /* Form Spacing */
+  --spacing-section: 28px;
+  --spacing-group: 20px;
+  --spacing-field: 14px;
 }
 
 /*
@@ -141,6 +152,14 @@
   --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
   --tracking-normal: 0em;
   --spacing: 0.25rem;
+
+  /* Form Layout Tokens */
+  --container-form-min: 1100px;
+  --container-form-max: 1240px;
+  --sticky-summary-max: 380px;
+  --space-section: 28px;
+  --space-group: 20px;
+  --space-field: 14px;
 }
 
 .dark {
@@ -312,4 +331,36 @@
 
 .animate-shimmer {
   animation: shimmer 2s infinite;
+}
+
+/* View Transitions API for animated theme toggle */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  .print-area,
+  .print-area * {
+    visibility: visible;
+  }
+
+  .print-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+
+  /* Hide specific UI elements just in case */
+  nav,
+  header,
+  aside,
+  .sidebar {
+    display: none !important;
+  }
 }

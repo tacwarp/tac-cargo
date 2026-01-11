@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 export function DriverProfileCard() {
   return (
@@ -22,10 +23,12 @@ export function DriverProfileCard() {
 
       <div className="relative z-10 mb-6 flex items-center gap-4">
         <div className="relative">
-          <img
+          <Image
             src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
             alt="Driver"
-            className="ring-muted size-16 rounded-full object-cover shadow-sm ring-4"
+            width={64}
+            height={64}
+            className="ring-muted rounded-full object-cover shadow-sm ring-4"
           />
           <div className="bg-card absolute right-0 bottom-0 rounded-full p-0.5">
             <div className="border-card size-3.5 rounded-full border-2 bg-success"></div>

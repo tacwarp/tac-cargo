@@ -3,23 +3,21 @@
  * Provides MCP interface for querying shipment data with Sentry monitoring
  */
 
-import { Server } from "@modelcontextprotocol/sdk/server/index.js";
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import {
-  CallToolRequestSchema,
-  ListToolsRequestSchema,
-} from "@modelcontextprotocol/sdk/types.js";
 import * as Sentry from "@sentry/nextjs";
 import { createClient } from "@/lib/supabase/server";
-import { fileURLToPath } from "url";
-import path from "path";
+import { fileURLToPath } from "node:url";
+import path from "node:path";
+import { z } from "zod";
+import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 
 /**
  * Initialize Sentry for MCP server monitoring
  */
 Sentry.init({
   dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
-  tracesSampleRate: 1.0,
+  tracesSampleRate: 1,
   environment: process.env.NODE_ENV || "development",
   release: process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA || "development",
 });
@@ -27,158 +25,189 @@ Sentry.init({
 /**
  * Create MCP server instance
  */
-const server = new Server(
-  {
-    name: "tac-cargo-shipment-server",
-    version: "1.0.0",
-  },
-  {
-    capabilities: {
-      tools: {},
-    },
-  },
-);
+const server = new McpServer({
+  name: "tac-cargo-shipment-server",
+  version: "1.0.0",
+});
 
-/**
- * List available tools
- */
-server.setRequestHandler(ListToolsRequestSchema, async () => {
-  return {
-    tools: [
+function createTextContent(text: string): CallToolResult {
+  const result: CallToolResult = {
+    content: [
       {
-        name: "query_shipment",
-        description: "Query shipment information by reference number",
-        inputSchema: {
-          type: "object",
-          properties: {
-            reference: {
-              type: "string",
-              description: "Shipment reference number (e.g., SHP-2024-001)",
-            },
-          },
-          required: ["reference"],
-        },
-      },
-      {
-        name: "list_recent_shipments",
-        description: "List recent shipments with optional limit",
-        inputSchema: {
-          type: "object",
-          properties: {
-            limit: {
-              type: "number",
-              description:
-                "Maximum number of shipments to return (default: 10)",
-              default: 10,
-            },
-          },
-        },
-      },
-      {
-        name: "get_shipment_status",
-        description: "Get current status of a shipment",
-        inputSchema: {
-          type: "object",
-          properties: {
-            reference: {
-              type: "string",
-              description: "Shipment reference number",
-            },
-          },
-          required: ["reference"],
-        },
+        type: "text",
+        text,
       },
     ],
   };
-});
+
+  return result;
+}
 
 /**
- * Handle tool calls with Sentry monitoring
+ * Register tools with Sentry monitoring
  */
-server.setRequestHandler(CallToolRequestSchema, async (request) => {
-  const { name, arguments: args } = request.params;
-
-  // Wrap entire tool execution in Sentry span
-  return await Sentry.startSpan(
-    {
-      name: `MCP Tool: ${name}`,
-      op: "mcp.tool.call",
-      attributes: {
-        "mcp.tool.name": name,
-        "mcp.server": "tac-cargo-shipment-server",
+server.registerTool(
+  "query_shipment",
+  {
+    title: "Query shipment",
+    description: "Query shipment information by reference number",
+    inputSchema: {
+      reference: z.string().min(1, "Reference is required"),
+    },
+  },
+  async ({ reference }) =>
+    Sentry.startSpan(
+      {
+        name: "MCP Tool: query_shipment",
+        op: "mcp.tool.call",
+        attributes: {
+          "mcp.tool.name": "query_shipment",
+          "mcp.server": "tac-cargo-shipment-server",
+        },
       },
-    },
-    async () => {
-      try {
-        // Add breadcrumb for debugging
-        Sentry.addBreadcrumb({
-          category: "mcp",
-          message: `Tool called: ${name}`,
-          level: "info",
-          data: {
-            tool: name,
-            arguments: args,
-          },
-        });
+      async () => {
+        try {
+          Sentry.addBreadcrumb({
+            category: "mcp",
+            message: "Tool called: query_shipment",
+            level: "info",
+            data: {
+              tool: "query_shipment",
+              arguments: { reference },
+            },
+          });
 
-        switch (name) {
-          case "query_shipment": {
-            const reference = args?.reference;
-            if (typeof reference !== "string" || !reference.trim()) {
-              throw new Error(
-                "query_shipment requires a valid 'reference' string argument",
-              );
-            }
-            return await queryShipment(reference);
-          }
+          return await queryShipment(reference);
+        } catch (error) {
+          Sentry.captureException(error, {
+            tags: {
+              mcp_server: "tac-cargo-shipment-server",
+              tool_name: "query_shipment",
+              error_type: "tool_execution_error",
+            },
+            extra: {
+              tool_arguments: { reference },
+            },
+          });
 
-          case "list_recent_shipments": {
-            const limit = typeof args?.limit === "number" ? args.limit : 10;
-            if (limit < 1 || limit > 100) {
-              throw new Error(
-                "list_recent_shipments 'limit' must be between 1 and 100",
-              );
-            }
-            return await listRecentShipments(limit);
-          }
-
-          case "get_shipment_status": {
-            const reference = args?.reference;
-            if (typeof reference !== "string" || !reference.trim()) {
-              throw new Error(
-                "get_shipment_status requires a valid 'reference' string argument",
-              );
-            }
-            return await getShipmentStatus(reference);
-          }
-
-          default:
-            throw new Error(`Unknown tool: ${name}`);
+          throw error;
         }
-      } catch (error) {
-        // Capture error in Sentry with context
-        Sentry.captureException(error, {
-          tags: {
-            mcp_server: "tac-cargo-shipment-server",
-            tool_name: name,
-            error_type: "tool_execution_error",
-          },
-          extra: {
-            tool_arguments: args,
-          },
-        });
+      },
+    ),
+);
 
-        // Re-throw for MCP error handling
-        throw error;
-      }
+server.registerTool(
+  "list_recent_shipments",
+  {
+    title: "List recent shipments",
+    description: "List recent shipments with optional limit",
+    inputSchema: {
+      limit: z
+        .number()
+        .int()
+        .min(1)
+        .max(100)
+        .optional(),
     },
-  );
-});
+  },
+  async ({ limit }) => {
+    const effectiveLimit = typeof limit === "number" ? limit : 10;
+
+    return Sentry.startSpan(
+      {
+        name: "MCP Tool: list_recent_shipments",
+        op: "mcp.tool.call",
+        attributes: {
+          "mcp.tool.name": "list_recent_shipments",
+          "mcp.server": "tac-cargo-shipment-server",
+        },
+      },
+      async () => {
+        try {
+          Sentry.addBreadcrumb({
+            category: "mcp",
+            message: "Tool called: list_recent_shipments",
+            level: "info",
+            data: {
+              tool: "list_recent_shipments",
+              arguments: { limit: effectiveLimit },
+            },
+          });
+
+          return await listRecentShipments(effectiveLimit);
+        } catch (error) {
+          Sentry.captureException(error, {
+            tags: {
+              mcp_server: "tac-cargo-shipment-server",
+              tool_name: "list_recent_shipments",
+              error_type: "tool_execution_error",
+            },
+            extra: {
+              tool_arguments: { limit: effectiveLimit },
+            },
+          });
+
+          throw error;
+        }
+      },
+    );
+  },
+);
+
+server.registerTool(
+  "get_shipment_status",
+  {
+    title: "Get shipment status",
+    description: "Get current status of a shipment",
+    inputSchema: {
+      reference: z.string().min(1, "Reference is required"),
+    },
+  },
+  async ({ reference }) =>
+    Sentry.startSpan(
+      {
+        name: "MCP Tool: get_shipment_status",
+        op: "mcp.tool.call",
+        attributes: {
+          "mcp.tool.name": "get_shipment_status",
+          "mcp.server": "tac-cargo-shipment-server",
+        },
+      },
+      async () => {
+        try {
+          Sentry.addBreadcrumb({
+            category: "mcp",
+            message: "Tool called: get_shipment_status",
+            level: "info",
+            data: {
+              tool: "get_shipment_status",
+              arguments: { reference },
+            },
+          });
+
+          return await getShipmentStatus(reference);
+        } catch (error) {
+          Sentry.captureException(error, {
+            tags: {
+              mcp_server: "tac-cargo-shipment-server",
+              tool_name: "get_shipment_status",
+              error_type: "tool_execution_error",
+            },
+            extra: {
+              tool_arguments: { reference },
+            },
+          });
+
+          throw error;
+        }
+      },
+    ),
+);
 
 /**
  * Query shipment by reference
  */
-async function queryShipment(reference: string) {
+async function queryShipment(reference: string): Promise<CallToolResult> {
   return await Sentry.startSpan(
     {
       name: "Query Shipment by Reference",
@@ -208,14 +237,7 @@ async function queryShipment(reference: string) {
         throw new Error(`Shipment not found: ${reference}`);
       }
 
-      return {
-        content: [
-          {
-            type: "text",
-            text: JSON.stringify(data, null, 2),
-          },
-        ],
-      };
+      return createTextContent(JSON.stringify(data, null, 2));
     },
   );
 }
@@ -223,7 +245,7 @@ async function queryShipment(reference: string) {
 /**
  * List recent shipments
  */
-async function listRecentShipments(limit: number = 10) {
+async function listRecentShipments(limit: number = 10): Promise<CallToolResult> {
   return await Sentry.startSpan(
     {
       name: "List Recent Shipments",
@@ -245,14 +267,7 @@ async function listRecentShipments(limit: number = 10) {
         throw new Error(`Failed to list shipments: ${error.message}`);
       }
 
-      return {
-        content: [
-          {
-            type: "text",
-            text: JSON.stringify(data, null, 2),
-          },
-        ],
-      };
+      return createTextContent(JSON.stringify(data, null, 2));
     },
   );
 }
@@ -260,7 +275,7 @@ async function listRecentShipments(limit: number = 10) {
 /**
  * Get shipment status
  */
-async function getShipmentStatus(reference: string) {
+async function getShipmentStatus(reference: string): Promise<CallToolResult> {
   return await Sentry.startSpan(
     {
       name: "Get Shipment Status",
@@ -283,23 +298,18 @@ async function getShipmentStatus(reference: string) {
         throw new Error(`Shipment not found: ${reference}`);
       }
 
-      return {
-        content: [
+      return createTextContent(
+        JSON.stringify(
           {
-            type: "text",
-            text: JSON.stringify(
-              {
-                reference: data.reference,
-                status: data.status,
-                eta: data.eta,
-                delivered_at: data.delivered_at,
-              },
-              null,
-              2,
-            ),
+            reference: data.reference,
+            status: data.status,
+            eta: data.eta,
+            delivered_at: data.delivered_at,
           },
-        ],
-      };
+          null,
+          2,
+        ),
+      );
     },
   );
 }
@@ -345,11 +355,13 @@ const normalizedExecutedPath = path.normalize(executedFilePath);
 const isMainModule = normalizedCurrentPath === normalizedExecutedPath;
 
 if (isMainModule) {
-  main().catch((error) => {
+  try {
+    await main();
+  } catch (error) {
     Sentry.captureException(error);
     console.error("Server error:", error);
     process.exit(1);
-  });
+  }
 }
 
 export { server };

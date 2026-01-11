@@ -319,3 +319,27 @@ export function getFocusClasses(
       return focusRing.join(" ");
   }
 }
+
+/**
+ * Normalizes Supabase join results into an array.
+ * Handles cases where a join returns a single object or an array.
+ * Useful for handling one-to-many or many-to-many relationships where Supabase might return a single object.
+ *
+ * @param {T | T[] | null | undefined} data - Data to normalize
+ * @returns {T[]} Array of data
+ */
+export function normalizeJoin<T>(data: T | T[] | null | undefined): T[] {
+  if (data === null || data === undefined) return [];
+  if (Array.isArray(data)) return data;
+  return [data];
+}
+
+export function normalizeJoinSingle<T>(
+  data: T | T[] | null | undefined,
+): T | null {
+  if (data === null || data === undefined) return null;
+  if (Array.isArray(data)) {
+    return data.length > 0 ? data[0] ?? null : null;
+  }
+  return data;
+}

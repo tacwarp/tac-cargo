@@ -94,8 +94,13 @@ Open [http://localhost:3000](http://localhost:3000) to view the app.
 | `docs/routes.md` | Routing and navigation |
 | `docs/filesystem.md` | Folder structure |
 | `docs/known-issues.md` | Active tech debt |
+| `docs/CODERABBIT_SETUP.md` | AI code review setup |
 
 Legacy and historical documents are archived in `docs/archive/`.
+
+## Code Quality
+
+This project uses [CodeRabbit](https://coderabbit.ai) for AI-powered code reviews on every pull request. See [CONTRIBUTING.md](CONTRIBUTING.md) for details on the review process.
 
 ## Environment Variables
 

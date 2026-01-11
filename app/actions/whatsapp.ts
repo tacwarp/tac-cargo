@@ -59,14 +59,16 @@ export async function sendInvoiceViaWhatsApp(
     const formattedPhone = customerPhone.replace(/[\s+\-()]/g, "");
 
     // Log the WhatsApp send attempt
+    // Note: Using old_data/new_data to match migration 002 schema
     await supabase.from("audit_logs").insert({
       user_id: user.id,
-      action: "whatsapp_send",
+      action: "SEND",
       entity_type: "invoice",
       entity_id: invoiceId,
-      details: {
+      metadata: {
         phone: formattedPhone,
         invoice_no: invoice.invoice_no,
+        method: "whatsapp",
       },
       organization_id: invoice.organization_id,
     });

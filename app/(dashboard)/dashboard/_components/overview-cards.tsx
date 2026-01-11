@@ -113,7 +113,7 @@ export function OverviewAlertCard() {
 export function OverviewInventoryCard() {
     return (
         <GlassPanel className="md:col-span-1 md:row-span-1 relative overflow-hidden group">
-            <Image src="https://images.unsplash.com/photo-1590247813693-5541d1c609fd?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" fill className="absolute right-0 top-0 object-cover opacity-20 mask-bottom" alt="" />
+            <Image src="https://images.unsplash.com/photo-1590247813693-5541d1c609fd?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" fill sizes="(max-width: 768px) 100vw, 33vw" className="absolute right-0 top-0 object-cover opacity-20 mask-bottom" alt="" />
             <div className="relative z-10">
                 <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">Inventory</div>
                 <div className="text-xl font-bold text-foreground">12.4k</div>

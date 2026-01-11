@@ -13,7 +13,7 @@ const competencies = [
     title: "Global Air Freight",
     description:
       "High-speed logistics for time-critical consignments across international borders.",
-    image: "/images/air-cargo.jpeg",
+    image: "/images/air-cargo.png",
     icon: Plane,
     link: "/services/air",
     color: "from-blue-500/80 to-indigo-600/80",
@@ -23,7 +23,7 @@ const competencies = [
     title: "Secure Packaging",
     description:
       "Military-grade packaging protocols ensuring zero-damage transit verification.",
-    image: "/images/packing.jpeg",
+    image: "/images/packing.png",
     icon: PackageCheck,
     link: "/services/packing",
     color: "from-amber-500/80 to-orange-600/80",
@@ -33,7 +33,7 @@ const competencies = [
     title: "Eco Last Mile",
     description:
       "Sustainable urban delivery network utilizing electric mobility solutions.",
-    image: "/images/ebike-pick-and-drop.jpeg",
+    image: "/images/ebike-pick-and-drop.png",
     icon: Bike,
     link: "/services/last-mile",
     color: "from-emerald-500/80 to-green-600/80",
@@ -43,7 +43,7 @@ const competencies = [
     title: "Surface Logistics",
     description:
       "Cost-optimized heavy haulage and nationwide network distribution.",
-    image: "/images/surface-cargo.jpeg",
+    image: "/images/surface-cargo.png",
     icon: Truck,
     link: "/services/surface",
     color: "from-slate-700/80 to-gray-900/80",

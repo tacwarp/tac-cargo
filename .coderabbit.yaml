@@ -1,0 +1,251 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+# CodeRabbit Configuration for TAC Cargo
+# Documentation: https://docs.coderabbit.ai/getting-started/yaml-configuration
+
+language: "en-US"
+early_access: false
+enable_free_tier: true
+
+# Tone settings for reviews
+tone_instructions: "Be constructive. Focus on security, performance, maintainability. Next.js 16 + React 19 + TypeScript + Supabase cargo logistics SaaS."
+
+reviews:
+  # Review style - "chill" is less nitpicky, "assertive" provides more feedback
+  profile: "chill"
+  
+  # Workflow settings
+  request_changes_workflow: true
+  abort_on_close: true
+  
+  # Summary and documentation
+  high_level_summary: true
+  high_level_summary_placeholder: "@coderabbitai summary"
+  high_level_summary_in_walkthrough: false
+  review_status: true
+  commit_status: true
+  fail_commit_status: false
+  
+  # Walkthrough settings
+  collapse_walkthrough: false
+  changed_files_summary: true
+  sequence_diagrams: true
+  estimate_code_review_effort: true
+  
+  # Issue and PR linking
+  assess_linked_issues: true
+  related_issues: true
+  related_prs: true
+  
+  # Labels and reviewers
+  suggested_labels: true
+  auto_apply_labels: false
+  suggested_reviewers: true
+  auto_assign_reviewers: false
+  
+  # Fun features
+  poem: false
+  in_progress_fortune: true
+  
+  # AI agent prompt in comments
+  enable_prompt_for_ai_agents: true
+  
+  # Files to exclude from review
+  path_filters:
+    - "!**/node_modules/**"
+    - "!**/.next/**"
+    - "!**/dist/**"
+    - "!**/build/**"
+    - "!**/*.min.js"
+    - "!**/*.min.css"
+    - "!**/package-lock.json"
+    - "!**/pnpm-lock.yaml"
+    - "!**/yarn.lock"
+    - "!**/*.svg"
+    - "!**/public/remixIcon_fonts/**"
+    - "!**/public/lottie/**"
+    - "!**/*.json"
+    - "!testsprite_tests/tmp/**"
+  
+  # Path-specific review instructions
+  path_instructions:
+    - path: "app/api/**"
+      instructions: |
+        Review API routes with focus on:
+        - Input validation and sanitization
+        - Proper error handling with appropriate HTTP status codes
+        - Authentication and authorization checks
+        - Rate limiting considerations
+        - SQL injection prevention (Supabase queries)
+        - Proper use of Next.js API route patterns
+    
+    - path: "app/actions/**"
+      instructions: |
+        Review server actions with focus on:
+        - Input validation using Zod schemas
+        - Proper error handling and ActionResult return types
+        - Authorization checks before data mutations
+        - Supabase RLS policy compliance
+    
+    - path: "components/**"
+      instructions: |
+        Review React components for:
+        - Proper use of 'use client' directive (only when necessary)
+        - Accessible markup (ARIA attributes, semantic HTML)
+        - Performance (memoization, avoiding unnecessary re-renders)
+        - Proper TypeScript prop types
+        - TailwindCSS best practices
+    
+    - path: "lib/supabase/**"
+      instructions: |
+        Review Supabase client code for:
+        - Proper client vs server client usage
+        - RLS policy awareness
+        - Secure handling of auth tokens
+        - Efficient query patterns
+    
+    - path: "hooks/**"
+      instructions: |
+        Review custom hooks for:
+        - Proper dependency arrays in useEffect/useMemo/useCallback
+        - Memory leak prevention (cleanup functions)
+        - Error handling patterns
+        - TypeScript generics where appropriate
+    
+    - path: "database/**"
+      instructions: |
+        Review database migrations and SQL for:
+        - RLS policies are properly defined
+        - Indexes for performance
+        - Data integrity constraints
+        - Backward compatibility
+    
+    - path: "testsprite_tests/**"
+      instructions: |
+        Review test files for:
+        - Comprehensive test coverage
+        - Proper assertions
+        - Test isolation
+        - Meaningful test descriptions
+
+  # Auto-review configuration
+  auto_review:
+    enabled: true
+    drafts: false
+    base_branches:
+      - main
+      - develop
+  
+  # Finishing touches - auto-generated content
+  finishing_touches:
+    docstrings:
+      enabled: true
+    unit_tests:
+      enabled: true
+  
+  # Pre-merge checks
+  pre_merge_checks:
+    enabled: true
+
+  # Linting and security tools
+  tools:
+    # GitHub Actions status checks
+    github_checks:
+      enabled: true
+      timeout_ms: 120000
+    
+    # ESLint integration
+    eslint:
+      enabled: true
+      config_file: "eslint.config.mjs"
+    
+    # TypeScript compiler checks
+    typescript:
+      enabled: true
+    
+    # Biome (if present)
+    biome:
+      enabled: false
+    
+    # Security scanning
+    semgrep:
+      enabled: true
+    
+    # Shell script analysis
+    shellcheck:
+      enabled: true
+    
+    # Markdown linting
+    markdownlint:
+      enabled: true
+    
+    # YAML linting
+    yamllint:
+      enabled: true
+    
+    # Gitleaks for secret detection
+    gitleaks:
+      enabled: true
+    
+    # Dependency vulnerability scanning
+    osv_scanner:
+      enabled: true
+    
+    # Actionlint for GitHub Actions
+    actionlint:
+      enabled: true
+
+# Chat configuration
+chat:
+  auto_reply: true
+  art: false
+  integrations:
+    slack:
+      enabled: false
+    discord:
+      enabled: false
+
+# Knowledge base configuration
+knowledge_base:
+  opt_out: false
+  
+  # Web search for library documentation
+  web_search:
+    enabled: true
+  
+  # Learn from code guidelines
+  code_guidelines:
+    enabled: true
+    file_patterns:
+      - "CONTRIBUTING.md"
+      - "docs/**/*.md"
+      - ".cursorrules"
+      - "claude.md"
+  
+  # Learn from feedback
+  learnings:
+    enabled: true
+    scope: "global"
+  
+  # Issue tracker integration
+  issues:
+    enabled: true
+  
+  # PR history learning
+  pull_requests:
+    enabled: true
+
+# Code generation settings
+code_generation:
+  docstrings:
+    path_instructions:
+      - path: "**/*.ts"
+        instructions: "Use TSDoc format with @param, @returns, and @example tags"
+      - path: "**/*.tsx"
+        instructions: "Document React components with @param for props and @example for usage"
+  
+  unit_tests:
+    path_instructions:
+      - path: "lib/**"
+        instructions: "Generate Jest/Vitest tests with comprehensive edge cases"
+      - path: "hooks/**"
+        instructions: "Use React Testing Library for hook tests with renderHook"

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { ArrowUpRight } from 'lucide-react';
+import Image from "next/image";
 import { cn } from '@/lib/utils'; // Assuming you have a `cn` utility for merging Tailwind classes
 
 // Define the types for the component props for type safety and clarity
@@ -93,11 +94,13 @@ export const PaymentSummaryCard = React.forwardRef<
                 {/* Avatar Stack */}
                 <div className="mt-4 flex items-center">
                     {avatars.map((avatar, index) => (
-                        <img
+                        <Image
                             key={index}
                             src={avatar.src}
                             alt={avatar.alt}
-                            className="h-10 w-10 rounded-full border-2 border-background object-cover"
+                            width={40}
+                            height={40}
+                            className="rounded-full border-2 border-background object-cover"
                             style={{ marginLeft: index > 0 ? '-12px' : 0 }}
                         />
                     ))}

@@ -59,7 +59,7 @@ export async function createShipmentEvent(
       .single();
 
     if (eventError) {
-      console.error("Failed to create scan event:", eventError);
+      console.error("Failed to create scan event:", eventError.message);
       return { success: false, error: eventError.message };
     }
 
@@ -75,7 +75,7 @@ export async function createShipmentEvent(
       .eq("id", data.shipmentId);
 
     if (updateError) {
-      console.error("Failed to update shipment status:", updateError);
+      console.error("Failed to update shipment status:", updateError.message);
     }
 
     // Get shipment details for notifications
@@ -113,7 +113,7 @@ export async function createShipmentEvent(
 
     return { success: true, eventId: event.id };
   } catch (error) {
-    console.error("Shipment event creation error:", error);
+    console.error("Shipment event creation error:", error instanceof Error ? error.message : "Unknown error");
     return {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error",
@@ -238,6 +238,6 @@ async function sendStatusNotifications(
         break;
     }
   } catch (error) {
-    console.error("Failed to send notifications:", error);
+    console.error("Failed to send notifications:", error instanceof Error ? error.message : "Unknown error");
   }
 }

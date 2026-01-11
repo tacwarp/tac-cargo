@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect, useTransition } from "react";
+import dynamic from "next/dynamic";
 import {
     Scan,
     Package,
@@ -9,8 +10,15 @@ import {
     AlertCircle,
     ArrowRight,
     History,
-    Keyboard
+    Keyboard,
+    Camera
 } from "lucide-react";
+
+// Dynamic import to avoid SSR issues with html5-qrcode
+const CameraScanner = dynamic(
+    () => import("@/components/scanner/camera-scanner"),
+    { ssr: false, loading: () => <div className="h-[200px] bg-muted/50 rounded-lg animate-pulse" /> }
+);
 import { cn } from "@/lib/utils";
 import { GlassPanel } from "../../_components/glass-panel";
 import { Button } from "@/components/ui/button";
@@ -51,20 +59,25 @@ const scanTypeConfig: Record<ScanType, { label: string; icon: React.ElementType;
 };
 
 const statusColors: Record<ShipmentStatus, string> = {
-    pending: "text-muted-foreground",
+    booked: "text-muted-foreground",
     picked_up: "text-primary",
+    at_origin_hub: "text-primary",
     in_transit: "text-primary",
+    at_destination_hub: "text-primary",
     out_for_delivery: "text-warning",
     delivered: "text-success",
-    failed: "text-destructive",
+    exception: "text-destructive",
     returned: "text-warning",
     cancelled: "text-muted-foreground",
 };
+
+type ScanMode = "manual" | "camera";
 
 export function ScannerClient({ warehouses, initialRecentScans }: ScannerClientProps) {
     const [barcodeInput, setBarcodeInput] = useState("");
     const [selectedScanType, setSelectedScanType] = useState<ScanType>("warehouse_in");
     const [selectedWarehouse, setSelectedWarehouse] = useState(warehouses[0]?.id || "");
+    const [scanMode, setScanMode] = useState<ScanMode>("manual");
     const [lastScanResult, setLastScanResult] = useState<{
         success: boolean;
         shipment?: {
@@ -175,6 +188,48 @@ export function ScannerClient({ warehouses, initialRecentScans }: ScannerClientP
         });
     };
 
+    // Handle camera barcode scan
+    const handleCameraScan = (barcode: string) => {
+        startTransition(async () => {
+            const result = await processScan(barcode, selectedScanType, selectedWarehouse);
+
+            if (result.success) {
+                setLastScanResult({
+                    success: true,
+                    shipment: {
+                        reference: result.data.shipment.reference,
+                        consignee_name: result.data.shipment.consignee_name,
+                        status: result.data.newStatus,
+                    },
+                    message: `${barcode} → ${scanTypeConfig[selectedScanType].label}`,
+                });
+
+                playBeep(true);
+
+                setRecentScans(prev => [{
+                    id: Date.now().toString(),
+                    scan_type: selectedScanType,
+                    created_at: new Date().toISOString(),
+                    shipments: {
+                        reference: result.data.shipment.reference,
+                        consignee_name: result.data.shipment.consignee_name || "",
+                        status: result.data.newStatus,
+                    },
+                    profiles: null,
+                }, ...prev.slice(0, 19)]);
+
+                toast.success(`Camera scanned: ${barcode}`);
+            } else {
+                setLastScanResult({
+                    success: false,
+                    message: result.error,
+                });
+                playBeep(false);
+                toast.error(result.error);
+            }
+        });
+    };
+
     return (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Scanner Panel */}
@@ -205,7 +260,7 @@ export function ScannerClient({ warehouses, initialRecentScans }: ScannerClientP
 
                 {/* Scanner Input */}
                 <GlassPanel className="p-6">
-                    <div className="flex items-center gap-4 mb-4">
+                    <div className="flex items-center justify-between gap-4 mb-4">
                         <select
                             value={selectedWarehouse}
                             onChange={(e) => setSelectedWarehouse(e.target.value)}
@@ -215,9 +270,50 @@ export function ScannerClient({ warehouses, initialRecentScans }: ScannerClientP
                                 <option key={w.id} value={w.id}>{w.name} ({w.code})</option>
                             ))}
                         </select>
+
+                        {/* Mode Toggle */}
+                        <div className="flex rounded-lg border border-border overflow-hidden">
+                            <button
+                                type="button"
+                                onClick={() => setScanMode("manual")}
+                                className={cn(
+                                    "flex items-center gap-2 px-3 py-2 text-xs font-medium transition-colors",
+                                    scanMode === "manual"
+                                        ? "bg-primary text-primary-foreground"
+                                        : "bg-card text-muted-foreground hover:bg-muted"
+                                )}
+                            >
+                                <Keyboard className="w-3.5 h-3.5" />
+                                Manual
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setScanMode("camera")}
+                                className={cn(
+                                    "flex items-center gap-2 px-3 py-2 text-xs font-medium transition-colors",
+                                    scanMode === "camera"
+                                        ? "bg-primary text-primary-foreground"
+                                        : "bg-card text-muted-foreground hover:bg-muted"
+                                )}
+                            >
+                                <Camera className="w-3.5 h-3.5" />
+                                Camera
+                            </button>
+                        </div>
                     </div>
 
-                    <form onSubmit={handleScan} className="relative">
+                    {/* Camera Scanner */}
+                    {scanMode === "camera" && (
+                        <div className="mb-4">
+                            <CameraScanner
+                                onScan={handleCameraScan}
+                                onError={(err) => toast.error(err)}
+                            />
+                        </div>
+                    )}
+
+                    {/* Manual Input */}
+                    <form onSubmit={handleScan} className={cn("relative", scanMode === "camera" && "opacity-50")}>
                         <div className="relative">
                             <Scan className="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 text-muted-foreground" />
                             <Input

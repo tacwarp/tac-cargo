@@ -5,24 +5,22 @@ import { z } from "zod";
  * Enforces business rules and data constraints
  */
 export const shipmentSchema = z.object({
-  customer_id: z.string().uuid("Invalid customer"),
+  customer_id: z.string().uuid("Invalid customer").optional().or(z.literal("")),
   reference: z
     .string()
-    .min(5, "Reference must be at least 5 characters")
-    .regex(
-      /^SHP-[A-Z0-9]+$/,
-      "Must start with SHP- followed by alphanumeric characters",
-    ),
-  origin_warehouse_id: z.string().uuid("Select origin warehouse"),
-  destination_warehouse_id: z.string().uuid("Select destination warehouse"),
+    .min(3, "Reference must be at least 3 characters")
+    .optional(),
+  origin_warehouse_id: z.string().uuid("Select origin warehouse").optional().or(z.literal("")),
+  destination_warehouse_id: z.string().uuid("Select destination warehouse").optional().or(z.literal("")),
   transport_mode: z.enum(["air", "surface", "express", "economy"], {
     message: "Select a valid transport mode",
   }),
-  service_level_id: z.string().uuid("Select service level"),
+  service_level_id: z.string().uuid("Select service level").optional().or(z.literal("")),
   weight_kg: z
     .number()
     .positive("Weight must be positive")
-    .max(30000, "Maximum weight is 30,000 kg (30 tons)"),
+    .max(30000, "Maximum weight is 30,000 kg (30 tons)")
+    .optional(),
   pieces: z
     .number()
     .int("Pieces must be a whole number")
@@ -34,10 +32,8 @@ export const shipmentSchema = z.object({
     .max(100, "Name too long"),
   consignee_phone: z
     .string()
-    .regex(
-      /^\+[1-9]\d{9,14}$/,
-      "Invalid phone number format. Expected: +919876543210",
-    ),
+    .min(10, "Phone number is required")
+    .max(15, "Phone number too long"),
   consignee_email: z
     .string()
     .email("Invalid email address")
@@ -45,13 +41,14 @@ export const shipmentSchema = z.object({
     .or(z.literal("")),
   consignee_address: z
     .string()
-    .min(10, "Address must be at least 10 characters")
+    .min(5, "Address is required")
     .max(500, "Address too long"),
   consignee_city: z.string().min(2, "City is required"),
   consignee_state: z.string().min(2, "State is required"),
   consignee_pincode: z
     .string()
-    .regex(/^\d{6}$/, "Invalid pincode. Must be 6 digits"),
+    .min(5, "Pincode is required")
+    .max(10, "Pincode too long"),
   declared_value: z.number().positive().optional(),
   notes: z.string().max(500, "Notes cannot exceed 500 characters").optional(),
 });

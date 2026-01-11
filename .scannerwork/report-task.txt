@@ -1,7 +1,0 @@
-organization=tacwarp
-projectKey=tacwarp_warp
-serverUrl=https://sonarcloud.io
-serverVersion=8.0.0.78371
-dashboardUrl=https://sonarcloud.io/dashboard?id=tacwarp_warp
-ceTaskId=AZuf7MjKUc9B_o4NJiY6
-ceTaskUrl=https://sonarcloud.io/api/ce/task?id=AZuf7MjKUc9B_o4NJiY6

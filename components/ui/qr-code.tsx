@@ -2,7 +2,7 @@
 
 import { QRCodeCanvas } from "qrcode.react";
 import { useTheme } from "next-themes";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 
 interface ThemeAwareQRCodeProps {
   value: string;
@@ -34,14 +34,24 @@ export function ThemeAwareQRCode({
 }: ThemeAwareQRCodeProps) {
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  const [colors, setColors] = useState<{ bg: string; fg: string } | null>(null);
 
-  const resolveColors = useCallback(() => {
-    if (typeof globalThis === "undefined") return null;
+  // Standard hydration mismatch fix
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true);
+  }, []);
 
+  // Compute colors during render if client-side, otherwise use defaults
+  // We avoid effect-based state updates here to prevent cascading renders
+  const getThemeColors = () => {
+    if (!mounted || typeof globalThis === "undefined") {
+      // Default to "light" assumptions server-side/hydration
+      return { bg: "#ffffff", fg: "#0a0a0a" };
+    }
+
+    // Try to resolve CSS variables from computed styles
     const root = document.documentElement;
     const styles = getComputedStyle(root);
-
     const bgVar = styles.getPropertyValue("--background").trim();
     const fgVar = styles.getPropertyValue("--foreground").trim();
 
@@ -54,20 +64,11 @@ export function ThemeAwareQRCode({
     return resolvedTheme === "dark"
       ? { bg: "#0a0a0a", fg: "#fafafa" }
       : { bg: "#ffffff", fg: "#0a0a0a" };
-  }, [resolvedTheme]);
+  };
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const colors = getThemeColors();
 
-  useEffect(() => {
-    if (mounted) {
-      const resolved = resolveColors();
-      setColors(resolved);
-    }
-  }, [mounted, resolvedTheme, resolveColors]);
-
-  if (!mounted || !colors) {
+  if (!mounted) {
     return (
       <div
         className={className}

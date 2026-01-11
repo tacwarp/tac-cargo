@@ -1,273 +1,126 @@
 "use client";
 
+import { useState } from "react";
 import * as Sentry from "@sentry/nextjs";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { AlertTriangle, Bug, Server, Zap } from "lucide-react";
 
 export default function TestSentryPage() {
-  const handleClientError = () => {
+  const [status, setStatus] = useState<string>("");
+
+  const triggerClientError = () => {
+    setStatus("Triggering client-side error...");
+    throw new Error("Test client-side error from Sentry test page");
+  };
+
+  const triggerManualCapture = () => {
+    setStatus("Capturing manual exception...");
     try {
-      throw new Error("Test Client-Side Error from TAC Cargo");
+      throw new Error("Manually captured test error");
     } catch (error) {
       Sentry.captureException(error, {
-        tags: {
-          test_type: "client",
-          component: "test-sentry-page",
-        },
-        extra: {
-          timestamp: new Date().toISOString(),
-          userAgent: navigator.userAgent,
-        },
+        tags: { test: true, type: "manual" },
+        extra: { timestamp: new Date().toISOString() },
       });
-      alert("Client error captured! Check Sentry dashboard.");
+      setStatus("✅ Exception manually captured and sent to Sentry");
     }
   };
 
-  const handleUncaughtError = () => {
-    // This will be caught by Sentry automatically
-    throw new Error("Uncaught Client-Side Error from TAC Cargo");
-  };
-
-  const handleServerError = async () => {
+  const triggerServerError = async () => {
+    setStatus("Triggering server-side error...");
     try {
-      const response = await fetch("/api/test-sentry/server-error");
-      if (!response.ok) {
-        alert(`Server error (${response.status}): Check Sentry dashboard.`);
-        return;
-      }
+      const response = await fetch("/api/test-sentry");
       const data = await response.json();
-      alert(data.message || "Server error triggered!");
+      if (!response.ok) {
+        setStatus(`✅ Server error triggered: ${data.error}`);
+      } else {
+        setStatus(`Response: ${JSON.stringify(data)}`);
+      }
     } catch (error) {
-      alert("Server error captured! Check Sentry dashboard.");
+      console.error(error);
+      setStatus(`✅ Server error triggered (network error caught)`);
     }
   };
 
-  const handlePerformanceTest = async () => {
-    // Use startSpan instead of startTransaction (new API in Sentry v8+)
-    await Sentry.startSpan(
-      {
-        name: "Test Performance Transaction",
-        op: "test.performance",
-      },
-      async (span) => {
-        try {
-          // Simulate some work
-          await Sentry.startSpan(
-            { name: "Simulated Task 1", op: "task" },
-            async () => {
-              await new Promise((resolve) => setTimeout(resolve, 500));
-            },
-          );
-
-          await Sentry.startSpan(
-            { name: "Simulated Task 2", op: "task" },
-            async () => {
-              await new Promise((resolve) => setTimeout(resolve, 300));
-            },
-          );
-
-          alert(
-            "Performance transaction captured! Check Sentry Performance dashboard.",
-          );
-        } catch (error) {
-          throw error;
-        }
-      },
-    );
-  };
-
-  const handleBreadcrumbTest = () => {
-    Sentry.addBreadcrumb({
-      category: "test",
-      message: "User clicked breadcrumb test button",
+  const sendTestMessage = () => {
+    setStatus("Sending test message to Sentry...");
+    Sentry.captureMessage("Test message from Sentry test page", {
       level: "info",
-      data: {
-        timestamp: new Date().toISOString(),
-        page: "test-sentry",
-      },
+      tags: { test: true, type: "message" },
     });
-
-    Sentry.addBreadcrumb({
-      category: "navigation",
-      message: "User navigated to test page",
-      level: "info",
-    });
-
-    Sentry.addBreadcrumb({
-      category: "action",
-      message: "User performed test action",
-      level: "warning",
-    });
-
-    // Now trigger an error to see breadcrumbs
-    try {
-      throw new Error("Error with Breadcrumbs");
-    } catch (error) {
-      Sentry.captureException(error);
-      alert("Error with breadcrumbs captured! Check Sentry issue details.");
-    }
-  };
-
-  const handleUserContextTest = () => {
-    // Only set PII in development to prevent data leaks in production
-    if (process.env.NODE_ENV === "development") {
-      Sentry.setUser({
-        id: "test-user-123",
-        email: "test@taccargo.com",
-        username: "Test User",
-        ip_address: "{{auto}}",
-      });
-    } else {
-      // In production, only set non-PII identifiers
-      Sentry.setUser({
-        id: "anonymous-test-user",
-      });
-    }
-
-    Sentry.setTag("environment", process.env.NODE_ENV || "test");
-    Sentry.setTag("feature", "sentry-testing");
-
-    try {
-      throw new Error("Error with User Context");
-    } catch (error) {
-      Sentry.captureException(error);
-      alert("Error with user context captured! Check Sentry issue details.");
-    }
+    setStatus("✅ Test message sent to Sentry");
   };
 
   return (
-    <div className="container mx-auto space-y-6 py-8">
-      <div className="space-y-2">
-        <h1 className="text-3xl font-bold">Sentry Integration Test</h1>
-        <p className="text-muted-foreground">
-          Test various Sentry features and error tracking capabilities
-        </p>
-      </div>
-
-      <div className="grid gap-6 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Client-Side Errors</CardTitle>
-            <CardDescription>
-              Test error tracking in the browser
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
+    <div className="container mx-auto max-w-2xl py-10">
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Bug className="h-6 w-6" />
+            Sentry Integration Test
+          </CardTitle>
+          <CardDescription>
+            Use these buttons to test different Sentry error capture scenarios.
+            Check your Sentry dashboard to verify errors are being captured.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid gap-3">
             <Button
-              onClick={handleClientError}
+              onClick={triggerClientError}
               variant="destructive"
-              className="w-full"
+              className="justify-start gap-2"
             >
-              Trigger Caught Client Error
+              <AlertTriangle className="h-4 w-4" />
+              Trigger Client-Side Error (will crash)
             </Button>
-            <Button
-              onClick={handleUncaughtError}
-              variant="destructive"
-              className="w-full"
-            >
-              Trigger Uncaught Client Error
-            </Button>
-          </CardContent>
-        </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Server-Side Errors</CardTitle>
-            <CardDescription>Test error tracking in API routes</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
             <Button
-              onClick={handleServerError}
-              variant="destructive"
-              className="w-full"
+              onClick={triggerManualCapture}
+              variant="outline"
+              className="justify-start gap-2"
             >
-              Trigger Server Error
+              <Zap className="h-4 w-4" />
+              Capture Manual Exception
             </Button>
-          </CardContent>
-        </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Performance Monitoring</CardTitle>
-            <CardDescription>
-              Test transaction and span tracking
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
             <Button
-              onClick={handlePerformanceTest}
+              onClick={triggerServerError}
+              variant="outline"
+              className="justify-start gap-2"
+            >
+              <Server className="h-4 w-4" />
+              Trigger Server-Side Error (API)
+            </Button>
+
+            <Button
+              onClick={sendTestMessage}
               variant="secondary"
-              className="w-full"
+              className="justify-start gap-2"
             >
-              Test Performance Transaction
+              <Bug className="h-4 w-4" />
+              Send Test Message
             </Button>
-          </CardContent>
-        </Card>
+          </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Breadcrumbs</CardTitle>
-            <CardDescription>
-              Test breadcrumb tracking for context
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <Button
-              onClick={handleBreadcrumbTest}
-              variant="secondary"
-              className="w-full"
-            >
-              Test Breadcrumbs
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>User Context</CardTitle>
-            <CardDescription>
-              Test user identification and tagging
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <Button
-              onClick={handleUserContextTest}
-              variant="secondary"
-              className="w-full"
-            >
-              Test User Context
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Instructions</CardTitle>
-            <CardDescription>How to verify Sentry integration</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-2 text-sm">
-            <ol className="list-inside list-decimal space-y-2">
-              <li>Click any test button above</li>
-              <li>Wait 1-2 minutes for events to appear</li>
-              <li>Visit your Sentry dashboard</li>
-              <li>Check Issues, Performance, or Session Replay</li>
-              <li>Verify error details and context</li>
-            </ol>
-            <div className="bg-muted mt-4 rounded-lg p-4">
-              <p className="font-semibold">Sentry Dashboard:</p>
-              <p className="text-muted-foreground text-xs break-all">
-                https://sentry.io/organizations/your-org/issues/
-              </p>
+          {status && (
+            <div className="mt-4 rounded-lg bg-muted p-4">
+              <p className="text-sm font-mono">{status}</p>
             </div>
-          </CardContent>
-        </Card>
-      </div>
+          )}
+
+          <div className="mt-6 text-sm text-muted-foreground">
+            <p className="font-medium">Expected Sentry Behavior:</p>
+            <ul className="mt-2 list-disc pl-5 space-y-1">
+              <li><strong>Client Error:</strong> Caught by error boundary, sent to Sentry</li>
+              <li><strong>Manual Capture:</strong> Explicitly sent via Sentry.captureException</li>
+              <li><strong>Server Error:</strong> Caught by API route, sent from server</li>
+              <li><strong>Test Message:</strong> Info-level message sent via Sentry.captureMessage</li>
+            </ul>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

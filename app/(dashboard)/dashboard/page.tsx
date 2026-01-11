@@ -1,15 +1,13 @@
 import React from "react";
-import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { Plus } from "lucide-react";
 import { V2Header } from "./_components/v2-header";
-import { OverviewClient } from "./_components/overview-client";
+import { MissionControl } from "./_components/mission-control";
 
 async function getDashboardStats() {
     const supabase = await createClient();
 
     // Shipment counts by status
-    const statuses = ["pending", "picked_up", "in_transit", "out_for_delivery", "delivered", "failed"] as const;
+    const statuses = ["booked", "picked_up", "in_transit", "out_for_delivery", "delivered", "exception"] as const;
     const shipmentCounts: Record<string, number> = {};
 
     for (const status of statuses) {
@@ -46,7 +44,7 @@ async function getDashboardStats() {
     const { count: activeManifests } = await supabase
         .from("manifests")
         .select("id", { count: "exact", head: true })
-        .in("status", ["open", "locked", "dispatched"]);
+        .in("status", ["draft", "finalized", "dispatched"]);
 
     // Delayed shipments
     const threeDaysAgo = new Date();
@@ -60,10 +58,10 @@ async function getDashboardStats() {
     return {
         shipments: {
             total: Object.values(shipmentCounts).reduce((a, b) => a + b, 0),
-            pending: shipmentCounts.pending,
+            pending: shipmentCounts.booked,
             inTransit: shipmentCounts.in_transit,
             delivered: shipmentCounts.delivered,
-            failed: shipmentCounts.failed,
+            failed: shipmentCounts.exception,
             today: todayCount || 0,
             delayed: delayedCount || 0,
         },
@@ -90,39 +88,54 @@ async function getRecentActivity() {
 }
 
 export default async function OverviewPage() {
-    const [stats, recentActivity] = await Promise.all([
+    const [stats, recentActivity, shipmentTrend] = await Promise.all([
         getDashboardStats(),
         getRecentActivity(),
+        getShipmentTrend(),
     ]);
 
     return (
         <>
-            <V2Header title="Overview" section="Main Deck" />
+            <V2Header title="Mission Control" section="Main Deck" />
             <main className="flex-1 overflow-y-auto p-8 scroll-smooth" id="main-scroll">
                 <div className="max-w-[1600px] mx-auto pb-20">
-                    {/* Page Header */}
-                    <div className="flex justify-between items-end mb-8">
-                        <div>
-                            <h1 className="text-3xl font-semibold text-foreground tracking-tight">
-                                Mission Control
-                            </h1>
-                            <p className="text-sm text-muted-foreground mt-1">
-                                Real-time status of global logistics operations.
-                            </p>
-                        </div>
-                        <div className="flex gap-2">
-                            <Link
-                                href="/dashboard/shipments"
-                                className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-foreground text-background text-xs font-medium hover:opacity-90 transition-colors"
-                            >
-                                <Plus className="w-4 h-4" /> New Shipment
-                            </Link>
-                        </div>
-                    </div>
-
-                    <OverviewClient stats={stats} recentActivity={recentActivity} />
+                    <MissionControl 
+                        stats={stats} 
+                        recentActivity={recentActivity}
+                        shipmentTrend={shipmentTrend}
+                    />
                 </div>
             </main>
         </>
     );
+}
+
+async function getShipmentTrend() {
+    const supabase = await createClient();
+    
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    
+    const { data } = await supabase
+        .from("shipments")
+        .select("created_at")
+        .gte("created_at", sevenDaysAgo.toISOString());
+    
+    // Group by date
+    const grouped: Record<string, number> = {};
+    (data || []).forEach(s => {
+        const date = new Date(s.created_at).toISOString().split("T")[0];
+        grouped[date] = (grouped[date] || 0) + 1;
+    });
+    
+    // Fill in missing dates
+    const result: Array<{ date: string; count: number }> = [];
+    for (let i = 6; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        const dateStr = d.toISOString().split("T")[0];
+        result.push({ date: dateStr, count: grouped[dateStr] || 0 });
+    }
+    
+    return result;
 }

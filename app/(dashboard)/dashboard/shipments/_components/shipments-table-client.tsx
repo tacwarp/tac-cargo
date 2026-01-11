@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useTransition } from "react";
+import React, { useState, useTransition, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import { GlassPanel } from "../../_components/glass-panel";
 import {
     Search,
@@ -14,16 +15,31 @@ import {
     AlertCircle,
     XCircle,
     Tag,
-    RefreshCw
+    RefreshCw,
+    Trash2,
+    Wand2,
 } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { ShipmentWizard } from "@/components/shipments/shipment-wizard";
 import { cn } from "@/lib/utils";
 import {
     Dialog,
     DialogContent,
     DialogHeader,
     DialogTitle,
-    DialogTrigger
+    DialogTrigger,
+    DialogDescription,
 } from "@/components/ui/dialog";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -76,12 +92,14 @@ interface ShipmentsTableClientProps {
 }
 
 const statusConfig: Record<ShipmentStatus, { label: string; color: string; icon: React.ElementType }> = {
-    pending: { label: "Pending", color: "bg-muted text-muted-foreground border-border", icon: Clock },
+    booked: { label: "Booked", color: "bg-muted text-muted-foreground border-border", icon: Clock },
     picked_up: { label: "Picked Up", color: "bg-primary/10 text-primary border-primary/20", icon: Package },
+    at_origin_hub: { label: "At Origin Hub", color: "bg-primary/10 text-primary border-primary/20", icon: Package },
     in_transit: { label: "In Transit", color: "bg-primary/10 text-primary border-primary/20", icon: Truck },
+    at_destination_hub: { label: "At Destination Hub", color: "bg-primary/10 text-primary border-primary/20", icon: Package },
     out_for_delivery: { label: "Out for Delivery", color: "bg-warning/10 text-warning border-warning/20", icon: Truck },
     delivered: { label: "Delivered", color: "bg-success/10 text-success border-success/20", icon: CheckCircle },
-    failed: { label: "Failed", color: "bg-destructive/10 text-destructive border-destructive/20", icon: AlertCircle },
+    exception: { label: "Exception", color: "bg-destructive/10 text-destructive border-destructive/20", icon: AlertCircle },
     returned: { label: "Returned", color: "bg-warning/10 text-warning border-warning/20", icon: RefreshCw },
     cancelled: { label: "Cancelled", color: "bg-muted text-muted-foreground border-border", icon: XCircle },
 };
@@ -91,22 +109,83 @@ export function ShipmentsTableClient({
     warehouses,
     customers
 }: Readonly<ShipmentsTableClientProps>) {
+    const router = useRouter();
     const [shipments, setShipments] = useState(initialShipments);
     const [searchQuery, setSearchQuery] = useState("");
     const [statusFilter, setStatusFilter] = useState<ShipmentStatus | "all">("all");
     const [isCreateOpen, setIsCreateOpen] = useState(false);
+    const [isWizardOpen, setIsWizardOpen] = useState(false);
+    const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+    const [bulkDeleteConfirm, setBulkDeleteConfirm] = useState(false);
+    const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
     const [isPending, startTransition] = useTransition();
 
-    const filteredShipments = shipments.filter((shipment) => {
+    const filteredShipments = useMemo(() => shipments.filter((shipment) => {
         const matchesSearch =
             shipment.reference.toLowerCase().includes(searchQuery.toLowerCase()) ||
             shipment.consignee_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
             shipment.consignee_city?.toLowerCase().includes(searchQuery.toLowerCase());
-
         const matchesStatus = statusFilter === "all" || shipment.status === statusFilter;
-
         return matchesSearch && matchesStatus;
-    });
+    }), [shipments, searchQuery, statusFilter]);
+
+    const allSelected = useMemo(() => {
+        return filteredShipments.length > 0 && filteredShipments.every(s => selectedIds.has(s.id));
+    }, [filteredShipments, selectedIds]);
+
+    const someSelected = useMemo(() => {
+        return selectedIds.size > 0 && !allSelected;
+    }, [selectedIds, allSelected]);
+
+    const toggleSelectAll = () => {
+        if (allSelected) {
+            setSelectedIds(new Set());
+        } else {
+            setSelectedIds(new Set(filteredShipments.map(s => s.id)));
+        }
+    };
+
+    const toggleSelect = (id: string) => {
+        const newSet = new Set(selectedIds);
+        if (newSet.has(id)) {
+            newSet.delete(id);
+        } else {
+            newSet.add(id);
+        }
+        setSelectedIds(newSet);
+    };
+
+    const handleBulkDelete = async () => {
+        startTransition(async () => {
+            const ids = Array.from(selectedIds);
+            let successCount = 0;
+            for (const id of ids) {
+                const result = await deleteShipment(id);
+                if (result.success) successCount++;
+            }
+            setShipments(prev => prev.filter(s => !selectedIds.has(s.id)));
+            setSelectedIds(new Set());
+            setBulkDeleteConfirm(false);
+            toast.success(`${successCount} shipment(s) cancelled`);
+        });
+    };
+
+    const handleBulkStatusUpdate = async (status: ShipmentStatus) => {
+        startTransition(async () => {
+            const ids = Array.from(selectedIds);
+            let successCount = 0;
+            for (const id of ids) {
+                const result = await updateShipmentStatus(id, status);
+                if (result.success) successCount++;
+            }
+            setShipments(prev =>
+                prev.map(s => selectedIds.has(s.id) ? { ...s, status } : s)
+            );
+            setSelectedIds(new Set());
+            toast.success(`${successCount} shipment(s) updated to ${status}`);
+        });
+    };
+
 
     const handleGenerateLabel = async (shipmentId: string) => {
         startTransition(async () => {
@@ -152,8 +231,47 @@ export function ShipmentsTableClient({
                 <div className="flex items-center gap-4">
                     <h2 className="text-sm font-semibold text-foreground">Shipments</h2>
                     <span className="text-xs text-muted-foreground">{filteredShipments.length} items</span>
+                    {selectedIds.size > 0 && (
+                        <span className="text-xs text-primary font-medium">
+                            {selectedIds.size} selected
+                        </span>
+                    )}
                 </div>
                 <div className="flex gap-2">
+                    {/* Bulk Actions */}
+                    {selectedIds.size > 0 && (
+                        <>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button variant="outline" size="sm" className="h-8 gap-1">
+                                        <Package className="w-3.5 h-3.5" />
+                                        Bulk Status
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent>
+                                    <DropdownMenuItem onClick={() => handleBulkStatusUpdate("picked_up")}>
+                                        Mark as Picked Up
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => handleBulkStatusUpdate("in_transit")}>
+                                        Mark as In Transit
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => handleBulkStatusUpdate("delivered")}>
+                                        Mark as Delivered
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                className="h-8 gap-1 text-destructive hover:text-destructive"
+                                onClick={() => setBulkDeleteConfirm(true)}
+                            >
+                                <Trash2 className="w-3.5 h-3.5" />
+                                Cancel Selected
+                            </Button>
+                        </>
+                    )}
+
                     {/* Search */}
                     <div className="relative">
                         <Search className="absolute left-2.5 top-2 text-muted-foreground w-3.5 h-3.5" />
@@ -178,17 +296,32 @@ export function ShipmentsTableClient({
                         ))}
                     </select>
 
-                    {/* Create Button */}
+                    {/* Wizard Button */}
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-8 gap-1"
+                        onClick={() => setIsWizardOpen(true)}
+                        data-testid="shipment-wizard-button"
+                    >
+                        <Wand2 className="w-3.5 h-3.5" />
+                        Wizard
+                    </Button>
+
+                    {/* Quick Create Button */}
                     <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
                         <DialogTrigger asChild>
-                            <Button size="sm" className="h-8 gap-1">
+                            <Button size="sm" className="h-8 gap-1" data-testid="shipment-quick-create-button">
                                 <Plus className="w-3.5 h-3.5" />
-                                Create
+                                Quick Create
                             </Button>
                         </DialogTrigger>
                         <DialogContent className="max-w-2xl">
                             <DialogHeader>
-                                <DialogTitle>Create Shipment</DialogTitle>
+                                <DialogTitle>Quick Create Shipment</DialogTitle>
+                                <DialogDescription>
+                                    Fill in the details below to create a new shipment.
+                                </DialogDescription>
                             </DialogHeader>
                             <CreateShipmentForm
                                 warehouses={warehouses}
@@ -205,11 +338,62 @@ export function ShipmentsTableClient({
                 </div>
             </div>
 
+            {/* Multi-Step Wizard Dialog */}
+            <Dialog open={isWizardOpen} onOpenChange={setIsWizardOpen}>
+                <DialogContent className="max-w-3xl max-h-[90vh] p-0">
+                    <DialogHeader className="sr-only">
+                        <DialogTitle>Create New Shipment</DialogTitle>
+                        <DialogDescription>
+                            Multi-step wizard to create a new shipment
+                        </DialogDescription>
+                    </DialogHeader>
+                    <ShipmentWizard
+                        warehouses={warehouses}
+                        customers={customers}
+                        onSuccess={(newShipment) => {
+                            const shipment = newShipment as Shipment;
+                            setShipments(prev => [shipment, ...prev]);
+                            setIsWizardOpen(false);
+                        }}
+                        onCancel={() => setIsWizardOpen(false)}
+                    />
+                </DialogContent>
+            </Dialog>
+
+            {/* Bulk Delete Confirmation */}
+            <AlertDialog open={bulkDeleteConfirm} onOpenChange={setBulkDeleteConfirm}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Cancel {selectedIds.size} Shipments</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Are you sure you want to cancel {selectedIds.size} selected shipment(s)? This action cannot be undone.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>No, keep them</AlertDialogCancel>
+                        <AlertDialogAction
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                            onClick={handleBulkDelete}
+                        >
+                            Yes, cancel all
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+
             {/* Table */}
             <div className="w-full overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                     <thead>
                         <tr className="bg-muted text-[10px] uppercase text-muted-foreground tracking-wider">
+                            <th className="p-4 w-10">
+                                <Checkbox
+                                    checked={allSelected}
+                                    onCheckedChange={toggleSelectAll}
+                                    aria-label="Select all"
+                                    className={someSelected ? "data-[state=checked]:bg-primary/50" : ""}
+                                />
+                            </th>
                             <th className="p-4 font-medium">Reference</th>
                             <th className="p-4 font-medium">Consignee</th>
                             <th className="p-4 font-medium">Route</th>
@@ -222,17 +406,32 @@ export function ShipmentsTableClient({
                     <tbody className="text-xs divide-y divide-border">
                         {filteredShipments.length === 0 ? (
                             <tr>
-                                <td colSpan={7} className="p-8 text-center text-muted-foreground">
+                                <td colSpan={8} className="p-8 text-center text-muted-foreground">
                                     No shipments found
                                 </td>
                             </tr>
                         ) : (
                             filteredShipments.map((shipment) => {
-                                const status = statusConfig[shipment.status] || statusConfig.pending;
+                                const status = statusConfig[shipment.status] || statusConfig.booked;
                                 const StatusIcon = status.icon;
+                                const isSelected = selectedIds.has(shipment.id);
 
                                 return (
-                                    <tr key={shipment.id} className="group hover:bg-muted/40 transition-colors">
+                                    <tr 
+                                        key={shipment.id} 
+                                        className={cn(
+                                            "group hover:bg-muted/40 transition-colors cursor-pointer",
+                                            isSelected && "bg-primary/5"
+                                        )}
+                                        onClick={() => router.push(`/dashboard/shipments/${shipment.id}`)}
+                                    >
+                                        <td className="p-4" onClick={(e) => e.stopPropagation()}>
+                                            <Checkbox
+                                                checked={isSelected}
+                                                onCheckedChange={() => toggleSelect(shipment.id)}
+                                                aria-label={`Select ${shipment.reference}`}
+                                            />
+                                        </td>
                                         <td className="p-4">
                                             <div className="font-mono text-foreground text-xs font-medium">
                                                 {shipment.reference}
@@ -282,7 +481,7 @@ export function ShipmentsTableClient({
                                                 <span className="text-[10px] text-muted-foreground">Not assigned</span>
                                             )}
                                         </td>
-                                        <td className="p-4 text-right">
+                                        <td className="p-4 text-right" onClick={(e) => e.stopPropagation()}>
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger asChild>
                                                     <button
@@ -309,7 +508,7 @@ export function ShipmentsTableClient({
                                                     </DropdownMenuItem>
                                                     <DropdownMenuSeparator />
                                                     <DropdownMenuItem
-                                                        onClick={() => handleDelete(shipment.id)}
+                                                        onClick={() => setDeleteConfirmId(shipment.id)}
                                                         className="text-destructive"
                                                     >
                                                         <XCircle className="w-4 h-4 mr-2" />
@@ -325,6 +524,32 @@ export function ShipmentsTableClient({
                     </tbody>
                 </table>
             </div>
+
+            {/* Delete Confirmation Dialog */}
+            <AlertDialog open={!!deleteConfirmId} onOpenChange={(open) => !open && setDeleteConfirmId(null)}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Cancel Shipment</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Are you sure you want to cancel this shipment? This action cannot be undone.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>No, keep it</AlertDialogCancel>
+                        <AlertDialogAction
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                            onClick={() => {
+                                if (deleteConfirmId) {
+                                    handleDelete(deleteConfirmId);
+                                    setDeleteConfirmId(null);
+                                }
+                            }}
+                        >
+                            Yes, cancel shipment
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </GlassPanel>
     );
 }
@@ -377,9 +602,8 @@ function CreateShipmentForm({ warehouses, customers, onSuccess }: CreateShipment
                         value={formData.customer_id}
                         onChange={(e) => setFormData(prev => ({ ...prev, customer_id: e.target.value }))}
                         className="w-full bg-card border border-border rounded px-3 py-2 text-sm text-foreground"
-                        required
                     >
-                        <option value="">Select customer</option>
+                        <option value="">Select customer (optional)</option>
                         {customers.map((c) => (
                             <option key={c.id} value={c.id}>{c.name}</option>
                         ))}
@@ -402,9 +626,8 @@ function CreateShipmentForm({ warehouses, customers, onSuccess }: CreateShipment
                         value={formData.origin_warehouse_id}
                         onChange={(e) => setFormData(prev => ({ ...prev, origin_warehouse_id: e.target.value }))}
                         className="w-full bg-card border border-border rounded px-3 py-2 text-sm text-foreground"
-                        required
                     >
-                        <option value="">Select origin</option>
+                        <option value="">Select origin (optional)</option>
                         {warehouses.map((w) => (
                             <option key={w.id} value={w.id}>{w.name} ({w.code})</option>
                         ))}
@@ -416,9 +639,8 @@ function CreateShipmentForm({ warehouses, customers, onSuccess }: CreateShipment
                         value={formData.destination_warehouse_id}
                         onChange={(e) => setFormData(prev => ({ ...prev, destination_warehouse_id: e.target.value }))}
                         className="w-full bg-card border border-border rounded px-3 py-2 text-sm text-foreground"
-                        required
                     >
-                        <option value="">Select destination</option>
+                        <option value="">Select destination (optional)</option>
                         {warehouses.map((w) => (
                             <option key={w.id} value={w.id}>{w.name} ({w.code})</option>
                         ))}

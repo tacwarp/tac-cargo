@@ -147,7 +147,7 @@ export async function getOutstandingInvoices(options?: {
       `
       )
       .gt("balance_due", 0)
-      .in("status", ["generated", "sent", "overdue"])
+      .in("status", ["pending", "partial", "overdue"])
       .order("due_date", { ascending: true })
       .limit(options?.limit || 100);
 
