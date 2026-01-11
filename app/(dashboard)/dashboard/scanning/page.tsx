@@ -1,5 +1,4 @@
-import { PageLayout } from '@/components/dashboard/page-layout'
-import { StatusBadge } from '@/components/dashboard/status-badge'
+import { PageLayout } from '@/components/layout/page-layout'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { ScanIcon } from 'lucide-react'

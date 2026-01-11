@@ -1,5 +1,4 @@
-import { PageLayout } from '@/components/dashboard/page-layout'
-import { StatusBadge, type Status } from '@/components/dashboard/status-badge'
+import { PageLayout } from '@/components/layout/page-layout'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'

@@ -56,16 +56,22 @@ export function ThemeAwareQRCode({
       : { bg: "#ffffff", fg: "#0a0a0a" };
   }, [resolvedTheme]);
 
+  // Hydration-safe mounting check
   useEffect(() => {
     setMounted(true);
-  }, []);
+    
+    // Resolve colors immediately after mounting
+    const resolved = resolveColors();
+    setColors(resolved);
+  }, [resolveColors]);
 
+  // Update colors when theme changes after initial mount
   useEffect(() => {
     if (mounted) {
       const resolved = resolveColors();
       setColors(resolved);
     }
-  }, [mounted, resolvedTheme, resolveColors]);
+  }, [resolvedTheme, resolveColors, mounted]);
 
   if (!mounted || !colors) {
     return (

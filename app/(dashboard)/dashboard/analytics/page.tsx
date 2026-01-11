@@ -1,4 +1,4 @@
-import { PageLayout } from '@/components/dashboard/page-layout'
+import { PageLayout } from '@/components/layout/page-layout'
 import { KPICard, KPICardGrid } from '@/components/dashboard/kpi-card'
 import { Card } from '@/components/ui/card'
 import { TrendingUpIcon, TrendingDownIcon, ActivityIcon } from 'lucide-react'
