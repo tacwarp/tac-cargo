@@ -1,122 +1,39 @@
-import React from "react";
-import { createClient } from "@/lib/supabase/server";
-import { V2Header } from "../_components/v2-header";
-import { PaymentsClient } from "./_components/payments-client";
-import { normalizeJoin } from "@/lib/utils/normalize-supabase";
+import { PageLayout } from '@/components/dashboard/page-layout'
+import { StatusBadge, type Status } from '@/components/dashboard/status-badge'
+import { Card } from '@/components/ui/card'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
-async function getPayments() {
-    const supabase = await createClient();
+const payments = [
+  { id: '1', txn: 'TXN-2024-0001', amount: 15250, status: 'payment-completed' as Extract<Status, 'payment-completed'>, date: '2024-12-28' },
+  { id: '2', txn: 'TXN-2024-0002', amount: 8750, status: 'payment-pending' as Extract<Status, 'payment-pending'>, date: '2024-12-27' },
+  { id: '3', txn: 'TXN-2024-0003', amount: 3200, status: 'payment-failed' as Extract<Status, 'payment-failed'>, date: '2024-12-26' }
+]
 
-    const { data, error } = await supabase
-        .from("payments")
-        .select(`
-            id,
-            amount,
-            payment_method,
-            payment_reference,
-            status,
-            notes,
-            created_at,
-            invoices(invoice_no, total_amount, customers(name))
-        `)
-        .order("created_at", { ascending: false })
-        .limit(50);
-
-    if (error) {
-        console.error("Failed to fetch payments:", (error as { message: string })?.message ?? error);
-        return [];
-    }
-
-    if (!data) {
-        return [];
-    }
-
-    return data.map(p => ({
-        ...p,
-        invoices: normalizeJoin(p.invoices) as { invoice_no: string; total_amount: number; customers: { name: string }[] | null } | null,
-    })).map(p => ({
-        ...p,
-        invoices: p.invoices ? {
-            ...p.invoices,
-            customers: normalizeJoin(p.invoices.customers),
-        } : null,
-    }));
-}
-
-async function getOutstandingInvoices() {
-    const supabase = await createClient();
-
-    const { data } = await supabase
-        .from("invoices")
-        .select(`
-            id,
-            invoice_no,
-            total_amount,
-            balance_due,
-            due_date,
-            status,
-            customers(name, phone)
-        `)
-        .gt("balance_due", 0)
-        .in("status", ["generated", "sent", "overdue"])
-        .order("due_date", { ascending: true })
-        .limit(50);
-
-    return (data || []).map(i => ({
-        ...i,
-        customers: normalizeJoin(i.customers),
-    }));
-}
-
-async function getPaymentStats() {
-    const supabase = await createClient();
-
-    // Total received
-    const { data: payments } = await supabase
-        .from("payments")
-        .select("amount")
-        .eq("status", "completed");
-    const totalReceived = (payments || []).reduce((sum, p) => sum + p.amount, 0);
-
-    // Total outstanding
-    const { data: invoices } = await supabase
-        .from("invoices")
-        .select("balance_due")
-        .gt("balance_due", 0);
-    const totalOutstanding = (invoices || []).reduce((sum, i) => sum + i.balance_due, 0);
-
-    // Overdue count
-    const { count: overdueCount } = await supabase
-        .from("invoices")
-        .select("id", { count: "exact", head: true })
-        .eq("status", "overdue");
-
-    return {
-        totalReceived,
-        totalOutstanding,
-        overdueCount: overdueCount || 0,
-    };
-}
-
-export default async function PaymentsPage() {
-    const [payments, outstanding, stats] = await Promise.all([
-        getPayments(),
-        getOutstandingInvoices(),
-        getPaymentStats(),
-    ]);
-
-    return (
-        <>
-            <V2Header title="Payments" section="Finance" />
-            <main className="flex-1 overflow-y-auto p-8 scroll-smooth" id="main-scroll">
-                <div className="max-w-[1400px] mx-auto">
-                    <PaymentsClient
-                        initialPayments={payments}
-                        outstandingInvoices={outstanding}
-                        stats={stats}
-                    />
-                </div>
-            </main>
-        </>
-    );
+export default function PaymentsPage() {
+  return (
+    <PageLayout title="Payments" description="Track payment transactions">
+      <Card className="p-0">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Transaction</TableHead>
+              <TableHead className="text-right">Amount</TableHead>
+              <TableHead>Date</TableHead>
+              <TableHead>Status</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {payments.map((p) => (
+              <TableRow key={p.id}>
+                <TableCell className="font-mono text-sm">{p.txn}</TableCell>
+                <TableCell className="text-right tabular-nums">₹{p.amount.toLocaleString('en-IN')}</TableCell>
+                <TableCell>{new Date(p.date).toLocaleDateString()}</TableCell>
+                <TableCell><StatusBadge status={p.status} /></TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </Card>
+    </PageLayout>
+  )
 }

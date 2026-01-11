@@ -1,77 +1,39 @@
-import React from "react";
-import { createClient } from "@/lib/supabase/server";
-import { V2Header } from "../_components/v2-header";
-import { ExceptionsClient } from "./_components/exceptions-client";
-import { normalizeJoin } from "@/lib/utils/normalize-supabase";
+import { PageLayout } from '@/components/dashboard/page-layout'
+import { StatusBadge, type Status } from '@/components/dashboard/status-badge'
+import { Card } from '@/components/ui/card'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
-async function getExceptions() {
-    const supabase = await createClient();
-    
-    // Get failed and delayed shipments as "exceptions"
-    const threeDaysAgo = new Date();
-    threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+const exceptions = [
+  { id: '1', ref: 'SHP-IMF-2512-0007', issue: 'Damaged package', priority: 'priority-high' as Extract<Status, 'priority-high'>, status: 'exception-open' as Extract<Status, 'exception-open'> },
+  { id: '2', ref: 'SHP-IMF-2512-0012', issue: 'Address incomplete', priority: 'priority-medium' as Extract<Status, 'priority-medium'>, status: 'exception-investigating' as Extract<Status, 'exception-investigating'> },
+  { id: '3', ref: 'SHP-IMF-2512-0003', issue: 'Delayed pickup', priority: 'priority-low' as Extract<Status, 'priority-low'>, status: 'exception-resolved' as Extract<Status, 'exception-resolved'> }
+]
 
-    // Failed deliveries
-    const { data: failedShipments } = await supabase
-        .from("shipments")
-        .select(`
-            id,
-            reference,
-            status,
-            consignee_name,
-            consignee_city,
-            updated_at,
-            origin_warehouse:warehouses!origin_warehouse_id(name, code),
-            destination_warehouse:warehouses!destination_warehouse_id(name, code)
-        `)
-        .eq("status", "failed")
-        .order("updated_at", { ascending: false })
-        .limit(20);
-
-    // Delayed (in transit > 3 days)
-    const { data: delayedShipments } = await supabase
-        .from("shipments")
-        .select(`
-            id,
-            reference,
-            status,
-            consignee_name,
-            consignee_city,
-            updated_at,
-            origin_warehouse:warehouses!origin_warehouse_id(name, code),
-            destination_warehouse:warehouses!destination_warehouse_id(name, code)
-        `)
-        .eq("status", "in_transit")
-        .lt("updated_at", threeDaysAgo.toISOString())
-        .order("updated_at", { ascending: true })
-        .limit(20);
-
-    // Normalize and combine into exceptions with type
-    const normalizeShipment = (s: typeof failedShipments extends (infer T)[] | null ? T : never) => ({
-        ...s,
-        origin_warehouse: normalizeJoin(s.origin_warehouse),
-        destination_warehouse: normalizeJoin(s.destination_warehouse),
-    });
-    
-    const exceptions = [
-        ...(failedShipments || []).map(s => ({ ...normalizeShipment(s), exception_type: "failed" as const })),
-        ...(delayedShipments || []).map(s => ({ ...normalizeShipment(s), exception_type: "delayed" as const })),
-    ].sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime());
-
-    return exceptions;
-}
-
-export default async function ExceptionsPage() {
-    const exceptions = await getExceptions();
-
-    return (
-        <>
-            <V2Header title="Exceptions" section="Ops Control" />
-            <main className="flex-1 overflow-y-auto p-6 scroll-smooth" id="main-scroll">
-                <div className="max-w-6xl mx-auto">
-                    <ExceptionsClient initialExceptions={exceptions} />
-                </div>
-            </main>
-        </>
-    );
+export default function ExceptionsPage() {
+  return (
+    <PageLayout title="Exceptions" description="Manage shipment exceptions">
+      <Card className="p-0">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Shipment</TableHead>
+              <TableHead>Issue</TableHead>
+              <TableHead>Priority</TableHead>
+              <TableHead>Status</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {exceptions.map((e) => (
+              <TableRow key={e.id}>
+                <TableCell className="font-mono text-sm">{e.ref}</TableCell>
+                <TableCell>{e.issue}</TableCell>
+                <TableCell><StatusBadge status={e.priority} /></TableCell>
+                <TableCell><StatusBadge status={e.status} /></TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </Card>
+    </PageLayout>
+  )
 }

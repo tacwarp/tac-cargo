@@ -1,97 +1,97 @@
-import React from "react";
-import { createClient } from "@/lib/supabase/server";
-import { V2Header } from "../_components/v2-header";
-import { ShipmentsTableClient } from "./_components/shipments-table-client";
-import { normalizeJoin } from "@/lib/utils/normalize-supabase";
+import { PageLayout } from '@/components/dashboard/page-layout'
+import { StatusBadge, type Status } from '@/components/dashboard/status-badge'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { PlusIcon, SearchIcon, MoreVerticalIcon, EyeIcon, EditIcon, PrinterIcon, Trash2Icon } from 'lucide-react'
+import Link from 'next/link'
 
-async function getShipments() {
-    const supabase = await createClient();
-
-    const { data, error } = await supabase
-        .from("shipments")
-        .select(`
-            id,
-            reference,
-            status,
-            consignee_name,
-            consignee_city,
-            consignee_state,
-            pieces,
-            weight_kg,
-            transport_mode,
-            created_at,
-            updated_at,
-            origin_warehouse:warehouses!origin_warehouse_id(name, code),
-            destination_warehouse:warehouses!destination_warehouse_id(name, code),
-            customers(name)
-        `)
-        .order("created_at", { ascending: false })
-        .limit(100);
-
-    if (error) {
-        console.error("Failed to fetch shipments:", (error as { message: string })?.message ?? error);
-        // Return empty array to keep the page functional even if Supabase/RLS rejects the query
-        return [];
-    }
-
-    if (!data) {
-        return [];
-    }
-
-    // Normalize joined relations
-    return data.map(s => ({
-        ...s,
-        origin_warehouse: normalizeJoin(s.origin_warehouse),
-        destination_warehouse: normalizeJoin(s.destination_warehouse),
-        customers: normalizeJoin(s.customers),
-        manifests: null,
-
-    }));
+interface Shipment {
+  id: string
+  reference: string
+  customer: string
+  origin: string
+  destination: string
+  status: Extract<Status, 'pending' | 'scanned' | 'in-transit' | 'arrived' | 'delivered' | 'delayed' | 'cancelled'>
+  weight: number
 }
 
-async function getWarehouses() {
-    const supabase = await createClient();
+const shipments: Shipment[] = [
+  { id: '1', reference: 'SHP-IMF-2512-0001', customer: 'ABC Corporation', origin: 'Imphal', destination: 'New Delhi', status: 'in-transit', weight: 25.5 },
+  { id: '2', reference: 'SHP-IMF-2512-0002', customer: 'XYZ Logistics', origin: 'Imphal', destination: 'Mumbai', status: 'pending', weight: 15.2 },
+  { id: '3', reference: 'SHP-IMF-2512-0003', customer: 'Metro Express', origin: 'Imphal', destination: 'Kolkata', status: 'delivered', weight: 8.7 },
+  { id: '4', reference: 'SHP-IMF-2512-0004', customer: 'Quick Ship Co', origin: 'Imphal', destination: 'Chennai', status: 'in-transit', weight: 32.1 },
+  { id: '5', reference: 'SHP-IMF-2512-0005', customer: 'Prime Cargo', origin: 'Imphal', destination: 'Bangalore', status: 'arrived', weight: 12.4 }
+]
 
-    const { data } = await supabase
-        .from("warehouses")
-        .select("id, name, code")
-        .eq("is_active", true)
-        .order("name");
-
-    return data || [];
+export default function ShipmentsPage() {
+  return (
+    <PageLayout
+      title="Shipments"
+      description="Manage and track all shipments"
+      actions={
+        <Button asChild>
+          <Link href="/dashboard/shipments/new">
+            <PlusIcon className="mr-2 size-4" />
+            New Shipment
+          </Link>
+        </Button>
+      }
+    >
+      <Card className="p-0">
+        <div className="border-b border-border p-4">
+          <div className="relative">
+            <SearchIcon className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Input placeholder="Search shipments..." className="pl-9" />
+          </div>
+        </div>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Reference</TableHead>
+              <TableHead>Customer</TableHead>
+              <TableHead className="hidden md:table-cell">Origin</TableHead>
+              <TableHead>Destination</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead className="hidden sm:table-cell">Weight</TableHead>
+              <TableHead className="w-12"></TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {shipments.map((s) => (
+              <TableRow key={s.id}>
+                <TableCell className="font-mono text-sm">{s.reference}</TableCell>
+                <TableCell className="font-medium">{s.customer}</TableCell>
+                <TableCell className="hidden md:table-cell">{s.origin}</TableCell>
+                <TableCell>{s.destination}</TableCell>
+                <TableCell><StatusBadge status={s.status} /></TableCell>
+                <TableCell className="hidden sm:table-cell">{s.weight} kg</TableCell>
+                <TableCell>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon" className="size-8">
+                        <MoreVerticalIcon className="size-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem><EyeIcon className="mr-2 size-4" />View</DropdownMenuItem>
+                      <DropdownMenuItem><EditIcon className="mr-2 size-4" />Edit</DropdownMenuItem>
+                      <DropdownMenuItem><PrinterIcon className="mr-2 size-4" />Print</DropdownMenuItem>
+                      <DropdownMenuItem className="text-destructive"><Trash2Icon className="mr-2 size-4" />Delete</DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+        <div className="border-t border-border p-4">
+          <p className="text-sm text-muted-foreground">Showing {shipments.length} shipments</p>
+        </div>
+      </Card>
+    </PageLayout>
+  )
 }
 
-async function getCustomers() {
-    const supabase = await createClient();
-
-    const { data } = await supabase
-        .from("customers")
-        .select("id, name, phone")
-        .order("name")
-        .limit(100);
-
-    return data || [];
-}
-
-export default async function ShipmentsPage() {
-    const [shipments, warehouses, customers] = await Promise.all([
-        getShipments(),
-        getWarehouses(),
-        getCustomers(),
-    ]);
-
-    return (
-        <>
-            <V2Header title="Shipments" section="Operations" />
-            <main className="flex-1 overflow-y-auto p-8 scroll-smooth" id="main-scroll">
-                <div className="max-w-[1600px] mx-auto pb-20">
-                    <ShipmentsTableClient
-                        initialShipments={shipments}
-                        warehouses={warehouses}
-                        customers={customers}
-                    />
-                </div>
-            </main>
-        </>
-    );
-}
