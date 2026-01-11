@@ -2,6 +2,7 @@
 
 import { RiTrophyLine } from "@remixicon/react";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 export function TopDrivers() {
   const drivers = [
@@ -57,10 +58,12 @@ export function TopDrivers() {
             )}
           >
             <div className="relative">
-              <img
+              <Image
                 src={driver.img}
                 alt="Driver"
                 className="h-10 w-10 rounded-full border-2 border-border object-cover"
+                width={40}
+                height={40}
               />
               <div
                 className={cn(

@@ -8,7 +8,6 @@ interface HeroBannerProps {
   title: string;
   subtitle: string;
   ctaText?: string;
-  ctaLink?: string;
   className?: string;
 }
 
@@ -16,7 +15,6 @@ export function HeroBanner({
   title,
   subtitle,
   ctaText = "View Global Map",
-  ctaLink = "#",
   className,
 }: HeroBannerProps) {
   return (

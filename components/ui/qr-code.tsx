@@ -34,7 +34,12 @@ export function ThemeAwareQRCode({
 }: ThemeAwareQRCodeProps) {
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  const [colors, setColors] = useState<{ bg: string; fg: string } | null>(null);
+  const [colors, setColors] = useState<{ bg: string; fg: string } | null>(() => {
+    // Initialize with default colors
+    return resolvedTheme === "dark"
+      ? { bg: "#0a0a0a", fg: "#fafafa" }
+      : { bg: "#ffffff", fg: "#0a0a0a" };
+  });
 
   const resolveColors = useCallback(() => {
     if (typeof globalThis === "undefined") return null;
@@ -56,14 +61,18 @@ export function ThemeAwareQRCode({
       : { bg: "#ffffff", fg: "#0a0a0a" };
   }, [resolvedTheme]);
 
+  // Hydration-safe mounting check
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  // Update colors when theme changes (only after mounted)
   useEffect(() => {
     if (mounted) {
       const resolved = resolveColors();
-      setColors(resolved);
+      if (resolved) {
+        setColors(resolved);
+      }
     }
   }, [mounted, resolvedTheme, resolveColors]);
 

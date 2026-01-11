@@ -307,7 +307,7 @@ export function generateQRCodeDataUrl(
   awb: string,
   baseUrl: string = "https://taccargo.com",
 ): string {
-  const trackingUrl = `${baseUrl}/track/${encodeURIComponent(awb)}`;
+  const _trackingUrl = `${baseUrl}/track/${encodeURIComponent(awb)}`;
   const escapedAwb = awb
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")

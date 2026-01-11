@@ -4,7 +4,14 @@
  */
 
 import type { NextConfig } from "next";
-import { withSentryConfig } from "@sentry/nextjs";
+
+// Optional Sentry import
+let withSentryConfig: ((config: NextConfig, options: any) => NextConfig) | null = null;
+try {
+  withSentryConfig = require("@sentry/nextjs").withSentryConfig;
+} catch (e) {
+  console.warn("Sentry not available, skipping Sentry configuration");
+}
 
 /**
  * Security headers for production deployment
@@ -218,5 +225,7 @@ const sentryWebpackPluginOptions = {
   },
 };
 
-// Export the config wrapped with Sentry
-export default withSentryConfig(nextConfig, sentryWebpackPluginOptions);
+// Export the config wrapped with Sentry if available
+export default withSentryConfig 
+  ? withSentryConfig(nextConfig, sentryWebpackPluginOptions)
+  : nextConfig;

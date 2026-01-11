@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 import {
   RiPhoneFill,
@@ -46,9 +47,11 @@ export function FleetCard({
       {/* Header */}
       <div className="mb-5 flex items-start justify-between">
         <div className="flex gap-4">
-          <img
+          <Image
             src={driverAvatar}
             alt={driverName}
+            width={48}
+            height={48}
             className="border-border h-12 w-12 rounded-full border-2 object-cover"
           />
           <div>

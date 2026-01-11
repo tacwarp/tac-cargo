@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
     let shipment = null;
     let shipmentError = null;
 
-    const { data: shipmentByRef, error: refError } = await supabase
+    const { data: shipmentByRef } = await supabase
       .from("shipments")
       .select("id, reference, status")
       .eq("reference", barcode)

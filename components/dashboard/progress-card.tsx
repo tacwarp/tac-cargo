@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { RiMore2Fill, RiMapPin2Fill, RiTruckLine } from "@remixicon/react";
 
@@ -7,8 +8,6 @@ interface ProgressCardProps {
   title: string;
   category: string;
   progress: number;
-  totalItems: number;
-  completedItems: number;
   imageUrl: string;
   mentorName: string; // Dispatcher Name
   mentorRole: string; // Role
@@ -21,8 +20,6 @@ export function ProgressCard({
   title,
   category,
   progress,
-  totalItems, // e.g. Waypoints
-  completedItems, // e.g. Passed Waypoints
   imageUrl,
   mentorName,
   mentorRole,
@@ -67,9 +64,10 @@ export function ProgressCard({
       {/* Image Container */}
       <div className="relative mb-4 h-44 overflow-hidden rounded-xl">
         <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-        <img
+        <Image
           alt={title}
           src={imageUrl}
+          fill
           className="h-full w-full object-cover grayscale transition-transform duration-700 group-hover:scale-110 group-hover:grayscale-0"
         />
 
@@ -122,9 +120,11 @@ export function ProgressCard({
         <div className="border-border/40 flex items-center justify-between border-t pt-2">
           <div className="flex items-center gap-3">
             <div className="relative">
-              <img
+              <Image
                 alt={mentorName}
                 src={mentorAvatar}
+                width={32}
+                height={32}
                 className="border-border h-8 w-8 rounded-full border object-cover shadow-sm"
               />
               <div className="border-card absolute -right-0.5 -bottom-0.5 h-3 w-3 rounded-full border-2 bg-primary" />
