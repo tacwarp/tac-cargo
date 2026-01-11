@@ -17,7 +17,7 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { LottieContainer } from "@/components/ui/lottie-container";
 
 export function TrackingSection() {
-  const [trackingMode, setTrackingMode] = useState<"gps" | "custody">("gps");
+  const [_trackingMode, setTrackingMode] = useState<"gps" | "custody">("gps");
   const [trackingNumber, setTrackingNumber] = useState("TAC-8291"); // Prefilled dummy data
   const [isSearching, setIsSearching] = useState(false);
   const [showResult, setShowResult] = useState(false);

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 export function KpiGradientCard() {
@@ -17,9 +18,11 @@ export function KpiGradientCard() {
       <div className="relative z-10 flex items-start">
         <div className="flex -space-x-3">
           {[1, 2, 3].map((i) => (
-            <img
+            <Image
               key={i}
               src={`https://i.pravatar.cc/100?img=${50 + i}`}
+              width={40}
+              height={40}
               className="border-background/20 h-10 w-10 rounded-full border-2 backdrop-blur-sm"
               alt=""
             />

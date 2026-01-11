@@ -284,7 +284,7 @@ export function generateAWBPackage(options?: {
     weight: options?.weight,
     pieces: options?.pieces,
   });
-  const trackingUrl = generateTrackingURL(awbNo);
+  const _trackingUrl = generateTrackingURL(awbNo);
 
   return {
     invoiceNo,

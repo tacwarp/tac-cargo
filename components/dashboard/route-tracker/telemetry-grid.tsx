@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import {
   RiSpeedUpLine,
   RiGasStationLine,
@@ -209,9 +210,11 @@ export function TelemetryGrid() {
           {/* Driver Profile */}
           <div className="mb-6 flex items-center gap-4">
             <div className="relative">
-              <img
+              <Image
                 src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
                 alt="Driver"
+                width={56}
+                height={56}
                 className="ring-border/20 size-14 rounded-full object-cover ring-2"
               />
               <div className="border-background absolute right-0 bottom-0 size-3.5 rounded-full border-2 bg-success"></div>

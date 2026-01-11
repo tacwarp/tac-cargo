@@ -126,7 +126,7 @@ async function sendStatusNotifications(
   shipment: any,
   status: ShipmentStatus,
 ): Promise<void> {
-  const trackingUrl = `${process.env.NEXT_PUBLIC_APP_URL || "https://taccargo.com"}/track/${shipment.reference}`;
+  const _trackingUrl = `${process.env.NEXT_PUBLIC_APP_URL || "https://taccargo.com"}/track/${shipment.reference}`;
 
   try {
     switch (status) {
